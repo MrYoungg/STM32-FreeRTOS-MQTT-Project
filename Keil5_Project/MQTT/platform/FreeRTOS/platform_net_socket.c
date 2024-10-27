@@ -26,7 +26,6 @@ int platform_net_socket_recv(int fd, void *buf, size_t len, int flags)
     return 0;
 }
 
-
 int platform_net_socket_recv_timeout(int fd, unsigned char *buf, int len, int timeout)
 {
     return 0;
