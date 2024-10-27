@@ -1,0 +1,16 @@
+.\objects\platform_thread.o: MQTT\platform\FreeRTOS\platform_thread.c
+.\objects\platform_thread.o: MQTT\platform\FreeRTOS\platform_thread.h
+.\objects\platform_thread.o: .\FreeRTOS\include\FreeRTOS.h
+.\objects\platform_thread.o: D:\Univercity\Keil5\ARM\ARMCC\Bin\..\include\stddef.h
+.\objects\platform_thread.o: D:\Univercity\Keil5\ARM\ARMCC\Bin\..\include\stdint.h
+.\objects\platform_thread.o: .\FreeRTOS\include\FreeRTOSConfig.h
+.\objects\platform_thread.o: .\FreeRTOS\include\projdefs.h
+.\objects\platform_thread.o: .\FreeRTOS\include\portable.h
+.\objects\platform_thread.o: .\FreeRTOS\include\deprecated_definitions.h
+.\objects\platform_thread.o: .\FreeRTOS\portmacro.h
+.\objects\platform_thread.o: .\FreeRTOS\include\mpu_wrappers.h
+.\objects\platform_thread.o: .\FreeRTOS\include\task.h
+.\objects\platform_thread.o: .\FreeRTOS\include\list.h
+.\objects\platform_thread.o: MQTT\platform\FreeRTOS\platform_memory.h
+.\objects\platform_thread.o: D:\Univercity\Keil5\ARM\ARMCC\Bin\..\include\stdlib.h
+.\objects\platform_thread.o: D:\Univercity\Keil5\ARM\ARMCC\Bin\..\include\stdio.h

@@ -1,0 +1,14 @@
+.\objects\netifapi.o: LwIP\src\api\netifapi.c
+.\objects\netifapi.o: .\LwIP\src\include\lwip/opt.h
+.\objects\netifapi.o: .\LwIP\src\include\lwip/debug.h
+.\objects\netifapi.o: .\LwIP\src\include\lwip/arch.h
+.\objects\netifapi.o: .\LwIP\contrib\ports\freertos\include\arch/cc.h
+.\objects\netifapi.o: D:\Univercity\Keil5\ARM\ARMCC\Bin\..\include\stdio.h
+.\objects\netifapi.o: D:\Univercity\Keil5\ARM\ARMCC\Bin\..\include\stdlib.h
+.\objects\netifapi.o: D:\Univercity\Keil5\ARM\ARMCC\Bin\..\include\stddef.h
+.\objects\netifapi.o: D:\Univercity\Keil5\ARM\ARMCC\Bin\..\include\stdint.h
+.\objects\netifapi.o: D:\Univercity\Keil5\ARM\ARMCC\Bin\..\include\inttypes.h
+.\objects\netifapi.o: D:\Univercity\Keil5\ARM\ARMCC\Bin\..\include\limits.h
+.\objects\netifapi.o: D:\Univercity\Keil5\ARM\ARMCC\Bin\..\include\ctype.h
+.\objects\netifapi.o: .\LwIP\src\include\lwip/opt.h
+.\objects\netifapi.o: .\LwIP\src\include\lwip/lwipopts.h
