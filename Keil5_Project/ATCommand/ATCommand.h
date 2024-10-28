@@ -24,7 +24,7 @@ typedef struct {
 
 void AT_Init(void);
 int AT_SendCommand(char *command, TickType_t timeout);
-void AT_ReceiveResponse(void);
+int AT_ReceiveResponse(void);
 void AT_ParseResponse(char *responseBuffer);
 void AT_ProcessData(void);
 

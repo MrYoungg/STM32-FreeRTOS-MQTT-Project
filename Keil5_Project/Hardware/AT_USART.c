@@ -109,11 +109,12 @@ int USART_Read_Buffer(uint8_t *responseBuffer, uint32_t responseBufferLen, TickT
 {
     while (USART_Buffer.dataSize == 0) {
         // 缓冲区空,则在USART_Receive_Mutex上阻塞,直到接收到数据
-        DEBUG_LOG("receive mutex lock\r\n");
+        // DEBUG_LOG("receive mutex lock\r\n");
         platform_mutex_lock_timeout(&USART_Receive_Mutex, timeout);
-        DEBUG_LOG("receive mutex unlock\r\n");
+        // vTaskDelay(pdMS_TO_TICKS(20));
+        // DEBUG_LOG("receive mutex unlock\r\n");
     }
-    DEBUG_LOG("dataSize = %d\r\n", USART_Buffer.dataSize);
+    // DEBUG_LOG("dataSize = %d\r\n", USART_Buffer.dataSize);
 
     // 缓冲区溢出,数据不完整,直接放弃本次写入的数据,并清空缓冲区
     if (Serial_rxFlag == RX_BUFFER_OVERFLOW) {
@@ -123,7 +124,7 @@ int USART_Read_Buffer(uint8_t *responseBuffer, uint32_t responseBufferLen, TickT
     }
     // 缓冲区没有溢出,其中有完整数据,则读取到responseBuffer中
     else if (Serial_rxFlag == RX_DATA_RECEIVED) {
-        DEBUG_LOG("USART_Buffer->responseBuffer\r\n");
+        // DEBUG_LOG("USART_Buffer->responseBuffer\r\n");
 
         // 读环形缓冲区
         Read_RingBuffer((RingBuffer_t*)&USART_Buffer, responseBuffer, USART_Buffer.dataSize, responseBufferLen);

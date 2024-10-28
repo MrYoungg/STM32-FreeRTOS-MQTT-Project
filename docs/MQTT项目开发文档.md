@@ -378,7 +378,7 @@ AT+GMR
     
         ![image-20240929154047153](https://gitee.com/yyangyyyy/typora-image/raw/master/Typora_Image/202409292238291.png)
 
-### 2.4 数据链路层：串口收发数据
+### 2.4 数据链路层实现：串口收发数据
 
 #### 2.4.1 串口发送 - AT_USART_SendString()
 
@@ -501,7 +501,7 @@ void AT_USART_SendString(char *String)
     }
     ```
 
-### 2.5 传输层：AT命令发送/响应接收
+### 2.5 传输层实现：AT命令发送/响应接收
 
 #### 2.5.0 传输层的多线程框架
 
@@ -552,35 +552,51 @@ void AT_USART_SendString(char *String)
 
 #### 2.5.4 AT数据包处理 - AT_ProcessData()
 
-### 2.6 网络层：实现网络连接和数据传输
+### 2.6 网络层实现：网络连接和数据传输
 
 #### 2.6.1 建立网络连接 - platform_net_socket_connect()
 
-（1）概述
+##### （1）流程概述
 
 1. 配置ESP8266的WiFi模式：`AT+CWMODE=3`；
 2. 连接路由器节点（WiFi/热点）：`AT+CWJAP="SSID","PassWord"`；
 3. 与服务器建立TCP连接：A`T+CIPSTART="proto","host",port`
 
-（2）代码
+##### （2）代码
 
 ```c
 
 ```
 
-#### 2.6.2 断开网络连接 - platform_net_socket_close()
+##### （3）成功与服务器连接 - 从服务器接收数据
 
-1. 关闭TCP连接：`AT+CIPCLOSE`；
+![image-20241028154542623](https://gitee.com/yyangyyyy/typora-image/raw/master/Typora_Image/202410281545846.png)
 
-#### 2.6.3 通过网络连接发送数据包 - platform_net_socket_write()
+#### 2.6.2 通过网络连接发送数据包 - platform_net_socket_write()
+
+##### （1）流程概述
 
 1. 必须与服务器建立TCP连接之后，才能发送数据包；
 2. 发送命令：`AT+CIPSEND=<length>`；
 3. 收到相应OK以及“>”之后，向服务器发送数据；
 
-#### 2.6.4 接收网络数据包 - platform_net_socket_recv()
+##### （2）代码
+
+```
+
+```
+
+##### （3）成功与服务器通信 - 向服务器发送数据
+
+![image-20241028153832971](https://gitee.com/yyangyyyy/typora-image/raw/master/Typora_Image/202410281539255.png)
+
+#### 2.6.3 接收网络数据包 - platform_net_socket_recv()
 
 1. 
+
+#### 2.6.4 断开网络连接 - platform_net_socket_close()
+
+1. 关闭TCP连接：`AT+CIPCLOSE`；
 
 ### 2.7 应用层：实现MQTT连接服务器
 

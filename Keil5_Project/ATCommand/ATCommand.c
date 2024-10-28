@@ -46,18 +46,18 @@ int AT_SendCommand(char *command, TickType_t timeout)
     AT_USART_SendString(command);
 
     // 等待response(基于mutex的唤醒)
-    DEBUG_LOG("send mutex lock\r\n");
+    // DEBUG_LOG("send mutex lock\r\n");
     mutexStatus = platform_mutex_lock_timeout(&AT_Send_Mutex, timeout);
-    DEBUG_LOG("send mutex unlock\r\n");
+    // DEBUG_LOG("send mutex unlock\r\n");
 
     // Response超时
     if (mutexStatus != pdPASS) {
-        DEBUG_LOG("Send_Task Timeout\r\n");
+        // DEBUG_LOG("Send_Task Timeout\r\n");
         return AT_RESPONSE_TIMEOUT;
     }
-    
+
     // 成功唤醒
-    DEBUG_LOG("Send_Task Awakened\r\n");
+    // DEBUG_LOG("Send_Task Awakened\r\n");
     // 读取AT命令状态
     respStatus = Get_AT_Status();
 
@@ -80,40 +80,44 @@ int AT_SendCommand(char *command, TickType_t timeout)
     return respStatus;
 }
 
-
 /// @brief 读取AT响应
-/// @param  
-void AT_ReceiveResponse(void)
+/// @param
+int AT_ReceiveResponse(void)
 {
     uint8_t responseBuffer[AT_RESPONSE_BUFFER_SIZE];
     volatile int rxStatus;
 
-    rxStatus = USART_Read_Buffer(responseBuffer,AT_RESPONSE_BUFFER_SIZE, portMAX_DELAY);
+    rxStatus = USART_Read_Buffer(responseBuffer, AT_RESPONSE_BUFFER_SIZE, portMAX_DELAY);
 
-    // responseBuffer中有完整的响应数据
-    if (rxStatus != RX_BUFFER_OVERFLOW) {
-        DEBUG_LOG("-------- responseBuffer --------\r\n");
-        DEBUG_LOG(responseBuffer);
-        DEBUG_LOG("-------- responseBuffer --------\r\n");
+    // responseBuffer的数据溢出
+    if (rxStatus == RX_BUFFER_OVERFLOW) {
+        DEBUG_LOG("receive task:usart buffer overflow\r\n");
+        return pdFAIL;
     }
 
+    DEBUG_LOG("\r\n-------- responseBuffer --------\r\n");
+    DEBUG_LOG(responseBuffer);
+    DEBUG_LOG("\r\n-------- responseBuffer --------\r\n");
+
     // 解析数据
-    DEBUG_LOG("parse response\r\n");
+    // DEBUG_LOG("parse response\r\n");
     AT_ParseResponse(responseBuffer);
 
     // 唤醒发送任务mutex
     if (Get_AT_Status() != AT_COMMAND_UNCOMPLETE) {
-        DEBUG_LOG("wake up send task\r\n");
+        // DEBUG_LOG("wake up send task\r\n");
         platform_mutex_unlock(&AT_Send_Mutex);
     }
+
+    return pdPASS;
 }
 
 /// @brief 解析AT响应
 /// @param responseBuffer AT响应缓存区
 void AT_ParseResponse(char *responseBuffer)
 {
-    bool isGetOK = strstr(responseBuffer, "\r\nOK\r\n");
-    bool isGetError = strstr(responseBuffer, "\r\nERROR\r\n");
+    bool isGetOK = strstr(responseBuffer, "OK");
+    bool isGetError = strstr(responseBuffer, "ERROR");
     bool isGetDataRequest = strstr(responseBuffer, ">");
     bool isGetDataFromHost = strstr(responseBuffer, "+IPD,");
 
@@ -140,7 +144,6 @@ void AT_ParseResponse(char *responseBuffer)
 
         // 2、唤醒数据包处理线程mutex
         platform_mutex_unlock(&AT_DataProcess_Mutex);
-
     }
     else {
         Set_AT_Status(AT_COMMAND_UNCOMPLETE);
@@ -149,20 +152,18 @@ void AT_ParseResponse(char *responseBuffer)
 }
 
 /// @brief 处理收到的数据包
-/// @param  
-void AT_ProcessData(void){
+/// @param
+void AT_ProcessData(void)
+{
     char recvData[AT_RESPONSE_BUFFER_SIZE];
-    while(AT_RespDataPacket.DataSize == 0){
+    while (AT_RespDataPacket.DataSize == 0) {
         DEBUG_LOG("process data lock\r\n");
-        platform_mutex_lock_timeout(&AT_DataProcess_Mutex,portMAX_DELAY);
+        platform_mutex_lock_timeout(&AT_DataProcess_Mutex, portMAX_DELAY);
         DEBUG_LOG("process data unlock\r\n");
     }
-    DEBUG_LOG("RespDataPacket size:%d\r\n",AT_RespDataPacket.DataSize);
-    
+    DEBUG_LOG("RespDataPacket size:%d\r\n", AT_RespDataPacket.DataSize);
+
     // 1、读取收到的数据包到recvData
 
     // 2、根据收到的数据执行对应功能
-
 }
-
-

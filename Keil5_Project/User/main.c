@@ -12,6 +12,8 @@
 #include "Debug_USART.h"
 #include "RingBuffer.h"
 
+#include "platform_net_socket.h"
+
 TaskHandle_t Task_Test_Handle;
 TaskHandle_t Task_ATSend_Handle;
 TaskHandle_t Task_ATReceive_Handle;
@@ -44,6 +46,42 @@ int main(void)
     vTaskStartScheduler();
 
     while (1) {
+    }
+}
+
+void Task_ATSend(void *parameter)
+{
+    while (1) {
+        int ret;
+        // DEBUG_LOG("send task\r\n");
+        char *proto = "TCP";
+        char *host = "192.168.16.74";
+        int port = 8266;
+
+        ret = platform_net_socket_connect(proto, host, port);
+        if (!ret) {
+            DEBUG_LOG("connect failed\r\n");
+            while (1);
+        }
+
+        // platform_net_socket_write(NULL, NULL, NULL);
+
+        vTaskDelay(portMAX_DELAY);
+    }
+}
+
+void Task_ATReceive(void *parameter)
+{
+    while (1) {
+        // DEBUG_LOG("receive task\r\n");
+        AT_ReceiveResponse();
+    }
+}
+
+void Task_ATDataProcess(void *parameter)
+{
+    while (1) {
+        AT_ProcessData();
     }
 }
 
@@ -88,30 +126,5 @@ void Task_Test(void *parameter)
         DEBUG_LOG("recvBuffer2:%s\r\n", recvBuffer2);
 #endif
         vTaskDelay(portMAX_DELAY);
-    }
-}
-
-void Task_ATSend(void *parameter)
-{
-    while (1) {
-        char str[] = {"send task\r\n"};
-        DEBUG_LOG(str);
-        AT_SendCommand("AT\r\n", AT_SEND_TIMEOUT);
-        vTaskDelay(portMAX_DELAY);
-    }
-}
-
-void Task_ATReceive(void *parameter)
-{
-    while (1) {
-        DEBUG_LOG("receive task\r\n");
-        AT_ReceiveResponse();
-    }
-}
-
-void Task_ATDataProcess(void *parameter)
-{
-    while (1) {
-        AT_ProcessData();
     }
 }
