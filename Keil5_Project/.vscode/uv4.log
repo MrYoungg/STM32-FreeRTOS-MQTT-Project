@@ -1,3 +1,11 @@
-Load "d:\\Univercity\\FreeRTOS\\MQTT_Project\\STM32-FreeRTOS-MQTT-Project\\Keil5_Project\\Objects\\Project.axf" 
-Erase Done.Programming Done.Verify OK.Application running ...
-Flash Load finished at 00:16:41
+*** Using Compiler 'V5.06 update 5 (build 528)', folder: 'D:\Univercity\Keil5\ARM\ARMCC\Bin'
+Build target 'Target 1'
+compiling platform_net_socket.c...
+MQTT\platform\FreeRTOS\platform_net_socket.c(70): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "char *"
+      ret = AT_Read_DataPacketBuffer(buf, len, len, timeout);
+MQTT\platform\FreeRTOS\platform_net_socket.c(70): error:  #140: too many arguments in function call
+      ret = AT_Read_DataPacketBuffer(buf, len, len, timeout);
+MQTT\platform\FreeRTOS\platform_net_socket.c: 1 warning, 1 error
+".\Objects\Project.axf" - 1 Error(s), 1 Warning(s).
+Target not created.
+Build Time Elapsed:  00:00:02

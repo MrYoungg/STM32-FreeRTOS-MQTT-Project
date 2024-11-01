@@ -71,7 +71,6 @@ typedef void (*message_handler_t)(void *client, message_data_t *msg);
 typedef void (*reconnect_handler_t)(void *client, void *reconnect_date);
 
 dcl_class(mqtt_connack_data_t) def_class(mqtt_connack_data_t, private_member(uint8_t rc; uint8_t session_present;))
-
     dcl_class(message_handlers_t) def_class(message_handlers_t,
                                             private_member(mqtt_list_t list; mqtt_qos_t qos; const char *topic_filter;
                                                            message_handler_t handler;)) dcl_class(ack_handlers_t)

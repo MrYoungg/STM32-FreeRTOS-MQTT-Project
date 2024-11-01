@@ -1,23 +1,26 @@
 #include "ATCommand.h"
 
-static platform_mutex_t AT_Send_Mutex;
-static platform_mutex_t AT_DataProcess_Mutex;
+volatile static platform_mutex_t AT_Send_Mutex;
+volatile static platform_mutex_t AT_DataPacketRead_Mutex;
 
 static int AT_Status;
-static AT_Ring_Buffer AT_RespDataPacket;
+static RingBuffer_t AT_DataPacketBuffer;
 
 void AT_Init(void)
 {
     // 初始化AT命令串口
     AT_USART_Init();
 
+    // 初始化AT数据包缓冲区
+    RingBuffer_Init(&AT_DataPacketBuffer, AT_DATA_PACKET_SIZE);
+
     // 初始化AT命令发送线程mutex(注意初始化后先上锁)
     platform_mutex_init(&AT_Send_Mutex);
     platform_mutex_lock_timeout(&AT_Send_Mutex, 0);
 
     // 初始化AT数据处理线程mutex
-    platform_mutex_init(&AT_DataProcess_Mutex);
-    platform_mutex_lock_timeout(&AT_DataProcess_Mutex, 0);
+    platform_mutex_init(&AT_DataPacketRead_Mutex);
+    platform_mutex_lock_timeout(&AT_DataPacketRead_Mutex, 0);
 }
 
 static void Set_AT_Status(int status)
@@ -30,20 +33,27 @@ static int Get_AT_Status(void)
     return AT_Status;
 }
 
-/// @brief 向ESP8266发送AT命令
-/// @param command AT命令字符串
-/// @param respBuffer
-/// @param respBuffer_Length
-/// @param timeout
-/// @return
+int AT_SendData(char *data, TickType_t timeout)
+{
+    return AT_Send(data, timeout);
+}
+
 int AT_SendCommand(char *command, TickType_t timeout)
 {
+    return AT_Send(command, timeout);
+}
 
+/// @brief 向ESP8266发送AT命令
+/// @param command AT命令字符串
+/// @param timeout 超时时间
+/// @return
+static int AT_Send(char *c, TickType_t timeout)
+{
     volatile int mutexStatus;
     volatile int respStatus;
 
-    // 发送命令
-    AT_USART_SendString(command);
+    // 发送
+    AT_USART_SendString(c);
 
     // 等待response(基于mutex的唤醒)
     // DEBUG_LOG("send mutex lock\r\n");
@@ -82,7 +92,7 @@ int AT_SendCommand(char *command, TickType_t timeout)
 
 /// @brief 读取AT响应
 /// @param
-int AT_ReceiveResponse(void)
+int AT_Receive(void)
 {
     uint8_t responseBuffer[AT_RESPONSE_BUFFER_SIZE];
     volatile int rxStatus;
@@ -95,19 +105,18 @@ int AT_ReceiveResponse(void)
         return pdFAIL;
     }
 
-    DEBUG_LOG("\r\n-------- responseBuffer --------\r\n");
+    DEBUG_LOG("\r\n-------- responseBuffer begin--------\r\n");
     DEBUG_LOG(responseBuffer);
-    DEBUG_LOG("\r\n-------- responseBuffer --------\r\n");
+    DEBUG_LOG("\r\n-------- responseBuffer end--------\r\n");
 
     // 解析数据
     // DEBUG_LOG("parse response\r\n");
-    AT_ParseResponse(responseBuffer);
+    AT_ParseResponse((char *)responseBuffer);
 
-    // 唤醒发送任务mutex
-    if (Get_AT_Status() != AT_COMMAND_UNCOMPLETE) {
-        // DEBUG_LOG("wake up send task\r\n");
-        platform_mutex_unlock(&AT_Send_Mutex);
-    }
+    // if (Get_AT_Status() != AT_COMMAND_UNCOMPLETE &&) {
+    //     // DEBUG_LOG("wake up send task\r\n");
+    //     platform_mutex_unlock(&AT_Send_Mutex);
+    // }
 
     return pdPASS;
 }
@@ -124,26 +133,36 @@ void AT_ParseResponse(char *responseBuffer)
     if (isGetOK) {
         Set_AT_Status(AT_OK);
         DEBUG_LOG("parse:isGetOK\r\n");
-        // 收到数据请求
+
+        // 1、收到数据请求
         if (isGetDataRequest) {
             Set_AT_Status(AT_DATA_REQUEST);
             DEBUG_LOG("parse:isGetDataRequest\r\n");
-            return;
         }
+
+        // 唤醒发送任务
+        platform_mutex_unlock(&AT_Send_Mutex);
     }
+    // 2、收到错误
     else if (isGetError) {
         Set_AT_Status(AT_ERROR);
         DEBUG_LOG("parse:isGetError\r\n");
+
+        // 唤醒发送任务
+        platform_mutex_unlock(&AT_Send_Mutex);
     }
-    // 收到主机传来的数据包
+    // 3、收到服务器传来的数据包
     else if (isGetDataFromHost) {
         Set_AT_Status(AT_DATA_FROM_HOST);
         DEBUG_LOG("parse:isGetDataFromHost\r\n");
-        // 1、保存某些信息到环形缓冲区 AT_RespDataPacket（考虑利用正则表达式来解析包）
-        // SaveResponseData(responseBuffer);
+
+        // 1、将保存数据到环形缓冲区AT_DataPacketBuffer（考虑利用正则表达式来解析包）
+        SaveDataToBuffer(responseBuffer);
+        DEBUG_LOG("save data finished\r\n");
 
         // 2、唤醒数据包处理线程mutex
-        platform_mutex_unlock(&AT_DataProcess_Mutex);
+        DEBUG_LOG("wake up read data task\r\n");
+        platform_mutex_unlock(&AT_DataPacketRead_Mutex);
     }
     else {
         Set_AT_Status(AT_COMMAND_UNCOMPLETE);
@@ -151,19 +170,43 @@ void AT_ParseResponse(char *responseBuffer)
     }
 }
 
-/// @brief 处理收到的数据包
-/// @param
-void AT_ProcessData(void)
+/// @brief 将收到的数据保存到数据环形缓冲区
+/// @param buf 收到的数据，格式为："+IPD,<len>:<data>"，只保存<data>部分
+static int SaveDataToBuffer(char *buf)
 {
-    char recvData[AT_RESPONSE_BUFFER_SIZE];
-    while (AT_RespDataPacket.DataSize == 0) {
-        DEBUG_LOG("process data lock\r\n");
-        platform_mutex_lock_timeout(&AT_DataProcess_Mutex, portMAX_DELAY);
-        DEBUG_LOG("process data unlock\r\n");
+    volatile int i = 0;
+    volatile int ret;
+    while (buf[i++] != ':');
+
+    while (buf[i] != '\0') {
+        ret = Write_RingBuffer(&AT_DataPacketBuffer, &buf[i++], 1);
+        if (ret != pdPASS) {
+            break;
+        }
     }
-    DEBUG_LOG("RespDataPacket size:%d\r\n", AT_RespDataPacket.DataSize);
+    return ret;
+}
 
-    // 1、读取收到的数据包到recvData
+/// @brief 读取数据包环形缓冲区中的数据
+/// @param buf 存放数据的buf
+/// @param dataLen 读取的数据长度
+/// @param bufLen buf的长度
+/// @param timeout 超时时间
+int AT_Read_DataPacketBuffer(char *buf, int bufLen, int timeout)
+{
+    volatile int ret;
+    volatile int dataLen;
+    // 1、读取AT数据缓冲区，如果缓冲区空则休眠
+    while (is_RingBuffer_Empty(&AT_DataPacketBuffer)) {
+        DEBUG_LOG("read data lock\r\n");
+        platform_mutex_lock_timeout(&AT_DataPacketRead_Mutex, timeout);
+        vTaskDelay(pdMS_TO_TICKS(100));
+        DEBUG_LOG("read data unlock\r\n");
+    }
+    // DEBUG_LOG("RespDataPacket size:%d\r\n", AT_DataPacketBuffer.dataSize);
 
-    // 2、根据收到的数据执行对应功能
+    // 2、AT数据缓冲区中有数据，被唤醒，读取收到的数据包到buf
+    dataLen = AT_DataPacketBuffer.dataSize;
+    ret = Read_RingBuffer(&AT_DataPacketBuffer, buf, dataLen, bufLen);
+    return ret;
 }

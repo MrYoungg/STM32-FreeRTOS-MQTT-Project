@@ -25,10 +25,10 @@ int RingBuffer_Init(RingBuffer_t *ringBuffer, uint32_t bufferSize)
 /// @param ringBuffer 被读取的缓冲区
 /// @param recvBuffer 存放读出数据的缓冲区
 /// @param len 期望读出的长度
-/// @return
+/// @return 成功返回pdPASS，失败返回pdFAIL
 int Read_RingBuffer(RingBuffer_t *ringBuffer, uint8_t *recvBuffer, uint32_t readLength, uint32_t recvBufferLength)
 {
-    if (!ringBuffer || !(ringBuffer->bufferHead) || is_RingBuffer_Empty(ringBuffer)) {
+    if (!ringBuffer || !(ringBuffer->bufferHead) || is_RingBuffer_Empty(ringBuffer)||!recvBuffer) {
         return pdFAIL;
     }
 
@@ -57,6 +57,7 @@ int Read_RingBuffer(RingBuffer_t *ringBuffer, uint8_t *recvBuffer, uint32_t read
 /// @brief 写入环形缓冲区
 /// @param ringBuffer 想要写入的环形缓冲区
 /// @param data 写入的数据
+/// @param dataLength 写入数据的长度
 /// @return
 int Write_RingBuffer(RingBuffer_t *ringBuffer, const uint8_t *data, uint32_t dataLength)
 {

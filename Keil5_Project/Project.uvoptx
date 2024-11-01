@@ -157,30 +157,51 @@
         <Bp>
           <Number>0</Number>
           <Type>0</Type>
-          <LineNumber>7</LineNumber>
+          <LineNumber>204</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>134220818</Address>
+          <Address>134220150</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>1</BreakIfRCount>
-          <Filename>.\RingBuffer\RingBuffer.c</Filename>
+          <Filename>.\ATCommand\ATCommand.c</Filename>
           <ExecCommand></ExecCommand>
-          <Expression>\\Project\RingBuffer/RingBuffer.c\7</Expression>
+          <Expression>\\Project\ATCommand/ATCommand.c\204</Expression>
+        </Bp>
+        <Bp>
+          <Number>1</Number>
+          <Type>0</Type>
+          <LineNumber>210</LineNumber>
+          <EnabledFlag>1</EnabledFlag>
+          <Address>134220180</Address>
+          <ByteObject>0</ByteObject>
+          <HtxType>0</HtxType>
+          <ManyObjects>0</ManyObjects>
+          <SizeOfObject>0</SizeOfObject>
+          <BreakByAccess>0</BreakByAccess>
+          <BreakIfRCount>1</BreakIfRCount>
+          <Filename>.\ATCommand\ATCommand.c</Filename>
+          <ExecCommand></ExecCommand>
+          <Expression>\\Project\ATCommand/ATCommand.c\210</Expression>
         </Bp>
       </Breakpoint>
       <WatchWindow1>
         <Ww>
           <count>0</count>
           <WinNumber>1</WinNumber>
-          <ItemText>ringBuffer</ItemText>
+          <ItemText>AT_DataPacketBuffer</ItemText>
         </Ww>
         <Ww>
           <count>1</count>
           <WinNumber>1</WinNumber>
-          <ItemText>testBufferOld</ItemText>
+          <ItemText>buf</ItemText>
+        </Ww>
+        <Ww>
+          <count>2</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>buf[32]</ItemText>
         </Ww>
       </WatchWindow1>
       <Tracepoint>
@@ -191,7 +212,7 @@
         <periodic>1</periodic>
         <aLwin>1</aLwin>
         <aCover>0</aCover>
-        <aSer1>1</aSer1>
+        <aSer1>0</aSer1>
         <aSer2>0</aSer2>
         <aPa>0</aPa>
         <viewmode>1</viewmode>
@@ -201,7 +222,7 @@
         <AscS1>1</AscS1>
         <AscS2>0</AscS2>
         <AscS3>0</AscS3>
-        <aSer3>0</aSer3>
+        <aSer3>1</aSer3>
         <eProf>0</eProf>
         <aLa>0</aLa>
         <aPa1>0</aPa1>

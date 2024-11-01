@@ -14,18 +14,12 @@
 
 enum { AT_OK, AT_ERROR, AT_DATA_REQUEST, AT_DATA_FROM_HOST, AT_COMMAND_UNCOMPLETE, AT_RESPONSE_TIMEOUT };
 
-// AT响应数据环形缓冲区
-typedef struct {
-    char buffer[AT_DATA_PACKET_SIZE]; // 缓冲区
-    volatile uint32_t readIndex;      // 指向上一次读出的最后一个位置
-    volatile uint32_t writeIndex;     // 指向上次写入的最后一个位置
-    volatile uint32_t DataSize;       // 已填充数据的大小
-} AT_Ring_Buffer;
-
 void AT_Init(void);
+int AT_SendData(char *data, TickType_t timeout);
 int AT_SendCommand(char *command, TickType_t timeout);
-int AT_ReceiveResponse(void);
+static int AT_Send(char *c, TickType_t timeout);
+int AT_Receive(void);
 void AT_ParseResponse(char *responseBuffer);
-void AT_ProcessData(void);
-
+static int SaveDataToBuffer(char *buf);
+int AT_Read_DataPacketBuffer(char *buf, int bufLen, int timeout);
 #endif

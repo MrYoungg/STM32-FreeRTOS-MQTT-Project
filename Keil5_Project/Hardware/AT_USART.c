@@ -74,7 +74,7 @@ void AT_USART_Init(void)
     USART_Cmd(AT_USARTx, ENABLE);
 
     // 初始化串口环形缓冲区
-    RingBuffer_Init((RingBuffer_t*)&USART_Buffer, USART_BUFFER_SIZE);
+    RingBuffer_Init((RingBuffer_t *)&USART_Buffer, USART_BUFFER_SIZE);
 
     // 初始化串口接收mutex
     platform_mutex_init(&USART_Receive_Mutex);
@@ -111,6 +111,7 @@ int USART_Read_Buffer(uint8_t *responseBuffer, uint32_t responseBufferLen, TickT
         // 缓冲区空,则在USART_Receive_Mutex上阻塞,直到接收到数据
         // DEBUG_LOG("receive mutex lock\r\n");
         platform_mutex_lock_timeout(&USART_Receive_Mutex, timeout);
+        vTaskDelay(pdMS_TO_TICKS(100));
         // vTaskDelay(pdMS_TO_TICKS(20));
         // DEBUG_LOG("receive mutex unlock\r\n");
     }
@@ -127,7 +128,7 @@ int USART_Read_Buffer(uint8_t *responseBuffer, uint32_t responseBufferLen, TickT
         // DEBUG_LOG("USART_Buffer->responseBuffer\r\n");
 
         // 读环形缓冲区
-        Read_RingBuffer((RingBuffer_t*)&USART_Buffer, responseBuffer, USART_Buffer.dataSize, responseBufferLen);
+        Read_RingBuffer((RingBuffer_t *)&USART_Buffer, responseBuffer, USART_Buffer.dataSize, responseBufferLen);
         // for (int i = 0; i < USART_Buffer.dataSize; i++) {
         //     USART_Buffer.readIndex = (USART_Buffer.readIndex + 1) % USART_BUFFER_SIZE;
         //     responseBuffer[i] = USART_Buffer.bufferHead[USART_Buffer.readIndex];
@@ -170,7 +171,7 @@ void USART_Write_Buffer(void)
         receiveData = USART_ReceiveData(AT_USARTx);
 
         // 写环形缓冲区
-        ret = Write_RingBuffer((RingBuffer_t*)&USART_Buffer, (uint8_t *)&receiveData, 1);
+        ret = Write_RingBuffer((RingBuffer_t *)&USART_Buffer, (uint8_t *)&receiveData, 1);
 
         if (ret == pdPASS)
             Serial_rxFlag = RX_DATA_RECEIVED;

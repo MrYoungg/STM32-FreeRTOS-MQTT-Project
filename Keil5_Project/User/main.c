@@ -17,12 +17,12 @@
 TaskHandle_t Task_Test_Handle;
 TaskHandle_t Task_ATSend_Handle;
 TaskHandle_t Task_ATReceive_Handle;
-TaskHandle_t Task_ATDataProcess_Handle;
+TaskHandle_t Task_ATDataRead_Handle;
 
 void Task_Test(void *parameter);
-void Task_ATSend(void *parameter);
+void Task_ATConnect(void *parameter);
 void Task_ATReceive(void *parameter);
-void Task_ATDataProcess(void *parameter);
+void Task_ATDataRead(void *parameter);
 
 int main(void)
 {
@@ -37,9 +37,9 @@ int main(void)
 
     taskENTER_CRITICAL(); // 进入临界区,关中断
     // xTaskCreate(Task_Test, "Task_Test", 128, NULL, 1, &Task_Test_Handle);
-    xTaskCreate(Task_ATSend, "Task_ATSend", 128, NULL, 1, &Task_ATSend_Handle);
+    xTaskCreate(Task_ATConnect, "Task_ATConnect", 128, NULL, 1, &Task_ATSend_Handle);
     xTaskCreate(Task_ATReceive, "Task_ATReceive", 256, NULL, 2, &Task_ATReceive_Handle);
-    // xTaskCreate(Task_ATDataProcess, "Task_ATDataProcess", 512, NULL, 2, &Task_ATDataProcess_Handle);
+    xTaskCreate(Task_ATDataRead, "Task_ATDataRead", 256, NULL, 2, &Task_ATDataRead_Handle);
 
     taskEXIT_CRITICAL(); // 退出临界区,开中断
 
@@ -49,22 +49,26 @@ int main(void)
     }
 }
 
-void Task_ATSend(void *parameter)
+// AT连接线程，每隔一段时间检查连接
+void Task_ATConnect(void *parameter)
 {
     while (1) {
         int ret;
-        // DEBUG_LOG("send task\r\n");
-        char *proto = "TCP";
+        DEBUG_LOG("connect task\r\n");
+        
         char *host = "192.168.16.74";
-        int port = 8266;
+        char *port = "8266";
+        int proto = PLATFORM_NET_PROTO_TCP;
 
-        ret = platform_net_socket_connect(proto, host, port);
-        if (!ret) {
+        // 1、连接服务器
+        ret = platform_net_socket_connect(host, port, proto);
+        if (ret != MQTT_SUCCESS_ERROR) {
             DEBUG_LOG("connect failed\r\n");
             while (1);
         }
 
-        // platform_net_socket_write(NULL, NULL, NULL);
+        // 2、每隔一段时间检查连接（心跳包）
+        // vTaskDelay(pdMS_TO_TICKS(4000));
 
         vTaskDelay(portMAX_DELAY);
     }
@@ -73,15 +77,23 @@ void Task_ATSend(void *parameter)
 void Task_ATReceive(void *parameter)
 {
     while (1) {
-        // DEBUG_LOG("receive task\r\n");
-        AT_ReceiveResponse();
+        DEBUG_LOG("receive task\r\n");
+        AT_Receive();
     }
 }
 
-void Task_ATDataProcess(void *parameter)
+void Task_ATDataRead(void *parameter)
 {
     while (1) {
-        AT_ProcessData();
+        DEBUG_LOG("data read task\r\n");
+
+        char buf[32];
+        memset(buf, 0, sizeof(buf));
+
+        int len = sizeof(buf);
+
+        AT_Read_DataPacketBuffer(buf, len, portMAX_DELAY);
+        DEBUG_LOG("data from server:%s\r\n", buf);
     }
 }
 
