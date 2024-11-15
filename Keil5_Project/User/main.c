@@ -11,8 +11,8 @@
 #include "ATCommand.h"
 #include "Debug_USART.h"
 #include "RingBuffer.h"
-
-#include "platform_net_socket.h"
+#include "WiFiConnect.h"
+#include "MQTTClient.h"
 
 TaskHandle_t Task_Test_Handle;
 TaskHandle_t Task_ATSend_Handle;
@@ -37,9 +37,9 @@ int main(void)
 
     taskENTER_CRITICAL(); // 进入临界区,关中断
     // xTaskCreate(Task_Test, "Task_Test", 128, NULL, 1, &Task_Test_Handle);
-    xTaskCreate(Task_ATConnect, "Task_ATConnect", 128, NULL, 1, &Task_ATSend_Handle);
-    xTaskCreate(Task_ATReceive, "Task_ATReceive", 256, NULL, 2, &Task_ATReceive_Handle);
-    xTaskCreate(Task_ATDataRead, "Task_ATDataRead", 256, NULL, 2, &Task_ATDataRead_Handle);
+    xTaskCreate(Task_ATConnect, "Task_ATConnect", 256, NULL, 1, &Task_ATSend_Handle);
+    xTaskCreate(Task_ATReceive, "Task_ATReceive", 512, NULL, 2, &Task_ATReceive_Handle);
+    xTaskCreate(Task_ATDataRead, "Task_ATDataRead", 512, NULL, 2, &Task_ATDataRead_Handle);
 
     taskEXIT_CRITICAL(); // 退出临界区,开中断
 
@@ -49,26 +49,41 @@ int main(void)
     }
 }
 
-// AT连接线程，每隔一段时间检查连接
+// AT连接线程
 void Task_ATConnect(void *parameter)
 {
+    int ret;
+    WiFi_t wifiMsg;
+    MQTTClient_t mqttClient;
     while (1) {
-        int ret;
-        DEBUG_LOG("connect task\r\n");
-        
-        char *host = "192.168.16.74";
-        char *port = "8266";
-        int proto = PLATFORM_NET_PROTO_TCP;
 
-        // 1、连接服务器
-        ret = platform_net_socket_connect(host, port, proto);
-        if (ret != MQTT_SUCCESS_ERROR) {
-            DEBUG_LOG("connect failed\r\n");
-            while (1);
+        DEBUG_LOG("connect task\r\n");
+        AT_Reset();
+        Delay_ms(500);
+
+        // 1、连接WiFi
+    wifiReconnect:
+        WiFi_Config(&wifiMsg);
+        ret = WiFi_Connect(&wifiMsg);
+        if (ret != AT_OK) {
+            DEBUG_LOG("wifi connect failed\r\n");
+            // 尝试重连
+            Delay_ms(500);
+            goto wifiReconnect;
         }
 
-        // 2、每隔一段时间检查连接（心跳包）
-        // vTaskDelay(pdMS_TO_TICKS(4000));
+        // 2、连接服务器
+    mqttReconnect:
+        MQTT_ClientConfig(&mqttClient);
+        ret = MQTT_Connect(&mqttClient);
+
+        if (ret != AT_OK) {
+            DEBUG_LOG("mqtt connect failed\r\n");
+            // 尝试重连
+            Delay_ms(500);
+            goto mqttReconnect;
+            while (1);
+        }
 
         vTaskDelay(portMAX_DELAY);
     }
@@ -78,7 +93,7 @@ void Task_ATReceive(void *parameter)
 {
     while (1) {
         DEBUG_LOG("receive task\r\n");
-        AT_Receive();
+        AT_ReceiveResponse();
     }
 }
 
@@ -87,12 +102,13 @@ void Task_ATDataRead(void *parameter)
     while (1) {
         DEBUG_LOG("data read task\r\n");
 
-        char buf[32];
+        uint8_t buf[32];
         memset(buf, 0, sizeof(buf));
 
         int len = sizeof(buf);
 
         AT_Read_DataPacketBuffer(buf, len, portMAX_DELAY);
+        // 1、根据服务器传来的数据执行相关操作
         DEBUG_LOG("data from server:%s\r\n", buf);
     }
 }

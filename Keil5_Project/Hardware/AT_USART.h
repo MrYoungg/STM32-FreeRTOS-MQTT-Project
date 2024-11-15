@@ -1,12 +1,13 @@
 #ifndef AT_USART_H
 #define AT_USART_H
 #include "stm32f10x.h"
-#include "platform_mutex.h"
+#include "FreeRTOS.h"
+#include "semphr.h"
 #include "Debug_USART.h"
 #include "Delay.h"
 #include "RingBuffer.h"
 
-#define USART_BUFFER_SIZE 128
+#define USART_BUFFER_SIZE 256
 
 // 数据接收状态
 enum {

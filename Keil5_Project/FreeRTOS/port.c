@@ -229,7 +229,7 @@ __asm void vPortSVCHandler(void)
     mov r0, # 0 
     msr basepri, r0 
     orr r14, # 0xd 
-    bx r14
+    bx r14  // LR
     /* *INDENT-ON* */
 }
 /*-----------------------------------------------------------*/

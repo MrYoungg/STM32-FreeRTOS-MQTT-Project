@@ -1,5 +1,5 @@
-.\objects\platform_mutex.o: MQTT\platform\FreeRTOS\platform_mutex.c
-.\objects\platform_mutex.o: MQTT\platform\FreeRTOS\platform_mutex.h
+.\objects\platform_mutex.o: MQTT\platform_mutex.c
+.\objects\platform_mutex.o: MQTT\platform_mutex.h
 .\objects\platform_mutex.o: .\FreeRTOS\include\FreeRTOS.h
 .\objects\platform_mutex.o: D:\Univercity\Keil5\ARM\ARMCC\Bin\..\include\stddef.h
 .\objects\platform_mutex.o: D:\Univercity\Keil5\ARM\ARMCC\Bin\..\include\stdint.h

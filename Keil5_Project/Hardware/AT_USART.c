@@ -18,7 +18,7 @@ volatile static RingBuffer_t USART_Buffer;
 volatile static int Serial_rxFlag;
 volatile static int ORE_Flag;
 
-static platform_mutex_t USART_Receive_Mutex;
+static SemaphoreHandle_t USART_Receive_Mutex;
 
 /// @brief 初始化AT串口
 /// @param 无
@@ -49,12 +49,13 @@ void AT_USART_Init(void)
     // 在此处开启时钟会让串口发送0xFF/0x00
     // AT_USARTx_APBxCLOCKCMD(AT_APBx_USARTx);
     USART_InitTypeDef USART_InitStructure;
-    USART_InitStructure.USART_BaudRate = AT_USATRx_BAUDRATE;                        // 设置波特率
-    USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None; // 是否开启硬件流控制
-    USART_InitStructure.USART_Mode = USART_Mode_Tx | USART_Mode_Rx;                 // 选择发送/接收
-    USART_InitStructure.USART_Parity = USART_Parity_No;                             // 选择校验位
-    USART_InitStructure.USART_StopBits = USART_StopBits_1;                          // 选择停止位
-    USART_InitStructure.USART_WordLength = USART_WordLength_8b;                     // 选择数据帧长度
+    USART_InitStructure.USART_BaudRate = AT_USATRx_BAUDRATE; // 设置波特率
+    USART_InitStructure.USART_HardwareFlowControl =
+        USART_HardwareFlowControl_None;                             // 是否开启硬件流控制
+    USART_InitStructure.USART_Mode = USART_Mode_Tx | USART_Mode_Rx; // 选择发送/接收
+    USART_InitStructure.USART_Parity = USART_Parity_No;             // 选择校验位
+    USART_InitStructure.USART_StopBits = USART_StopBits_1;          // 选择停止位
+    USART_InitStructure.USART_WordLength = USART_WordLength_8b;     // 选择数据帧长度
     USART_Init(AT_USARTx, &USART_InitStructure);
 
     // 开启USART接收中断 - 接收寄存器非空触发中断
@@ -77,8 +78,9 @@ void AT_USART_Init(void)
     RingBuffer_Init((RingBuffer_t *)&USART_Buffer, USART_BUFFER_SIZE);
 
     // 初始化串口接收mutex
-    platform_mutex_init(&USART_Receive_Mutex);
-    platform_mutex_lock_timeout(&USART_Receive_Mutex, 0);
+    // platform_mutex_init(&USART_Receive_Mutex);
+    USART_Receive_Mutex = xSemaphoreCreateMutex();
+    xSemaphoreTake(USART_Receive_Mutex, 0);
 }
 
 /// @brief AT命令串口发送一个字节数据
@@ -110,16 +112,15 @@ int USART_Read_Buffer(uint8_t *responseBuffer, uint32_t responseBufferLen, TickT
     while (USART_Buffer.dataSize == 0) {
         // 缓冲区空,则在USART_Receive_Mutex上阻塞,直到接收到数据
         // DEBUG_LOG("receive mutex lock\r\n");
-        platform_mutex_lock_timeout(&USART_Receive_Mutex, timeout);
+        xSemaphoreTake(USART_Receive_Mutex, timeout);
         vTaskDelay(pdMS_TO_TICKS(100));
-        // vTaskDelay(pdMS_TO_TICKS(20));
         // DEBUG_LOG("receive mutex unlock\r\n");
     }
     // DEBUG_LOG("dataSize = %d\r\n", USART_Buffer.dataSize);
 
     // 缓冲区溢出,数据不完整,直接放弃本次写入的数据,并清空缓冲区
     if (Serial_rxFlag == RX_BUFFER_OVERFLOW) {
-        DEBUG_LOG("USART_Buffer overflow, clear the data receive this time\r\n");
+        DEBUG_LOG("USART_Buffer overflow, clear the data received this time\r\n");
         USART_Buffer.dataSize = 0;
         USART_Buffer.readIndex = USART_Buffer.writeIndex;
     }
@@ -128,14 +129,10 @@ int USART_Read_Buffer(uint8_t *responseBuffer, uint32_t responseBufferLen, TickT
         // DEBUG_LOG("USART_Buffer->responseBuffer\r\n");
 
         // 读环形缓冲区
-        Read_RingBuffer((RingBuffer_t *)&USART_Buffer, responseBuffer, USART_Buffer.dataSize, responseBufferLen);
-        // for (int i = 0; i < USART_Buffer.dataSize; i++) {
-        //     USART_Buffer.readIndex = (USART_Buffer.readIndex + 1) % USART_BUFFER_SIZE;
-        //     responseBuffer[i] = USART_Buffer.bufferHead[USART_Buffer.readIndex];
-        // }
-
-        // // responseBuffer[USART_Buffer.dataSize] = '\0';
-        // USART_Buffer.dataSize = 0;
+        Read_RingBuffer((RingBuffer_t *)&USART_Buffer,
+                        responseBuffer,
+                        USART_Buffer.dataSize,
+                        responseBufferLen);
     }
     else {
         DEBUG_LOG("Serial_rxFlag else\r\n");
@@ -163,10 +160,17 @@ void USART_Write_Buffer(void)
         // DEBUG_LOG("RXNE Interrupt\r\n");
         volatile uint8_t ret;
         volatile uint8_t receiveData;
+        static BaseType_t xHigherPriorityTaskWoken;
 
         // 串口收到数据,唤醒USART_Receive_Mutex
         // platform_mutex_unlock(&USART_Receive_Mutex);
-        platform_mutex_unlock_from_isr(&USART_Receive_Mutex);
+        // platform_mutex_unlock_from_isr(&USART_Receive_Mutex);
+        {
+            xSemaphoreGiveFromISR(USART_Receive_Mutex, &xHigherPriorityTaskWoken);
+            if (xHigherPriorityTaskWoken != pdFALSE) {
+                portYIELD_FROM_ISR(pdTRUE);
+            }
+        }
 
         receiveData = USART_ReceiveData(AT_USARTx);
 

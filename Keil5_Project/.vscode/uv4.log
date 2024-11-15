@@ -1,11 +1,16 @@
 *** Using Compiler 'V5.06 update 5 (build 528)', folder: 'D:\Univercity\Keil5\ARM\ARMCC\Bin'
 Build target 'Target 1'
-compiling platform_net_socket.c...
-MQTT\platform\FreeRTOS\platform_net_socket.c(70): warning:  #167-D: argument of type "unsigned char *" is incompatible with parameter of type "char *"
-      ret = AT_Read_DataPacketBuffer(buf, len, len, timeout);
-MQTT\platform\FreeRTOS\platform_net_socket.c(70): error:  #140: too many arguments in function call
-      ret = AT_Read_DataPacketBuffer(buf, len, len, timeout);
-MQTT\platform\FreeRTOS\platform_net_socket.c: 1 warning, 1 error
-".\Objects\Project.axf" - 1 Error(s), 1 Warning(s).
-Target not created.
-Build Time Elapsed:  00:00:02
+compiling ATCommand.c...
+ATCommand\ATCommand.c(114): warning:  #167-D: argument of type "uint8_t *" is incompatible with parameter of type "char *"
+      
+EBUG_LOG(responseBuffer);
+ATCommand\ATCommand.c(190): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "const uint8_t *"
+          ret = Write_RingBuffer(&AT_DataPacketBuffer, &buf[i++], 1);
+ATCommand\ATCommand.c(219): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "uint8_t *"
+      ret = Read_RingBuffer(&AT_DataPacketBuffer, buf, dataLen, bufLen);
+ATCommand\ATCommand.c: 3 warnings, 0 errors
+linking...
+Program Size: Code=11900 RO-data=268 RW-data=160 ZI-data=12048  
+After Build - User command #1: fromelf --text -a -c --output=debug.dis Objects\Project.axf
+".\Objects\Project.axf" - 0 Error(s), 3 Warning(s).
+Build Time Elapsed:  00:00:03

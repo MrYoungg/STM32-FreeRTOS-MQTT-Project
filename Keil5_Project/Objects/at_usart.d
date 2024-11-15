@@ -29,7 +29,6 @@
 .\objects\at_usart.o: .\Library\stm32f10x_usart.h
 .\objects\at_usart.o: .\Library\stm32f10x_wwdg.h
 .\objects\at_usart.o: .\Library\misc.h
-.\objects\at_usart.o: .\MQTT\platform\FreeRTOS\platform_mutex.h
 .\objects\at_usart.o: .\FreeRTOS\include\FreeRTOS.h
 .\objects\at_usart.o: D:\Univercity\Keil5\ARM\ARMCC\Bin\..\include\stddef.h
 .\objects\at_usart.o: .\FreeRTOS\include\FreeRTOSConfig.h

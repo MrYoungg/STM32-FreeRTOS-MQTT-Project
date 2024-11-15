@@ -30,7 +30,6 @@
 .\objects\atcommand.o: .\Library\stm32f10x_usart.h
 .\objects\atcommand.o: .\Library\stm32f10x_wwdg.h
 .\objects\atcommand.o: .\Library\misc.h
-.\objects\atcommand.o: .\MQTT\platform\FreeRTOS\platform_mutex.h
 .\objects\atcommand.o: .\FreeRTOS\include\FreeRTOS.h
 .\objects\atcommand.o: D:\Univercity\Keil5\ARM\ARMCC\Bin\..\include\stddef.h
 .\objects\atcommand.o: .\FreeRTOS\include\FreeRTOSConfig.h

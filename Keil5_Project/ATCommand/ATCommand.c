@@ -1,7 +1,7 @@
 #include "ATCommand.h"
 
-volatile static platform_mutex_t AT_Send_Mutex;
-volatile static platform_mutex_t AT_DataPacketRead_Mutex;
+volatile static SemaphoreHandle_t AT_Send_Semaphore;
+volatile static SemaphoreHandle_t AT_DataPacketRead_Semaphore;
 
 static int AT_Status;
 static RingBuffer_t AT_DataPacketBuffer;
@@ -15,12 +15,21 @@ void AT_Init(void)
     RingBuffer_Init(&AT_DataPacketBuffer, AT_DATA_PACKET_SIZE);
 
     // 初始化AT命令发送线程mutex(注意初始化后先上锁)
-    platform_mutex_init(&AT_Send_Mutex);
-    platform_mutex_lock_timeout(&AT_Send_Mutex, 0);
+    // platform_mutex_init(&AT_Send_Mutex);
+    AT_Send_Semaphore = xSemaphoreCreateMutex();
+    // platform_mutex_lock_timeout(&AT_Send_Semaphore, 0);
+    xSemaphoreTake(AT_Send_Semaphore, 0);
 
     // 初始化AT数据处理线程mutex
-    platform_mutex_init(&AT_DataPacketRead_Mutex);
-    platform_mutex_lock_timeout(&AT_DataPacketRead_Mutex, 0);
+    // platform_mutex_init(&AT_DataPacketRead_Semaphore);
+    AT_DataPacketRead_Semaphore = xSemaphoreCreateMutex();
+    // platform_mutex_lock_timeout(&AT_DataPacketRead_Semaphore, 0);
+    xSemaphoreTake(AT_DataPacketRead_Semaphore, 0);
+}
+
+void AT_Reset(void)
+{
+    AT_SendCommand("AT+RST\r\n", portMAX_DELAY);
 }
 
 static void Set_AT_Status(int status)
@@ -57,7 +66,8 @@ static int AT_Send(char *c, TickType_t timeout)
 
     // 等待response(基于mutex的唤醒)
     // DEBUG_LOG("send mutex lock\r\n");
-    mutexStatus = platform_mutex_lock_timeout(&AT_Send_Mutex, timeout);
+    // mutexStatus = platform_mutex_lock_timeout(&AT_Send_Semaphore, timeout);
+    mutexStatus = xSemaphoreTake(AT_Send_Semaphore, timeout);
     // DEBUG_LOG("send mutex unlock\r\n");
 
     // Response超时
@@ -92,7 +102,7 @@ static int AT_Send(char *c, TickType_t timeout)
 
 /// @brief 读取AT响应
 /// @param
-int AT_Receive(void)
+int AT_ReceiveResponse(void)
 {
     uint8_t responseBuffer[AT_RESPONSE_BUFFER_SIZE];
     volatile int rxStatus;
@@ -115,7 +125,7 @@ int AT_Receive(void)
 
     // if (Get_AT_Status() != AT_COMMAND_UNCOMPLETE &&) {
     //     // DEBUG_LOG("wake up send task\r\n");
-    //     platform_mutex_unlock(&AT_Send_Mutex);
+    //     platform_mutex_unlock(&AT_Send_Semaphore);
     // }
 
     return pdPASS;
@@ -126,11 +136,12 @@ int AT_Receive(void)
 void AT_ParseResponse(char *responseBuffer)
 {
     bool isGetOK = strstr(responseBuffer, "OK");
+    bool isGetReady = strstr(responseBuffer, "ready");
     bool isGetError = strstr(responseBuffer, "ERROR");
     bool isGetDataRequest = strstr(responseBuffer, ">");
     bool isGetDataFromHost = strstr(responseBuffer, "+IPD,");
 
-    if (isGetOK) {
+    if (isGetOK || isGetReady) {
         Set_AT_Status(AT_OK);
         DEBUG_LOG("parse:isGetOK\r\n");
 
@@ -141,7 +152,8 @@ void AT_ParseResponse(char *responseBuffer)
         }
 
         // 唤醒发送任务
-        platform_mutex_unlock(&AT_Send_Mutex);
+        // platform_mutex_unlock(&AT_Send_Semaphore);
+        xSemaphoreGive(AT_Send_Semaphore);
     }
     // 2、收到错误
     else if (isGetError) {
@@ -149,7 +161,8 @@ void AT_ParseResponse(char *responseBuffer)
         DEBUG_LOG("parse:isGetError\r\n");
 
         // 唤醒发送任务
-        platform_mutex_unlock(&AT_Send_Mutex);
+        // platform_mutex_unlock(&AT_Send_Semaphore);
+        xSemaphoreGive(AT_Send_Semaphore);
     }
     // 3、收到服务器传来的数据包
     else if (isGetDataFromHost) {
@@ -162,7 +175,8 @@ void AT_ParseResponse(char *responseBuffer)
 
         // 2、唤醒数据包处理线程mutex
         DEBUG_LOG("wake up read data task\r\n");
-        platform_mutex_unlock(&AT_DataPacketRead_Mutex);
+        // platform_mutex_unlock(&AT_DataPacketRead_Semaphore);
+        xSemaphoreGive(AT_DataPacketRead_Semaphore);
     }
     else {
         Set_AT_Status(AT_COMMAND_UNCOMPLETE);
@@ -199,7 +213,8 @@ int AT_Read_DataPacketBuffer(char *buf, int bufLen, int timeout)
     // 1、读取AT数据缓冲区，如果缓冲区空则休眠
     while (is_RingBuffer_Empty(&AT_DataPacketBuffer)) {
         DEBUG_LOG("read data lock\r\n");
-        platform_mutex_lock_timeout(&AT_DataPacketRead_Mutex, timeout);
+        // platform_mutex_lock_timeout(&AT_DataPacketRead_Semaphore, timeout);
+        xSemaphoreTake(AT_DataPacketRead_Semaphore, timeout);
         vTaskDelay(pdMS_TO_TICKS(100));
         DEBUG_LOG("read data unlock\r\n");
     }
