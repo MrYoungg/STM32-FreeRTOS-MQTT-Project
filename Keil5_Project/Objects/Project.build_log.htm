@@ -27,22 +27,14 @@ Project File Date:  11/14/2024
 <h2>Output:</h2>
 *** Using Compiler 'V5.06 update 5 (build 528)', folder: 'D:\Univercity\Keil5\ARM\ARMCC\Bin'
 Build target 'Target 1'
-compiling main.c...
-User\main.c(65): warning:  #177-D: label "wifiReconnect"  was declared but never referenced
-      wifiReconnect:
-User\main.c(75): warning:  #177-D: label "mqttReconnect"  was declared but never referenced
-      mqttReconnect:
-User\main.c(111): warning:  #167-D: argument of type "uint8_t *" is incompatible with parameter of type "char *"
-          AT_Read_DataPacketBuffer(buf, len, 
-ortMAX_DELAY);
-User\main.c(111): warning:  #68-D: integer conversion resulted in a change of sign
-          AT_Read_DataPacketBuffer(buf, len, 
-ortMAX_DELAY);
-User\main.c: 4 warnings, 0 errors
+compiling MQTTClient.c...
+MQTT\MQTTClient.c(21): warning:  #940-D: missing return statement at end of non-void function "MQTT_ClientConfig" 
+  }
+MQTT\MQTTClient.c: 1 warning, 0 errors
 linking...
-Program Size: Code=13260 RO-data=424 RW-data=164 ZI-data=12044  
+Program Size: Code=13420 RO-data=424 RW-data=164 ZI-data=12044  
 After Build - User command #1: fromelf --text -a -c --output=debug.dis Objects\Project.axf
-".\Objects\Project.axf" - 0 Error(s), 4 Warning(s).
+".\Objects\Project.axf" - 0 Error(s), 1 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -55,7 +47,7 @@ Package Vendor: Keil
   D:/Univercity/Keil5/ARM/PACK/Keil/STM32F1xx_DFP/2.2.0/Device/Include
 
 <h2>Collection of Component Files used:</h2>
-Build Time Elapsed:  00:00:02
+Build Time Elapsed:  00:00:01
 </pre>
 </body>
 </html>

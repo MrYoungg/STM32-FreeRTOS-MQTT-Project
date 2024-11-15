@@ -38,7 +38,7 @@ int main(void)
     taskENTER_CRITICAL(); // 进入临界区,关中断
     // xTaskCreate(Task_Test, "Task_Test", 128, NULL, 1, &Task_Test_Handle);
     xTaskCreate(Task_ATConnect, "Task_ATConnect", 256, NULL, 1, &Task_ATSend_Handle);
-    xTaskCreate(Task_ATReceive, "Task_ATReceive", 512, NULL, 2, &Task_ATReceive_Handle);
+    xTaskCreate(Task_ATReceive, "Task_ATReceive", 512, NULL, 3, &Task_ATReceive_Handle);
     xTaskCreate(Task_ATDataRead, "Task_ATDataRead", 512, NULL, 2, &Task_ATDataRead_Handle);
 
     taskEXIT_CRITICAL(); // 退出临界区,开中断
@@ -69,7 +69,7 @@ void Task_ATConnect(void *parameter)
             DEBUG_LOG("wifi connect failed\r\n");
             // 尝试重连
             Delay_ms(500);
-            goto wifiReconnect;
+            // goto wifiReconnect;
         }
 
         // 2、连接服务器
@@ -81,9 +81,11 @@ void Task_ATConnect(void *parameter)
             DEBUG_LOG("mqtt connect failed\r\n");
             // 尝试重连
             Delay_ms(500);
-            goto mqttReconnect;
+            // goto mqttReconnect;
             while (1);
         }
+
+        // 3、检查连接(AT+MQTTCONN?)
 
         vTaskDelay(portMAX_DELAY);
     }
@@ -102,14 +104,15 @@ void Task_ATDataRead(void *parameter)
     while (1) {
         DEBUG_LOG("data read task\r\n");
 
-        uint8_t buf[32];
-        memset(buf, 0, sizeof(buf));
+        uint8_t JsonBuf[AT_DATA_PACKET_SIZE];
+        int len = sizeof(JsonBuf);
 
-        int len = sizeof(buf);
+        // 1、读取服务器下发的JSON数据
+        AT_Read_DataPacketBuffer(JsonBuf, len, portMAX_DELAY);
 
-        AT_Read_DataPacketBuffer(buf, len, portMAX_DELAY);
-        // 1、根据服务器传来的数据执行相关操作
-        DEBUG_LOG("data from server:%s\r\n", buf);
+        // 2、解析JSON数据（获取）
+
+        DEBUG_LOG("data from server:%s\r\n", JsonBuf);
     }
 }
 

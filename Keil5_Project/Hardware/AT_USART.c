@@ -18,7 +18,7 @@ volatile static RingBuffer_t USART_Buffer;
 volatile static int Serial_rxFlag;
 volatile static int ORE_Flag;
 
-static SemaphoreHandle_t USART_Receive_Mutex;
+volatile static SemaphoreHandle_t USART_Receive_Mutex;
 
 /// @brief 初始化AT串口
 /// @param 无
@@ -111,10 +111,10 @@ int USART_Read_Buffer(uint8_t *responseBuffer, uint32_t responseBufferLen, TickT
 {
     while (USART_Buffer.dataSize == 0) {
         // 缓冲区空,则在USART_Receive_Mutex上阻塞,直到接收到数据
-        // DEBUG_LOG("receive mutex lock\r\n");
+        DEBUG_LOG("receive mutex lock\r\n");
         xSemaphoreTake(USART_Receive_Mutex, timeout);
         vTaskDelay(pdMS_TO_TICKS(100));
-        // DEBUG_LOG("receive mutex unlock\r\n");
+        DEBUG_LOG("receive mutex unlock\r\n");
     }
     // DEBUG_LOG("dataSize = %d\r\n", USART_Buffer.dataSize);
 
@@ -128,7 +128,7 @@ int USART_Read_Buffer(uint8_t *responseBuffer, uint32_t responseBufferLen, TickT
     else if (Serial_rxFlag == RX_DATA_RECEIVED) {
         // DEBUG_LOG("USART_Buffer->responseBuffer\r\n");
 
-        // 读环形缓冲区
+        // 读环形缓冲区到responseBuffer
         Read_RingBuffer((RingBuffer_t *)&USART_Buffer,
                         responseBuffer,
                         USART_Buffer.dataSize,

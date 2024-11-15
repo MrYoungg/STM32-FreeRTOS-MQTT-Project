@@ -1,7 +1,7 @@
 #include "ATCommand.h"
 
-volatile static SemaphoreHandle_t AT_Send_Semaphore;
-volatile static SemaphoreHandle_t AT_DataPacketRead_Semaphore;
+volatile static SemaphoreHandle_t AT_Send_Mutex;
+volatile static SemaphoreHandle_t AT_DataPacketRead_Mutex;
 
 static int AT_Status;
 static RingBuffer_t AT_DataPacketBuffer;
@@ -16,15 +16,13 @@ void AT_Init(void)
 
     // 初始化AT命令发送线程mutex(注意初始化后先上锁)
     // platform_mutex_init(&AT_Send_Mutex);
-    AT_Send_Semaphore = xSemaphoreCreateMutex();
-    // platform_mutex_lock_timeout(&AT_Send_Semaphore, 0);
-    xSemaphoreTake(AT_Send_Semaphore, 0);
+    AT_Send_Mutex = xSemaphoreCreateMutex();
+    // platform_mutex_lock_timeout(&AT_Send_Mutex, 0);
+    xSemaphoreTake(AT_Send_Mutex, 0);
 
     // 初始化AT数据处理线程mutex
-    // platform_mutex_init(&AT_DataPacketRead_Semaphore);
-    AT_DataPacketRead_Semaphore = xSemaphoreCreateMutex();
-    // platform_mutex_lock_timeout(&AT_DataPacketRead_Semaphore, 0);
-    xSemaphoreTake(AT_DataPacketRead_Semaphore, 0);
+    AT_DataPacketRead_Mutex = xSemaphoreCreateMutex();
+    xSemaphoreTake(AT_DataPacketRead_Mutex, 0);
 }
 
 void AT_Reset(void)
@@ -49,6 +47,10 @@ int AT_SendData(char *data, TickType_t timeout)
 
 int AT_SendCommand(char *command, TickType_t timeout)
 {
+    if(strstr(command,"\r\n")==NULL){
+        DEBUG_LOG("AT command missing \\r\\n \r\n");
+        return AT_RESP_UNCOMPLETE;
+    }
     return AT_Send(command, timeout);
 }
 
@@ -66,8 +68,7 @@ static int AT_Send(char *c, TickType_t timeout)
 
     // 等待response(基于mutex的唤醒)
     // DEBUG_LOG("send mutex lock\r\n");
-    // mutexStatus = platform_mutex_lock_timeout(&AT_Send_Semaphore, timeout);
-    mutexStatus = xSemaphoreTake(AT_Send_Semaphore, timeout);
+    mutexStatus = xSemaphoreTake(AT_Send_Mutex, timeout);
     // DEBUG_LOG("send mutex unlock\r\n");
 
     // Response超时
@@ -123,9 +124,9 @@ int AT_ReceiveResponse(void)
     // DEBUG_LOG("parse response\r\n");
     AT_ParseResponse((char *)responseBuffer);
 
-    // if (Get_AT_Status() != AT_COMMAND_UNCOMPLETE &&) {
+    // if (Get_AT_Status() != AT_RESP_UNCOMPLETE &&) {
     //     // DEBUG_LOG("wake up send task\r\n");
-    //     platform_mutex_unlock(&AT_Send_Semaphore);
+    //     platform_mutex_unlock(&AT_Send_Mutex);
     // }
 
     return pdPASS;
@@ -139,7 +140,7 @@ void AT_ParseResponse(char *responseBuffer)
     bool isGetReady = strstr(responseBuffer, "ready");
     bool isGetError = strstr(responseBuffer, "ERROR");
     bool isGetDataRequest = strstr(responseBuffer, ">");
-    bool isGetDataFromHost = strstr(responseBuffer, "+IPD,");
+    bool isGetDataFromHost = strstr(responseBuffer, "+MQTTSUBRECV:");
 
     if (isGetOK || isGetReady) {
         Set_AT_Status(AT_OK);
@@ -152,8 +153,8 @@ void AT_ParseResponse(char *responseBuffer)
         }
 
         // 唤醒发送任务
-        // platform_mutex_unlock(&AT_Send_Semaphore);
-        xSemaphoreGive(AT_Send_Semaphore);
+        // platform_mutex_unlock(&AT_Send_Mutex);
+        xSemaphoreGive(AT_Send_Mutex);
     }
     // 2、收到错误
     else if (isGetError) {
@@ -161,36 +162,36 @@ void AT_ParseResponse(char *responseBuffer)
         DEBUG_LOG("parse:isGetError\r\n");
 
         // 唤醒发送任务
-        // platform_mutex_unlock(&AT_Send_Semaphore);
-        xSemaphoreGive(AT_Send_Semaphore);
+        // platform_mutex_unlock(&AT_Send_Mutex);
+        xSemaphoreGive(AT_Send_Mutex);
     }
     // 3、收到服务器传来的数据包
     else if (isGetDataFromHost) {
         Set_AT_Status(AT_DATA_FROM_HOST);
         DEBUG_LOG("parse:isGetDataFromHost\r\n");
 
-        // 1、将保存数据到环形缓冲区AT_DataPacketBuffer（考虑利用正则表达式来解析包）
-        SaveDataToBuffer(responseBuffer);
+        // 1、将保存数据到环形缓冲区AT_DataPacketBuffer
+        SaveJSONDataToBuffer(responseBuffer);
         DEBUG_LOG("save data finished\r\n");
 
-        // 2、唤醒数据包处理线程mutex
+        // 2、唤醒数据包处理线程
         DEBUG_LOG("wake up read data task\r\n");
-        // platform_mutex_unlock(&AT_DataPacketRead_Semaphore);
-        xSemaphoreGive(AT_DataPacketRead_Semaphore);
+        xSemaphoreGive(AT_DataPacketRead_Mutex);
     }
     else {
-        Set_AT_Status(AT_COMMAND_UNCOMPLETE);
+        Set_AT_Status(AT_RESP_UNCOMPLETE);
         DEBUG_LOG("parse:uncomplete\r\n");
     }
 }
 
 /// @brief 将收到的数据保存到数据环形缓冲区
-/// @param buf 收到的数据，格式为："+IPD,<len>:<data>"，只保存<data>部分
-static int SaveDataToBuffer(char *buf)
+/// @param buf
+/// 收到的数据，格式为：+MQTTSUBRECV:<linkID>,"topic",<dataSize>,<JSONData>，只保存<JSONData>部分
+static int SaveJSONDataToBuffer(char *buf)
 {
     volatile int i = 0;
     volatile int ret;
-    while (buf[i++] != ':');
+    while (buf[++i] != '{');
 
     while (buf[i] != '\0') {
         ret = Write_RingBuffer(&AT_DataPacketBuffer, &buf[i++], 1);
@@ -213,8 +214,8 @@ int AT_Read_DataPacketBuffer(char *buf, int bufLen, int timeout)
     // 1、读取AT数据缓冲区，如果缓冲区空则休眠
     while (is_RingBuffer_Empty(&AT_DataPacketBuffer)) {
         DEBUG_LOG("read data lock\r\n");
-        // platform_mutex_lock_timeout(&AT_DataPacketRead_Semaphore, timeout);
-        xSemaphoreTake(AT_DataPacketRead_Semaphore, timeout);
+        // platform_mutex_lock_timeout(&AT_DataPacketRead_Mutex, timeout);
+        xSemaphoreTake(AT_DataPacketRead_Mutex, timeout);
         vTaskDelay(pdMS_TO_TICKS(100));
         DEBUG_LOG("read data unlock\r\n");
     }
@@ -222,6 +223,7 @@ int AT_Read_DataPacketBuffer(char *buf, int bufLen, int timeout)
 
     // 2、AT数据缓冲区中有数据，被唤醒，读取收到的数据包到buf
     dataLen = AT_DataPacketBuffer.dataSize;
+    DEBUG_LOG("data pack size:%d\r\n", dataLen);
     ret = Read_RingBuffer(&AT_DataPacketBuffer, buf, dataLen, bufLen);
     return ret;
 }

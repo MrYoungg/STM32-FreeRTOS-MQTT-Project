@@ -37,7 +37,7 @@ int MQTT_Connect(const MQTTClient_t *client)
 
 int MQTT_UserConfig(const MQTTClient_t *client)
 {
-    char command[AT_COMMAND_MAX_SIZE];
+    char command[AT_MAX_COMMAND_SIZE];
     int ret;
 
     snprintf(command,
@@ -59,7 +59,7 @@ int MQTT_UserConfig(const MQTTClient_t *client)
 
 int MQTT_ConnectConfig(const MQTTClient_t *client)
 {
-    char command[AT_COMMAND_MAX_SIZE];
+    char command[AT_MAX_COMMAND_SIZE];
     int ret;
 
 #ifdef LWT
@@ -93,7 +93,7 @@ int MQTT_ConnectConfig(const MQTTClient_t *client)
 
 int MQTT_ConnectSever(const MQTTClient_t *client)
 {
-    char command[AT_COMMAND_MAX_SIZE];
+    char command[AT_MAX_COMMAND_SIZE];
     int ret;
 
     snprintf(command,

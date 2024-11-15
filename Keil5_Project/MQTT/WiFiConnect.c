@@ -10,7 +10,7 @@ void WiFi_Config(WiFi_t *wifiMsg)
 int WiFi_Connect(const WiFi_t *wifiMsg)
 {
     int ret;
-    char command[AT_COMMAND_MAX_SIZE];
+    char command[AT_MAX_COMMAND_SIZE];
 
     // 1、修改WiFi模式：AT+CWMODE=wifiMode
     snprintf(command, sizeof(command), "AT+CWMODE=%d\r\n", wifiMsg->wifiMode);
@@ -20,7 +20,7 @@ int WiFi_Connect(const WiFi_t *wifiMsg)
     }
     else {
         DEBUG_LOG("fail to set wifi mode\r\n");
-        return AT_ERROR;
+        return ret;
     }
 
     // 2、连接路由器（WiFi/热点）：AT+CWJAP="ssid","password"
@@ -32,7 +32,6 @@ int WiFi_Connect(const WiFi_t *wifiMsg)
     }
     else {
         DEBUG_LOG("fail to connect wifi\r\n");
-        ret = AT_ERROR;
     }
     return ret;
 }
