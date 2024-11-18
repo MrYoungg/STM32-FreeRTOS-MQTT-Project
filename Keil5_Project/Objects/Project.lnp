@@ -41,6 +41,7 @@
 ".\objects\ringbuffer.o"
 ".\objects\mqttclient.o"
 ".\objects\wificonnect.o"
+".\objects\jsonparse.o"
 ".\objects\main.o"
 ".\objects\stm32f10x_it.o"
 --library_type=microlib --strict --scatter ".\Objects\Project.sct"

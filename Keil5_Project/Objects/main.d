@@ -53,3 +53,4 @@
 .\objects\main.o: D:\Univercity\Keil5\ARM\ARMCC\Bin\..\include\string.h
 .\objects\main.o: .\MQTT\WiFiConnect.h
 .\objects\main.o: .\MQTT\MQTTClient.h
+.\objects\main.o: .\MQTT\JSONParse.h

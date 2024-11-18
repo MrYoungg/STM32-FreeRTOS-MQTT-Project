@@ -99,7 +99,8 @@
         "debug_usart.h": "c",
         "ringbuffer.h": "c",
         "wificonnect.h": "c",
-        "queue": "c"
+        "queue": "c",
+        "jsonparse.h": "c"
     },
     "commentTranslate.source": "Bing",
     "cmake.sourceDirectory": "D:/Univercity/FreeRTOS/MQTT_Project/Keil5_Project/MQTT/mqttclient"

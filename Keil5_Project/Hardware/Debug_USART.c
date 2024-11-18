@@ -33,12 +33,13 @@ void Debug_USART_Init(void)
 
     // 初始化USART
     USART_InitTypeDef USART_InitStructure;
-    USART_InitStructure.USART_BaudRate = DEBUG_USATR_BAUDRATE;                      // 设置波特率
-    USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None; // 是否开启硬件流控制
-    USART_InitStructure.USART_Mode = USART_Mode_Tx | USART_Mode_Rx;                 // 发送+接收
-    USART_InitStructure.USART_Parity = USART_Parity_No;                             // 选择校验位
-    USART_InitStructure.USART_StopBits = USART_StopBits_1;                          // 选择停止位
-    USART_InitStructure.USART_WordLength = USART_WordLength_8b;                     // 选择数据帧长度
+    USART_InitStructure.USART_BaudRate = DEBUG_USATR_BAUDRATE; // 设置波特率
+    USART_InitStructure.USART_HardwareFlowControl =
+        USART_HardwareFlowControl_None;                             // 是否开启硬件流控制
+    USART_InitStructure.USART_Mode = USART_Mode_Tx | USART_Mode_Rx; // 发送+接收
+    USART_InitStructure.USART_Parity = USART_Parity_No;             // 选择校验位
+    USART_InitStructure.USART_StopBits = USART_StopBits_1;          // 选择停止位
+    USART_InitStructure.USART_WordLength = USART_WordLength_8b;     // 选择数据帧长度
     USART_Init(DEBUG_USARTx, &USART_InitStructure);
 
     // 使能USART
@@ -60,7 +61,7 @@ static void Debug_USART_SendByte(uint8_t Data)
 /// @param String 待发送字符串
 static void Debug_USART_SendString(char *String)
 {
-    for (uint8_t i = 0; String[i] != 0; i++) {
+    for (uint8_t i = 0; String[i] != '\0'; i++) {
         Debug_USART_SendByte(String[i]);
     }
 }

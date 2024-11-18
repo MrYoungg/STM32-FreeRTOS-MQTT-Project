@@ -13,6 +13,7 @@
 #include "RingBuffer.h"
 #include "WiFiConnect.h"
 #include "MQTTClient.h"
+#include "JSONParse.h"
 
 TaskHandle_t Task_Test_Handle;
 TaskHandle_t Task_ATSend_Handle;
@@ -39,7 +40,7 @@ int main(void)
     // xTaskCreate(Task_Test, "Task_Test", 128, NULL, 1, &Task_Test_Handle);
     xTaskCreate(Task_ATConnect, "Task_ATConnect", 256, NULL, 1, &Task_ATSend_Handle);
     xTaskCreate(Task_ATReceive, "Task_ATReceive", 512, NULL, 3, &Task_ATReceive_Handle);
-    xTaskCreate(Task_ATDataRead, "Task_ATDataRead", 512, NULL, 2, &Task_ATDataRead_Handle);
+    xTaskCreate(Task_ATDataRead, "Task_ATDataRead", 1024, NULL, 2, &Task_ATDataRead_Handle);
 
     taskEXIT_CRITICAL(); // 退出临界区,开中断
 
@@ -104,17 +105,28 @@ void Task_ATDataRead(void *parameter)
     while (1) {
         DEBUG_LOG("data read task\r\n");
 
-        uint8_t JsonBuf[AT_DATA_PACKET_SIZE];
-        int len = sizeof(JsonBuf);
+        uint8_t jsonBuf[AT_DATA_PACKET_SIZE];
+        int len = sizeof(jsonBuf);
 
         // 1、读取服务器下发的JSON数据
-        AT_Read_DataPacketBuffer(JsonBuf, len, portMAX_DELAY);
+        AT_Read_DataPacketBuffer(jsonBuf, len, portMAX_DELAY);
+        DEBUG_LOG("data from server:%s\r\n", jsonBuf);
 
-        // 2、解析JSON数据（获取）
+        // 2、解析JSON数据（获取阿里云下发的param对象）
+        JSON_t *itemHead = NULL;
+        JSON_GetParams(jsonBuf, itemHead);
 
-        DEBUG_LOG("data from server:%s\r\n", JsonBuf);
+        // 3、根据对象参数执行相应的操作
+
+        // 3.1 喂粮（开舵机）
+
+        // 3.2 喂水（开水泵）
+
+        // 3.3
     }
 }
+
+void Task_OTA(void *parameter) {}
 
 void Task_Test(void *parameter)
 {
