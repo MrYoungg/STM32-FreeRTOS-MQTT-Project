@@ -8,22 +8,27 @@
 #include "Delay.h"
 #include "AT_USART.h"
 #include "Key.h"
+#include "LED.h"
+#include "Sensor.h"
+
 #include "ATCommand.h"
 #include "Debug_USART.h"
 #include "RingBuffer.h"
 #include "WiFiConnect.h"
 #include "MQTTClient.h"
-#include "JSONParse.h"
+#include "JSON.h"
 
 TaskHandle_t Task_Test_Handle;
 TaskHandle_t Task_ATSend_Handle;
 TaskHandle_t Task_ATReceive_Handle;
-TaskHandle_t Task_ATDataRead_Handle;
+TaskHandle_t Task_MQTTDataRcv_Handle;
+TaskHandle_t Task_MQTTDataSend_Handle;
 
 void Task_Test(void *parameter);
 void Task_ATConnect(void *parameter);
-void Task_ATReceive(void *parameter);
-void Task_ATDataRead(void *parameter);
+void Task_ATResponseRcv(void *parameter);
+void Task_MQTTDataRcv(void *parameter);
+void Task_MQTTDataSend(void *parameter);
 
 int main(void)
 {
@@ -31,16 +36,17 @@ int main(void)
     // 同时需要注释FreeRTOS内部的SystickHandler,否则无法正常延时
     // Systick_Init();
     Key_Init();
+    LED_Init();
+    Sensor_AD_Init();
     Debug_USART_Init();
     AT_Init();
-
     DEBUG_LOG("reset and init...\r\n");
 
     taskENTER_CRITICAL(); // 进入临界区,关中断
     // xTaskCreate(Task_Test, "Task_Test", 128, NULL, 1, &Task_Test_Handle);
     xTaskCreate(Task_ATConnect, "Task_ATConnect", 256, NULL, 1, &Task_ATSend_Handle);
-    xTaskCreate(Task_ATReceive, "Task_ATReceive", 512, NULL, 3, &Task_ATReceive_Handle);
-    xTaskCreate(Task_ATDataRead, "Task_ATDataRead", 1024, NULL, 2, &Task_ATDataRead_Handle);
+    xTaskCreate(Task_ATResponseRcv, "Task_ATResponseRcv", 512, NULL, 3, &Task_ATReceive_Handle);
+    xTaskCreate(Task_MQTTDataRcv, "Task_MQTTDataRcv", 1024, NULL, 2, &Task_MQTTDataRcv_Handle);
 
     taskEXIT_CRITICAL(); // 退出临界区,开中断
 
@@ -55,9 +61,9 @@ void Task_ATConnect(void *parameter)
 {
     int ret;
     WiFi_t wifiMsg;
-    MQTTClient_t mqttClient;
+    extern MQTTClient_t mqttClient;
+    LED_Blink();
     while (1) {
-
         DEBUG_LOG("connect task\r\n");
         AT_Reset();
         Delay_ms(500);
@@ -86,13 +92,17 @@ void Task_ATConnect(void *parameter)
             while (1);
         }
 
-        // 3、检查连接(AT+MQTTCONN?)
+        taskENTER_CRITICAL();
+        xTaskCreate(
+            Task_MQTTDataSend, "Task_MQTTDataSend", 512, NULL, 1, &Task_MQTTDataSend_Handle);
+        taskEXIT_CRITICAL();
 
-        vTaskDelay(portMAX_DELAY);
+        vTaskSuspend(NULL);
     }
 }
 
-void Task_ATReceive(void *parameter)
+// AT响应读取线程
+void Task_ATResponseRcv(void *parameter)
 {
     while (1) {
         DEBUG_LOG("receive task\r\n");
@@ -100,34 +110,62 @@ void Task_ATReceive(void *parameter)
     }
 }
 
-void Task_ATDataRead(void *parameter)
+// MQTT数据读取线程
+void Task_MQTTDataRcv(void *parameter)
 {
     while (1) {
         DEBUG_LOG("data read task\r\n");
 
-        uint8_t jsonBuf[AT_DATA_PACKET_SIZE];
+        char jsonBuf[AT_DATA_PACKET_SIZE];
         int len = sizeof(jsonBuf);
 
         // 1、读取服务器下发的JSON数据
-        AT_Read_DataPacketBuffer(jsonBuf, len, portMAX_DELAY);
+        AT_Read_DataPacketBuffer(jsonBuf, (int)len, (int)portMAX_DELAY);
         DEBUG_LOG("data from server:%s\r\n", jsonBuf);
 
         // 2、解析JSON数据（获取阿里云下发的param对象）
         JSON_t *itemHead = NULL;
-        JSON_GetParams(jsonBuf, itemHead);
+        JSON_GetParams(jsonBuf, &itemHead);
+        // 打印链表数据
+        JSON_PrintItemList(itemHead);
 
         // 3、根据对象参数执行相应的操作
 
-        // 3.1 喂粮（开舵机）
+        // 3.1 开灯（喂水、喂粮等操作本质一样）
+        JSON_t *item = isInItemList(itemHead, "LightSwitch");
+        if (item != NULL) {
+            int lightSwitch = getItemValueNumber(item);
+            if (lightSwitch)
+                LED_ON;
+            else
+                LED_OFF;
+        }
 
-        // 3.2 喂水（开水泵）
+        // 3.2 设定时间
 
-        // 3.3
+        // 4、释放链表内存
+        // JSON_Free(itemHead);
+    }
+}
+
+// MQTT数据上报+PING线程, 检查连接(AT+MQTTCONN?)
+void Task_MQTTDataSend(void *parameter)
+{
+    extern SensorData_t sensorData;
+    while (1) {
+        sensorData.light = LED_STATUS;
+        DEBUG_LOG("food sensor: %d\r\n", sensorData.food);
+        DEBUG_LOG("water sensor: %d\r\n", sensorData.water);
+        DEBUG_LOG("light sensor: %d\r\n", sensorData.light);
+        // Sensor_DataNormalize(sensorData);
+        MQTT_Publish(sensorData);
+        vTaskDelay(pdMS_TO_TICKS(5000));
     }
 }
 
 void Task_OTA(void *parameter) {}
 
+#if 0
 void Task_Test(void *parameter)
 {
     while (1) {
@@ -171,3 +209,4 @@ void Task_Test(void *parameter)
         vTaskDelay(portMAX_DELAY);
     }
 }
+#endif

@@ -24,6 +24,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f10x_it.h"
 #include "stdbool.h"
+#include "Debug_USART.h"
 
 /** @addtogroup STM32F10x_StdPeriph_Template
  * @{
@@ -85,20 +86,20 @@ typedef struct {
 void HardFault_Handler_C(StackBuffer *debugBuffer)
 {
     // 打印进入Handler之前硬件压栈的寄存器
-    printf("HardFault_Handler is running\r\n");
+    DEBUG_LOG("HardFault_Handler is running\r\n");
 #if 0
-    printf("R0:0X%08x\r\n", debugBuffer->R0);
-    printf("R1:0X%08x\r\n", debugBuffer->R1);
-    printf("R2:0X%08x\r\n", debugBuffer->R2);
-    printf("R3:0X%08x\r\n", debugBuffer->R3);
-    printf("R12:0X%08x\r\n", debugBuffer->R12);
-    printf("LR:0X%08x\r\n", debugBuffer->LR);
-    printf("PC:0X%08x\r\n", debugBuffer->PC);
-    printf("xPSR:0X%08x\r\n", debugBuffer->xPSR);
+    DEBUG_LOG("R0:0X%08x\r\n", debugBuffer->R0);
+    DEBUG_LOG("R1:0X%08x\r\n", debugBuffer->R1);
+    DEBUG_LOG("R2:0X%08x\r\n", debugBuffer->R2);
+    DEBUG_LOG("R3:0X%08x\r\n", debugBuffer->R3);
+    DEBUG_LOG("R12:0X%08x\r\n", debugBuffer->R12);
+    DEBUG_LOG("LR:0X%08x\r\n", debugBuffer->LR);
+    DEBUG_LOG("PC:0X%08x\r\n", debugBuffer->PC);
+    DEBUG_LOG("xPSR:0X%08x\r\n", debugBuffer->xPSR);
 
     // 打印函数调用过程中压栈的内容
     uint32_t *funcStackPointer = (uint32_t *)((uint32_t)debugBuffer + sizeof(StackBuffer));
-    printf("funcStack:\r\n");
+    DEBUG_LOG("funcStack:\r\n");
 
     for (int i = 0; i < 1024; i++) {
         // 判断是否代码段地址
@@ -110,7 +111,7 @@ void HardFault_Handler_C(StackBuffer *debugBuffer)
 
         // 打印出函数跳转地址
         if (isCodeAddress) {
-            printf("reg val: 0x%08x\r\n", *funcStackPointer);
+            DEBUG_LOG("reg val: 0x%08x\r\n", *funcStackPointer);
         }
 
         funcStackPointer++;

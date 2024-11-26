@@ -49,8 +49,10 @@
 .\objects\main.o: .\RingBuffer\RingBuffer.h
 .\objects\main.o: D:\Univercity\Keil5\ARM\ARMCC\Bin\..\include\stdbool.h
 .\objects\main.o: .\Hardware\Key.h
+.\objects\main.o: .\Hardware\LED.h
+.\objects\main.o: .\Hardware\Sensor.h
 .\objects\main.o: .\ATCommand\ATCommand.h
 .\objects\main.o: D:\Univercity\Keil5\ARM\ARMCC\Bin\..\include\string.h
 .\objects\main.o: .\MQTT\WiFiConnect.h
 .\objects\main.o: .\MQTT\MQTTClient.h
-.\objects\main.o: .\MQTT\JSONParse.h
+.\objects\main.o: .\MQTT\JSON.h

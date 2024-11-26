@@ -684,6 +684,16 @@
               <FileType>1</FileType>
               <FilePath>.\Hardware\Debug_USART.c</FilePath>
             </File>
+            <File>
+              <FileName>LED.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Hardware\LED.c</FilePath>
+            </File>
+            <File>
+              <FileName>Sensor.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Hardware\Sensor.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -765,9 +775,9 @@
               <FilePath>.\MQTT\WiFiConnect.c</FilePath>
             </File>
             <File>
-              <FileName>JSONParse.c</FileName>
+              <FileName>JSON.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\MQTT\JSONParse.c</FilePath>
+              <FilePath>.\MQTT\JSON.c</FilePath>
             </File>
           </Files>
         </Group>

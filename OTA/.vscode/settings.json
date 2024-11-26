@@ -1,0 +1,10 @@
+{
+    "files.associations": {
+        "misc.h": "c",
+        "stm32f10x.h": "c",
+        "stm32f10x_conf.h": "c",
+        "stm32f10x_cec.h": "c",
+        "stm32f10x_spi.h": "c",
+        "stm32f10x_dma.h": "c"
+    }
+}

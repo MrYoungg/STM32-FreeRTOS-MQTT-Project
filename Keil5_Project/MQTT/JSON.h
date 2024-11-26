@@ -1,36 +1,34 @@
-#ifndef __JSONPARSE_H
-#define __JSONPARSE_H
+#ifndef __JSON_H
+#define __JSON_H
 #include "stdlib.h"
 #include "string.h"
 #include "FreeRTOS.h"
 #include "Debug_USART.h"
+#include "Sensor.h"
 
-#define JSON_STRING_MAX_LENGTH 128
+#define JSON_STRING_MAX_LENGTH  256
 #define JSON_NAME_MAX_LENGTH    32
 #define VALUE_STRING_MAX_LENGTH 32
-
 #define CAN_ACCESS_TO_OFFSET(JSONStr)                                                              \
     ((JSONStr) != NULL) && ((JSONStr)->stringContent != NULL) &&                                   \
         ((JSONStr)->offset < (JSONStr)->length)
-
 #define ACCESS_TO_OFFSET(JSONStr) ((JSONStr)->stringContent)[(JSONStr)->offset]
-
 #define CAN_WRITE_STR(JSONStr)                                                                     \
     ((JSONStr) != NULL) && ((JSONStr)->stringContent != NULL) &&                                   \
         ((JSONStr)->offset < (sizeof((JSONStr)->stringContent) - 1))
-
 #define CLEAR_OFFSET(JSONStr)           (JSONStr)->offset = 0
 #define ADD_OFFSET(JSONStr)             ((JSONStr)->offset) += 1
 #define CAN_WRITE_ITEM(JSONItem, index) ((index) < (sizeof((JSONItem)->nameStr) - 1))
-
 #define VALUE_IS_NUMBER(JSONStr)                                                                   \
     (ACCESS_TO_OFFSET(JSONStr) >= '0' && ACCESS_TO_OFFSET(JSONStr) <= '9') ||                      \
         ACCESS_TO_OFFSET(JSONStr) == '-'
-
 #define VALUE_IS_STRING(JSONStr) ACCESS_TO_OFFSET((JSONStr)) == '"'
+#define LIGHT_PARAM_NAME         "LightSwitch"
+#define FOOD_PARAM_NAME          "FoodRemain"
+#define WATER_PARAM_NAME         "WaterRemain"
 
 typedef int JSONType_t;
-enum { JSON_Object, JSON_Number, JSON_String };
+enum { JSON_Object = 0, JSON_Number, JSON_String };
 
 typedef struct JSON_t {
     // name of item;
@@ -53,6 +51,10 @@ typedef struct JSONString_t {
     int offset;
 } JSONString_t;
 
-int JSON_GetParams(const char *const JSONStr, JSON_t *item);
+int JSON_GetParams(const char *const JSONStr, JSON_t **itemHead);
+void JSON_PrintItemList(JSON_t *listHead);
+void JSON_Free(JSON_t *itemHead);
+JSON_t *isInItemList(JSON_t *listHead, char *itemName);
+int getItemValueNumber(JSON_t *item);
 
 #endif

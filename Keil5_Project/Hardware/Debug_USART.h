@@ -5,9 +5,12 @@
 #include <stdlib.h>
 #include <stdarg.h>
 
-#define DEBUG_LOG Debug_USART_Printf
-
-void Debug_USART_Init(void);
 void Debug_USART_Printf(char *format, ...);
+void Debug_USART_Init(void);
+
+#define DEBUG_LOG(fmt, ...)                                                                        \
+    do {                                                                                           \
+        Debug_USART_Printf("[%s:%d] " fmt, __FILE__, __LINE__, ##__VA_ARGS__);                       \
+    } while (0)
 
 #endif

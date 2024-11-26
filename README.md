@@ -746,7 +746,9 @@ void AT_USART_SendString(char *String)
 
 ##### 1、接收数据到环形缓冲区 - USART_Write_Buffer()
 
-> 拓展到串口接收中断USART3_IRQHandler;
+> USART_Write_Buffer()拓展到串口接收中断USART3_IRQHandler;
+>
+> 1、考虑使用串口空闲中断
 
 1. **概述**：串口接收到数据后，触发RXNE（接收寄存器非空）中断，将数据写入**环形缓冲区**`USART_Buffer.buffer[]`；在某个缓冲区**兼有写入和读出功能**的时候，适合于采用环形缓冲区；
 
@@ -957,11 +959,7 @@ void AT_USART_SendString(char *String)
 
 #### 2.7.2 发布消息
 
-##### 
-
 #### 2.7.3 处理消息
-
-
 
 #### 2.7.4 心跳包
 
@@ -973,7 +971,37 @@ void AT_USART_SendString(char *String)
 
 - 阿里云物联网平台要求keepalive的取值范围是[30,1200]；
 
-### ⭐2.x OTA远程升级
+### ⭐2.8 OTA (Over The Air) - 空中升级
+
+#### 2.8.1 OTA 原理
+
+##### （1）概述
+
+1. STM32 启动原理
+2. OTA 实现原理
+    1. 分区
+    2. 为什么需要 BootLoader？
+    3. 为什么BootLoader在前，APP在后？
+    4. 
+
+##### （2）Flash 分区
+
+##### （3）APP程序
+
+1. 程序功能
+2. bin 文件获取
+
+##### （4）BootLoader 程序
+
+1. 获取服务器中的 bin 文件（基于HTTP）
+    1. 如何判断传输是否完成？（网络波动、超时重传等机制可能导致间断发送）
+2. 写入外部 Flash - W25Q64
+    1. 写入的速度能跟得上收到数据的速度吗？（SPI的时钟频率应该设置为多少）
+3. 将W25Q64中的应用程序代码搬运到内部Flash
+4. 更改中断向量表的位置
+5. 跳转到应用程序的 `Reset_Handler` 开始执行
+
+##### （5）
 
 ## chap 3 项目总结的
 

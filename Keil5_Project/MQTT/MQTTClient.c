@@ -1,6 +1,8 @@
 #include "MQTTClient.h"
 
-int MQTT_ClientConfig(MQTTClient_t *client)
+MQTTClient_t mqttClient;
+
+void MQTT_ClientConfig(MQTTClient_t *client)
 {
     client->linkID = MQTT_DEFUALT_LINK_ID;
     client->protocal = PROTO_MQTT_OVER_TCP;
@@ -18,6 +20,10 @@ int MQTT_ClientConfig(MQTTClient_t *client)
     client->keepalive = KEEP_ALIVE;
     client->cleanSession = CLEAN_SESSION;
     client->reconnect = RECONNECT;
+
+    // 4、数据上报
+    client->dataPostTopic = DATA_POST_TOPIC;
+    client->Qos = QoS_0;
 }
 
 int MQTT_Connect(const MQTTClient_t *client)
@@ -109,5 +115,51 @@ int MQTT_ConnectSever(const MQTTClient_t *client)
         DEBUG_LOG("connect server:failed\r\n");
         ret = ERR_MQTT_CONN;
     }
+    return ret;
+}
+
+int MQTT_Publish(const SensorData_t data)
+{
+
+    char JSONStr[JSON_STRING_MAX_LENGTH];
+    char command[AT_MAX_COMMAND_SIZE];
+    static uint32_t id = 1;
+    int JSONStrLength = 0;
+    int ret;
+
+    JSONStrLength = snprintf(
+        JSONStr,
+        sizeof(JSONStr),
+        "{\"method\":\"thing.event.property.post\",\"id\":\"%d\",\"params\":{\"%s\":%d,\"%s\":"
+        "%d,\"%s\":%d},\"version\":\"1.0.0\"}",
+        id++,
+        LIGHT_PARAM_NAME,
+        data.light,
+        FOOD_PARAM_NAME,
+        data.food,
+        WATER_PARAM_NAME,
+        data.water);
+
+    snprintf(command,
+             sizeof(command),
+             "AT+MQTTPUBRAW=%d,\"%s\",%d,%d,%d\r\n",
+             mqttClient.linkID,
+             mqttClient.dataPostTopic,
+             JSONStrLength,
+             mqttClient.Qos,
+             PUB_RETAIN_DISBLE);
+
+    ret = AT_SendCommand(command, portMAX_DELAY);
+    if (ret != AT_DATA_REQUEST) {
+        DEBUG_LOG("mqtt try to publish:failed\r\n");
+        return ERR_MQTT_PUB;
+    }
+
+    ret = AT_SendData(JSONStr, portMAX_DELAY);
+    if (ret != AT_OK) {
+        DEBUG_LOG("mqtt publish data:failed\r\n");
+        return ERR_MQTT_PUB;
+    }
+
     return ret;
 }

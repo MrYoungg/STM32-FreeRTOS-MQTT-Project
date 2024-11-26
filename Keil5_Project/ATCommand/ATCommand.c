@@ -47,7 +47,7 @@ int AT_SendData(char *data, TickType_t timeout)
 
 int AT_SendCommand(char *command, TickType_t timeout)
 {
-    if(strstr(command,"\r\n")==NULL){
+    if (strstr(command, "\r\n") == NULL) {
         DEBUG_LOG("AT command missing \\r\\n \r\n");
         return AT_RESP_UNCOMPLETE;
     }
@@ -117,7 +117,7 @@ int AT_ReceiveResponse(void)
     }
 
     DEBUG_LOG("\r\n-------- responseBuffer begin--------\r\n");
-    DEBUG_LOG(responseBuffer);
+    DEBUG_LOG("%s\r\n", responseBuffer);
     DEBUG_LOG("\r\n-------- responseBuffer end--------\r\n");
 
     // 解析数据
@@ -138,7 +138,7 @@ void AT_ParseResponse(char *responseBuffer)
 {
     bool isGetOK = strstr(responseBuffer, "OK");
     bool isGetReady = strstr(responseBuffer, "ready");
-    bool isGetError = strstr(responseBuffer, "ERROR");
+    bool isGetError = strstr(responseBuffer, "ERROR") || strstr(responseBuffer, "FAIL");
     bool isGetDataRequest = strstr(responseBuffer, ">");
     bool isGetDataFromHost = strstr(responseBuffer, "+MQTTSUBRECV:");
 
@@ -216,7 +216,7 @@ int AT_Read_DataPacketBuffer(char *buf, int bufLen, int timeout)
         DEBUG_LOG("read data lock\r\n");
         // platform_mutex_lock_timeout(&AT_DataPacketRead_Mutex, timeout);
         xSemaphoreTake(AT_DataPacketRead_Mutex, timeout);
-        vTaskDelay(pdMS_TO_TICKS(100));
+        Delay_ms(100);
         DEBUG_LOG("read data unlock\r\n");
     }
     // DEBUG_LOG("RespDataPacket size:%d\r\n", AT_DataPacketBuffer.dataSize);

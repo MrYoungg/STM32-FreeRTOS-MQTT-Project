@@ -1,6 +1,6 @@
 .\objects\key.o: Hardware\Key.c
-.\objects\key.o: .\Hardware\Key.h
-.\objects\key.o: .\Hardware\Delay.h
+.\objects\key.o: Hardware\Key.h
+.\objects\key.o: Hardware\Delay.h
 .\objects\key.o: .\Start\stm32f10x.h
 .\objects\key.o: .\Start\core_cm3.h
 .\objects\key.o: D:\Univercity\Keil5\ARM\ARMCC\Bin\..\include\stdint.h
@@ -38,5 +38,6 @@
 .\objects\key.o: .\FreeRTOS\include\deprecated_definitions.h
 .\objects\key.o: .\FreeRTOS\portmacro.h
 .\objects\key.o: .\FreeRTOS\include\mpu_wrappers.h
+.\objects\key.o: Hardware\LED.h
 .\objects\key.o: .\FreeRTOS\include\task.h
 .\objects\key.o: .\FreeRTOS\include\list.h

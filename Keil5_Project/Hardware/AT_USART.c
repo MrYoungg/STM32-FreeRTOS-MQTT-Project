@@ -60,6 +60,8 @@ void AT_USART_Init(void)
 
     // 开启USART接收中断 - 接收寄存器非空触发中断
     USART_ITConfig(AT_USARTx, USART_IT_RXNE, ENABLE);
+    // 开启USART接收中断 - 串口空闲触发中断
+    // USART_ITConfig(AT_USARTx, USART_IT_IDLE, ENABLE);
     // 开启串口溢出中断
     USART_ITConfig(AT_USARTx, USART_IT_ORE, ENABLE);
     // 开启NVIC
@@ -113,7 +115,7 @@ int USART_Read_Buffer(uint8_t *responseBuffer, uint32_t responseBufferLen, TickT
         // 缓冲区空,则在USART_Receive_Mutex上阻塞,直到接收到数据
         DEBUG_LOG("receive mutex lock\r\n");
         xSemaphoreTake(USART_Receive_Mutex, timeout);
-        vTaskDelay(pdMS_TO_TICKS(100));
+        Delay_ms(100);
         DEBUG_LOG("receive mutex unlock\r\n");
     }
     // DEBUG_LOG("dataSize = %d\r\n", USART_Buffer.dataSize);

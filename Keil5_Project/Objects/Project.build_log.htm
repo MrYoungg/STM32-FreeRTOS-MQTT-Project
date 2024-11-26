@@ -22,42 +22,16 @@ Dialog DLL:      TCM.DLL V1.32.0.0
  
 <h2>Project:</h2>
 D:\Univercity\FreeRTOS\MQTT_Project\STM32-FreeRTOS-MQTT-Project\Keil5_Project\Project.uvprojx
-Project File Date:  11/16/2024
+Project File Date:  11/21/2024
 
 <h2>Output:</h2>
 *** Using Compiler 'V5.06 update 5 (build 528)', folder: 'D:\Univercity\Keil5\ARM\ARMCC\Bin'
 Build target 'Target 1'
-compiling JSONParse.c...
-MQTT\JSONParse.c(18): warning:  #550-D: variable "ret"  was set but never used
-      int ret;
-MQTT\JSONParse.c(111): warning:  #177-D: variable "ret"  was declared but never referenced
-      int ret;
-MQTT\JSONParse.c(145): warning:  #223-D: function "JSON_ParseNumber" declared implicitly
-          JSON_ParseNumber(JSONParamsStr, item);
-MQTT\JSONParse.c(148): warning:  #223-D: function "JSON_ParseString" declared implicitly
-          JSON_ParseString(JSONParamsStr, item);
-MQTT\JSONParse.c(150): warning:  #940-D: missing return statement at end of non-void function "JSON_GetItemValue" 
-  }
-MQTT\JSONParse.c: 5 warnings, 0 errors
-compiling AT_USART.c...
-compiling main.c...
-User\main.c(66): warning:  #177-D: label "wifiReconnect"  was declared but never referenced
-      wifiReconnect:
-User\main.c(77): warning:  #177-D: label "mqttReconnect"  was declared but never referenced
-      mqttReconnect:
-User\main.c(112): warning:  #167-D: argument of type "uint8_t *" is incompatible with parameter of type "char *"
-          AT_Read_DataPacketBuffer(jsonBuf, len, 
-ortMAX_DELAY);
-User\main.c(112): warning:  #68-D: integer conversion resulted in a change of sign
-          AT_Read_DataPacketBuffer(jsonBuf, len, 
-ortMAX_DELAY);
-User\main.c(117): warning:  #167-D: argument of type "uint8_t *" is incompatible with parameter of type "const char *const"
-          JSON_GetParams(jsonBuf, itemHead);
-User\main.c: 5 warnings, 0 errors
+compiling Key.c...
 linking...
-Program Size: Code=15932 RO-data=488 RW-data=164 ZI-data=12044  
+Program Size: Code=19548 RO-data=660 RW-data=168 ZI-data=17224  
 After Build - User command #1: fromelf --text -a -c --output=debug.dis Objects\Project.axf
-".\Objects\Project.axf" - 0 Error(s), 10 Warning(s).
+".\Objects\Project.axf" - 0 Error(s), 0 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -70,7 +44,7 @@ Package Vendor: Keil
   D:/Univercity/Keil5/ARM/PACK/Keil/STM32F1xx_DFP/2.2.0/Device/Include
 
 <h2>Collection of Component Files used:</h2>
-Build Time Elapsed:  00:00:03
+Build Time Elapsed:  00:00:02
 </pre>
 </body>
 </html>

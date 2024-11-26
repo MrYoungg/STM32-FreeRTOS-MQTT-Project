@@ -148,6 +148,7 @@ static int case_insensitive_strcmp(const unsigned char *string1, const unsigned 
     return tolower(*string1) - tolower(*string2);
 }
 
+// 用函数指针实现结构体的成员函数
 typedef struct internal_hooks {
     void *(CJSON_CDECL *allocate)(size_t size);
     void(CJSON_CDECL *deallocate)(void *pointer);

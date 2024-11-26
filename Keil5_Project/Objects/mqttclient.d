@@ -51,3 +51,5 @@
 .\objects\mqttclient.o: .\RingBuffer\RingBuffer.h
 .\objects\mqttclient.o: D:\Univercity\Keil5\ARM\ARMCC\Bin\..\include\stdbool.h
 .\objects\mqttclient.o: D:\Univercity\Keil5\ARM\ARMCC\Bin\..\include\string.h
+.\objects\mqttclient.o: .\Hardware\Sensor.h
+.\objects\mqttclient.o: MQTT\JSON.h

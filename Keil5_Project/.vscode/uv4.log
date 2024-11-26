@@ -1,5 +1,15 @@
 *** Using Compiler 'V5.06 update 5 (build 528)', folder: 'D:\Univercity\Keil5\ARM\ARMCC\Bin'
 Build target 'Target 1'
+compiling RingBuffer.c...
+compiling MQTTClient.c...
+compiling main.c...
+User\main.c(73): warning:  #177-D: label "wifiReconnect"  was declared but never referenced
+      wifiReconnect:
+User\main.c(84): warning:  #177-D: label "mqttReconnect"  was declared but never referenced
+      mqttReconnect:
+User\main.c: 2 warnings, 0 errors
+linking...
+Program Size: Code=19124 RO-data=660 RW-data=168 ZI-data=12104  
 After Build - User command #1: fromelf --text -a -c --output=debug.dis Objects\Project.axf
-".\Objects\Project.axf" - 0 Error(s), 0 Warning(s).
-Build Time Elapsed:  00:00:01
+".\Objects\Project.axf" - 0 Error(s), 2 Warning(s).
+Build Time Elapsed:  00:00:03
