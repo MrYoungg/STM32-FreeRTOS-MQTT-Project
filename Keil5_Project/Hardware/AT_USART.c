@@ -164,6 +164,8 @@ void USART_Write_Buffer(void)
         volatile uint8_t receiveData;
         static BaseType_t xHigherPriorityTaskWoken;
 
+        receiveData = USART_ReceiveData(AT_USARTx); // 读数据寄存器清除RXNE标志位
+
         // 串口收到数据,唤醒USART_Receive_Mutex
         // platform_mutex_unlock(&USART_Receive_Mutex);
         // platform_mutex_unlock_from_isr(&USART_Receive_Mutex);
@@ -173,8 +175,6 @@ void USART_Write_Buffer(void)
                 portYIELD_FROM_ISR(pdTRUE);
             }
         }
-
-        receiveData = USART_ReceiveData(AT_USARTx);
 
         // 写环形缓冲区
         ret = Write_RingBuffer((RingBuffer_t *)&USART_Buffer, (uint8_t *)&receiveData, 1);

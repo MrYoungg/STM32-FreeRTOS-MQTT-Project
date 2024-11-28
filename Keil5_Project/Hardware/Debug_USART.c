@@ -5,12 +5,11 @@
 #define APBx_DEBUG_USART_GPIOx                       RCC_APB2Periph_GPIOA
 #define APBx_DEBUG_USARTx                            RCC_APB1Periph_USART2
 
-#define DEBUG_USART_GPIOx  GPIOA
-#define DEBUG_USART_TX_PIN GPIO_Pin_2
-#define DEBUG_USART_RX_PIN GPIO_Pin_3
-
-#define DEBUG_USATR_BAUDRATE 115200
 #define DEBUG_USARTx         USART2
+#define DEBUG_USART_GPIOx    GPIOA
+#define DEBUG_USART_TX_PIN   GPIO_Pin_2
+#define DEBUG_USART_RX_PIN   GPIO_Pin_3
+#define DEBUG_USATR_BAUDRATE 115200
 
 void Debug_USART_Init(void)
 {

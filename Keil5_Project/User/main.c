@@ -153,6 +153,7 @@ void Task_MQTTDataSend(void *parameter)
 {
     extern SensorData_t sensorData;
     while (1) {
+        // 连接成功才上报
         sensorData.light = LED_STATUS;
         DEBUG_LOG("food sensor: %d\r\n", sensorData.food);
         DEBUG_LOG("water sensor: %d\r\n", sensorData.water);

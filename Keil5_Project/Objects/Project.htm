@@ -3,7 +3,7 @@
 <title>Static Call Graph - [.\Objects\Project.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\Objects\Project.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060528: Last Updated: Fri Nov 22 18:25:38 2024
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060528: Last Updated: Thu Nov 28 20:57:39 2024
 <BR><P>
 <H3>Maximum Stack Usage =        944 bytes + Unknown(Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -319,10 +319,10 @@ Global Symbols
 </UL>
 
 <P><STRONG><a name="[4a]"></a>__aeabi_dadd</STRONG> (Thumb, 322 bytes, Stack size 48 bytes, dadd.o(.text), UNUSED)
-<BR><BR>[Calls]<UL><LI><a href="#[4c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_lasr
-<LI><a href="#[4b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_llsl
+<BR><BR>[Calls]<UL><LI><a href="#[4b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_llsl
 <LI><a href="#[4e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_double_round
 <LI><a href="#[4d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_double_epilogue
+<LI><a href="#[4c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_lasr
 </UL>
 <BR>[Called By]<UL><LI><a href="#[4f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_dsub
 <LI><a href="#[50]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_drsub
@@ -382,8 +382,8 @@ Global Symbols
 </UL>
 
 <P><STRONG><a name="[57]"></a>__aeabi_uldivmod</STRONG> (Thumb, 98 bytes, Stack size 40 bytes, uldiv.o(.text), UNUSED)
-<BR><BR>[Calls]<UL><LI><a href="#[54]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_llsr
-<LI><a href="#[4b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_llsl
+<BR><BR>[Calls]<UL><LI><a href="#[4b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_llsl
+<LI><a href="#[54]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_llsr
 </UL>
 <BR>[Called By]<UL><LI><a href="#[c7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_printf_core
 <LI><a href="#[c9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_fp_digits
@@ -436,9 +436,9 @@ Global Symbols
 </UL>
 
 <P><STRONG><a name="[4d]"></a>_double_epilogue</STRONG> (Thumb, 156 bytes, Stack size 32 bytes, depilogue.o(.text), UNUSED)
-<BR><BR>[Calls]<UL><LI><a href="#[54]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_llsr
-<LI><a href="#[4b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_llsl
+<BR><BR>[Calls]<UL><LI><a href="#[4b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_llsl
 <LI><a href="#[4e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_double_round
+<LI><a href="#[54]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_llsr
 </UL>
 <BR>[Called By]<UL><LI><a href="#[51]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_dmul
 <LI><a href="#[4a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_dadd
@@ -446,8 +446,8 @@ Global Symbols
 </UL>
 
 <P><STRONG><a name="[5b]"></a>__aeabi_d2ulz</STRONG> (Thumb, 48 bytes, Stack size 0 bytes, dfixul.o(.text), UNUSED)
-<BR><BR>[Calls]<UL><LI><a href="#[54]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_llsr
-<LI><a href="#[4b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_llsl
+<BR><BR>[Calls]<UL><LI><a href="#[4b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_llsl
+<LI><a href="#[54]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_llsr
 </UL>
 <BR>[Called By]<UL><LI><a href="#[c9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_fp_digits
 </UL>
@@ -675,11 +675,6 @@ Global Symbols
 </UL>
 <BR>[Called By]<UL><LI><a href="#[72]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_Read_Buffer
 <LI><a href="#[31]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART3_IRQHandler
-<LI><a href="#[35]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
-<LI><a href="#[3b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Task_MQTTDataSend
-<LI><a href="#[3f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Task_MQTTDataRcv
-<LI><a href="#[3e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Task_ATResponseRcv
-<LI><a href="#[3d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Task_ATConnect
 <LI><a href="#[bf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;isInItemList
 <LI><a href="#[be]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;getItemValueNumber
 <LI><a href="#[99]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;JSON_PrintItemList
@@ -700,6 +695,11 @@ Global Symbols
 <LI><a href="#[67]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;AT_ParseResponse
 <LI><a href="#[75]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;AT_Send
 <LI><a href="#[46]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HardFault_Handler_C
+<LI><a href="#[35]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
+<LI><a href="#[3b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Task_MQTTDataSend
+<LI><a href="#[3f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Task_MQTTDataRcv
+<LI><a href="#[3e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Task_ATResponseRcv
+<LI><a href="#[3d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Task_ATConnect
 </UL>
 
 <P><STRONG><a name="[6e]"></a>Delay_ms</STRONG> (Thumb, 24 bytes, Stack size 12 bytes, delay.o(i.Delay_ms))
@@ -710,8 +710,8 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[9d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;LED_Blink
 <LI><a href="#[72]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_Read_Buffer
 <LI><a href="#[10]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;EXTI0_IRQHandler
-<LI><a href="#[3d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Task_ATConnect
 <LI><a href="#[6d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;AT_Read_DataPacketBuffer
+<LI><a href="#[3d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Task_ATConnect
 </UL>
 
 <P><STRONG><a name="[88]"></a>Delay_us</STRONG> (Thumb, 52 bytes, Stack size 12 bytes, delay.o(i.Delay_us))
@@ -1044,8 +1044,8 @@ Global Symbols
 <LI>Call Chain = Task_ATResponseRcv &rArr;  Task_ATResponseRcv (Cycle)
 </UL>
 <BR>[Calls]<UL><LI><a href="#[6a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Debug_USART_Printf
-<LI><a href="#[3e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Task_ATResponseRcv
 <LI><a href="#[71]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;AT_ReceiveResponse
+<LI><a href="#[3e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Task_ATResponseRcv
 </UL>
 <BR>[Called By]<UL><LI><a href="#[3e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Task_ATResponseRcv
 </UL>
@@ -1322,8 +1322,6 @@ Global Symbols
 <P><STRONG><a name="[ba]"></a>vPortEnterCritical</STRONG> (Thumb, 24 bytes, Stack size 0 bytes, port.o(i.vPortEnterCritical))
 <BR><BR>[Called By]<UL><LI><a href="#[ea]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;xTaskResumeAll
 <LI><a href="#[66]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;xQueueSemaphoreTake
-<LI><a href="#[35]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
-<LI><a href="#[3d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Task_ATConnect
 <LI><a href="#[bd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;vTaskSuspend
 <LI><a href="#[d5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;prvCheckTasksWaitingTermination
 <LI><a href="#[d3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;prvAddNewTaskToReadyList
@@ -1333,13 +1331,13 @@ Global Symbols
 <LI><a href="#[e4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;prvUnlockQueue
 <LI><a href="#[e3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;prvIsQueueFull
 <LI><a href="#[e2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;prvIsQueueEmpty
+<LI><a href="#[35]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
+<LI><a href="#[3d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Task_ATConnect
 </UL>
 
 <P><STRONG><a name="[bc]"></a>vPortExitCritical</STRONG> (Thumb, 18 bytes, Stack size 0 bytes, port.o(i.vPortExitCritical))
 <BR><BR>[Called By]<UL><LI><a href="#[ea]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;xTaskResumeAll
 <LI><a href="#[66]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;xQueueSemaphoreTake
-<LI><a href="#[35]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
-<LI><a href="#[3d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Task_ATConnect
 <LI><a href="#[bd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;vTaskSuspend
 <LI><a href="#[d5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;prvCheckTasksWaitingTermination
 <LI><a href="#[d3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;prvAddNewTaskToReadyList
@@ -1349,6 +1347,8 @@ Global Symbols
 <LI><a href="#[e4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;prvUnlockQueue
 <LI><a href="#[e3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;prvIsQueueFull
 <LI><a href="#[e2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;prvIsQueueEmpty
+<LI><a href="#[35]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
+<LI><a href="#[3d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Task_ATConnect
 </UL>
 
 <P><STRONG><a name="[da]"></a>vPortFree</STRONG> (Thumb, 64 bytes, Stack size 16 bytes, heap_4.o(i.vPortFree))
@@ -1559,9 +1559,9 @@ Global Symbols
 <LI><a href="#[d3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;prvAddNewTaskToReadyList
 <LI><a href="#[90]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memclr4
 </UL>
-<BR>[Called By]<UL><LI><a href="#[35]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
+<BR>[Called By]<UL><LI><a href="#[cf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;vTaskStartScheduler
+<LI><a href="#[35]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 <LI><a href="#[3d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Task_ATConnect
-<LI><a href="#[cf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;vTaskStartScheduler
 </UL>
 
 <P><STRONG><a name="[f2]"></a>xTaskIncrementTick</STRONG> (Thumb, 274 bytes, Stack size 24 bytes, tasks.o(i.xTaskIncrementTick))

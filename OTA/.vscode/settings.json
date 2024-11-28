@@ -5,6 +5,19 @@
         "stm32f10x_conf.h": "c",
         "stm32f10x_cec.h": "c",
         "stm32f10x_spi.h": "c",
-        "stm32f10x_dma.h": "c"
+        "stm32f10x_dma.h": "c",
+        "delay.h": "c",
+        "usart.h": "c",
+        "stdarg.h": "c",
+        "led.h": "c",
+        "key.h": "c",
+        "ringbuffer.h": "c",
+        "stdlib.h": "c",
+        "stdio.h": "c",
+        "stm32f10x_rcc.h": "c",
+        "stm32f10x_gpio.h": "c",
+        "AT24C02.C": "cpp",
+        "at24c02.h": "c",
+        "iic.h": "c"
     }
 }

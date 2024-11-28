@@ -18,3 +18,14 @@
 .\objects\main.o: .\Library\stm32f10x_tim.h
 .\objects\main.o: .\Library\stm32f10x_usart.h
 .\objects\main.o: .\Library\misc.h
+.\objects\main.o: .\Hardware\Usart.h
+.\objects\main.o: D:\Univercity\Keil5\ARM\ARMCC\Bin\..\include\stdio.h
+.\objects\main.o: D:\Univercity\Keil5\ARM\ARMCC\Bin\..\include\stdarg.h
+.\objects\main.o: .\RingBuffer\RingBuffer.h
+.\objects\main.o: D:\Univercity\Keil5\ARM\ARMCC\Bin\..\include\stdlib.h
+.\objects\main.o: D:\Univercity\Keil5\ARM\ARMCC\Bin\..\include\stdbool.h
+.\objects\main.o: .\Hardware\Key.h
+.\objects\main.o: .\Hardware\Delay.h
+.\objects\main.o: .\Hardware\LED.h
+.\objects\main.o: .\Hardware\AT24C02.h
+.\objects\main.o: .\Hardware\IIC.h

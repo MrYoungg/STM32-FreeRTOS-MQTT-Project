@@ -7,6 +7,7 @@
                 "d:\\Univercity\\FreeRTOS\\MQTT_Project\\STM32-FreeRTOS-MQTT-Project\\OTA\\Library",
                 "d:\\Univercity\\FreeRTOS\\MQTT_Project\\STM32-FreeRTOS-MQTT-Project\\OTA\\Start",
                 "d:\\Univercity\\FreeRTOS\\MQTT_Project\\STM32-FreeRTOS-MQTT-Project\\OTA\\User",
+                "d:\\Univercity\\FreeRTOS\\MQTT_Project\\STM32-FreeRTOS-MQTT-Project\\OTA\\RingBuffer",
                 "D:\\Univercity\\Keil5\\ARM\\ARMCC\\include",
                 "D:\\Univercity\\Keil5\\ARM\\ARMCC\\include\\rw"
             ],

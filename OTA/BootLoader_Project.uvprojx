@@ -326,7 +326,7 @@
             <wLevel>2</wLevel>
             <uThumb>0</uThumb>
             <uSurpInc>0</uSurpInc>
-            <uC99>0</uC99>
+            <uC99>1</uC99>
             <uGnu>1</uGnu>
             <useXO>0</useXO>
             <v6Lang>1</v6Lang>
@@ -340,7 +340,7 @@
               <MiscControls></MiscControls>
               <Define></Define>
               <Undefine></Undefine>
-              <IncludePath>.\Hardware;.\Library;.\Start;.\User</IncludePath>
+              <IncludePath>.\Hardware;.\Library;.\Start;.\User;.\RingBuffer</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -538,6 +538,48 @@
         </Group>
         <Group>
           <GroupName>Hardware</GroupName>
+          <Files>
+            <File>
+              <FileName>Delay.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Hardware\Delay.c</FilePath>
+            </File>
+            <File>
+              <FileName>Usart.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Hardware\Usart.c</FilePath>
+            </File>
+            <File>
+              <FileName>Key.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Hardware\Key.c</FilePath>
+            </File>
+            <File>
+              <FileName>LED.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Hardware\LED.c</FilePath>
+            </File>
+            <File>
+              <FileName>IIC.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Hardware\IIC.c</FilePath>
+            </File>
+            <File>
+              <FileName>AT24C02.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Hardware\AT24C02.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>RingBuffer</GroupName>
+          <Files>
+            <File>
+              <FileName>RingBuffer.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\RingBuffer\RingBuffer.c</FilePath>
+            </File>
+          </Files>
         </Group>
         <Group>
           <GroupName>User</GroupName>

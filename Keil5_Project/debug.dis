@@ -31,8 +31,8 @@
     Program header entries: 1
     Section header entries: 16
 
-    Program header offset: 763544 (0x000ba698)
-    Section header offset: 763576 (0x000ba6b8)
+    Program header offset: 768148 (0x000bb894)
+    Section header offset: 768180 (0x000bb8b4)
 
     Section header string table index: 15
 
@@ -4471,7 +4471,7 @@
         0x08002b4a:    4c20         L      LDR      r4,[pc,#128] ; [0x8002bcc] = 0x20000018
         0x08002b4c:    2800        .(      CMP      r0,#0
         0x08002b4e:    d013        ..      BEQ      0x8002b78 ; USART3_IRQHandler + 68
-        0x08002b50:    2296        ."      MOVS     r2,#0x96
+        0x08002b50:    2298        ."      MOVS     r2,#0x98
         0x08002b52:    a11f        ..      ADR      r1,{pc}+0x7e ; 0x8002bd0
         0x08002b54:    a023        #.      ADR      r0,{pc}+0x90 ; 0x8002be4
         0x08002b56:    f7fefd95    ....    BL       Debug_USART_Printf ; 0x8001684
@@ -4482,7 +4482,7 @@
         0x08002b64:    4638        8F      MOV      r0,r7
         0x08002b66:    f000f86c    ..l.    BL       USART_GetITStatus ; 0x8002c42
         0x08002b6a:    b928        (.      CBNZ     r0,0x8002b78 ; USART3_IRQHandler + 68
-        0x08002b6c:    229a        ."      MOVS     r2,#0x9a
+        0x08002b6c:    229c        ."      MOVS     r2,#0x9c
         0x08002b6e:    a118        ..      ADR      r1,{pc}+0x62 ; 0x8002bd0
         0x08002b70:    a021        !.      ADR      r0,{pc}+0x88 ; 0x8002bf8
         0x08002b72:    f7fefd87    ....    BL       Debug_USART_Printf ; 0x8001684
@@ -4492,19 +4492,19 @@
         0x08002b7e:    f000f860    ..`.    BL       USART_GetITStatus ; 0x8002c42
         0x08002b82:    2800        .(      CMP      r0,#0
         0x08002b84:    d01c        ..      BEQ      0x8002bc0 ; USART3_IRQHandler + 140
-        0x08002b86:    4911        .I      LDR      r1,[pc,#68] ; [0x8002bcc] = 0x20000018
-        0x08002b88:    68e0        .h      LDR      r0,[r4,#0xc]
-        0x08002b8a:    f001fd97    ....    BL       xQueueGiveFromISR ; 0x80046bc
-        0x08002b8e:    6820         h      LDR      r0,[r4,#0]
-        0x08002b90:    b138        8.      CBZ      r0,0x8002ba2 ; USART3_IRQHandler + 110
-        0x08002b92:    4920         I      LDR      r1,[pc,#128] ; [0x8002c14] = 0xe000ed04
-        0x08002b94:    f04f5080    O..P    MOV      r0,#0x10000000
-        0x08002b98:    6008        .`      STR      r0,[r1,#0]
-        0x08002b9a:    f3bf8f4f    ..O.    DSB      
-        0x08002b9e:    f3bf8f6f    ..o.    ISB      
-        0x08002ba2:    4638        8F      MOV      r0,r7
-        0x08002ba4:    f000f960    ..`.    BL       USART_ReceiveData ; 0x8002e68
-        0x08002ba8:    9000        ..      STR      r0,[sp,#0]
+        0x08002b86:    4638        8F      MOV      r0,r7
+        0x08002b88:    f000f96e    ..n.    BL       USART_ReceiveData ; 0x8002e68
+        0x08002b8c:    9000        ..      STR      r0,[sp,#0]
+        0x08002b8e:    490f        .I      LDR      r1,[pc,#60] ; [0x8002bcc] = 0x20000018
+        0x08002b90:    68e0        .h      LDR      r0,[r4,#0xc]
+        0x08002b92:    f001fd93    ....    BL       xQueueGiveFromISR ; 0x80046bc
+        0x08002b96:    6820         h      LDR      r0,[r4,#0]
+        0x08002b98:    b138        8.      CBZ      r0,0x8002baa ; USART3_IRQHandler + 118
+        0x08002b9a:    491e        .I      LDR      r1,[pc,#120] ; [0x8002c14] = 0xe000ed04
+        0x08002b9c:    f04f5080    O..P    MOV      r0,#0x10000000
+        0x08002ba0:    6008        .`      STR      r0,[r1,#0]
+        0x08002ba2:    f3bf8f4f    ..O.    DSB      
+        0x08002ba6:    f3bf8f6f    ..o.    ISB      
         0x08002baa:    2201        ."      MOVS     r2,#1
         0x08002bac:    4669        iF      MOV      r1,sp
         0x08002bae:    481a        .H      LDR      r0,[pc,#104] ; [0x8002c18] = 0x200000a8
@@ -4703,7 +4703,7 @@
         0x08002d7e:    4c1a        .L      LDR      r4,[pc,#104] ; [0x8002de8] = 0x200000a8
         0x08002d80:    4d1a        .M      LDR      r5,[pc,#104] ; [0x8002dec] = 0x20000018
         0x08002d82:    e010        ..      B        0x8002da6 ; USART_Read_Buffer + 50
-        0x08002d84:    2272        r"      MOVS     r2,#0x72
+        0x08002d84:    2274        t"      MOVS     r2,#0x74
         0x08002d86:    a11a        ..      ADR      r1,{pc}+0x6a ; 0x8002df0
         0x08002d88:    a01e        ..      ADR      r0,{pc}+0x7c ; 0x8002e04
         0x08002d8a:    f7fefc7b    ..{.    BL       Debug_USART_Printf ; 0x8001684
@@ -4712,7 +4712,7 @@
         0x08002d92:    f001fcc7    ....    BL       xQueueSemaphoreTake ; 0x8004724
         0x08002d96:    2064        d       MOVS     r0,#0x64
         0x08002d98:    f7fefca0    ....    BL       Delay_ms ; 0x80016dc
-        0x08002d9c:    2275        u"      MOVS     r2,#0x75
+        0x08002d9c:    2277        w"      MOVS     r2,#0x77
         0x08002d9e:    a114        ..      ADR      r1,{pc}+0x52 ; 0x8002df0
         0x08002da0:    a020         .      ADR      r0,{pc}+0x84 ; 0x8002e24
         0x08002da2:    f7fefc6f    ..o.    BL       Debug_USART_Printf ; 0x8001684
@@ -4724,13 +4724,13 @@
         0x08002db0:    d009        ..      BEQ      0x8002dc6 ; USART_Read_Buffer + 82
         0x08002db2:    6868        hh      LDR      r0,[r5,#4]
         0x08002db4:    b188        ..      CBZ      r0,0x8002dda ; USART_Read_Buffer + 102
-        0x08002db6:    228a        ."      MOVS     r2,#0x8a
+        0x08002db6:    228c        ."      MOVS     r2,#0x8c
         0x08002db8:    a10d        ..      ADR      r1,{pc}+0x38 ; 0x8002df0
         0x08002dba:    a022        ".      ADR      r0,{pc}+0x8a ; 0x8002e44
         0x08002dbc:    f7fefc62    ..b.    BL       Debug_USART_Printf ; 0x8001684
         0x08002dc0:    6868        hh      LDR      r0,[r5,#4]
         0x08002dc2:    e8bd81f0    ....    POP      {r4-r8,pc}
-        0x08002dc6:    227b        {"      MOVS     r2,#0x7b
+        0x08002dc6:    227d        }"      MOVS     r2,#0x7d
         0x08002dc8:    a109        ..      ADR      r1,{pc}+0x28 ; 0x8002df0
         0x08002dca:    4826        &H      LDR      r0,[pc,#152] ; [0x8002e64] = 0x8004d88
         0x08002dcc:    f7fefc5a    ..Z.    BL       Debug_USART_Printf ; 0x8001684
@@ -8277,11 +8277,11 @@
 
 
 ** Section #6 '.debug_info' (SHT_PROGBITS)
-    Size   : 98024 bytes
+    Size   : 98864 bytes
 
 
 ** Section #7 '.debug_line' (SHT_PROGBITS)
-    Size   : 27804 bytes
+    Size   : 28004 bytes
 
 
 ** Section #8 '.debug_loc' (SHT_PROGBITS)
@@ -8289,7 +8289,7 @@
 
 
 ** Section #9 '.debug_macinfo' (SHT_PROGBITS)
-    Size   : 532732 bytes
+    Size   : 536296 bytes
 
 
 ** Section #10 '.debug_pubnames' (SHT_PROGBITS)
