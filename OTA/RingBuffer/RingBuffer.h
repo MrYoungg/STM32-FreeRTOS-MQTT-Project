@@ -7,6 +7,22 @@
 #define isFrameOverWritten (ringBuffer->FCBListHead->frameBegin) <= (ringBuffer->writeIndex)
 #define RING_BUFFER_SIZE   1024
 #define MAX_FCB_LIST_SIZE  30
+#define FCB_ARR_SIZE       16
+
+#if 0 
+typedef struct FCB_ArrItem {
+    uint16_t start;
+    uint16_t end;
+    uint16_t len;
+} FCB_ArrItem_t;
+
+typedef struct FCB_Arr {
+    FCB_ArrItem_t arr[FCB_ARR_SIZE];
+    uint16_t rIndex;
+    uint16_t wIndex;
+    uint16_t itemNum;
+} FCB_Arr_t;
+#endif
 
 typedef struct FCB_ListItem {
     uint16_t frameBegin;
@@ -20,8 +36,10 @@ typedef struct {
     volatile uint16_t dataSize;           // 当前已有数据项大小
     volatile uint16_t readIndex;          // 指向上次读出末尾的下一个位置
     volatile uint16_t writeIndex;         // 指向上次写入末尾的下一个位置
-    FCB_ListItem_t *FCBListHead;          // 数据帧管理链表头节点
-    uint8_t FCBListSize;                  // FCB链表项的项数
+#if 1
+    FCB_ListItem_t *FCBListHead; // 数据帧管理链表头节点
+    uint8_t FCBListSize;         // FCB链表项的项数
+#endif
 } RingBuffer_t;
 
 int RingBuffer_Init(RingBuffer_t *ringBuffer);

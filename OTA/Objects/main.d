@@ -18,6 +18,7 @@
 .\objects\main.o: .\Library\stm32f10x_tim.h
 .\objects\main.o: .\Library\stm32f10x_usart.h
 .\objects\main.o: .\Library\misc.h
+.\objects\main.o: D:\Univercity\Keil5\ARM\ARMCC\Bin\..\include\string.h
 .\objects\main.o: .\Hardware\Usart.h
 .\objects\main.o: D:\Univercity\Keil5\ARM\ARMCC\Bin\..\include\stdio.h
 .\objects\main.o: D:\Univercity\Keil5\ARM\ARMCC\Bin\..\include\stdarg.h
@@ -29,3 +30,6 @@
 .\objects\main.o: .\Hardware\LED.h
 .\objects\main.o: .\Hardware\AT24C02.h
 .\objects\main.o: .\Hardware\IIC.h
+.\objects\main.o: .\Hardware\W25Q64.h
+.\objects\main.o: .\Hardware\SPI.h
+.\objects\main.o: .\Hardware\InterFlash.h

@@ -18,6 +18,10 @@
         "stm32f10x_gpio.h": "c",
         "AT24C02.C": "cpp",
         "at24c02.h": "c",
-        "iic.h": "c"
+        "iic.h": "c",
+        "w25q64_ins.h": "c",
+        "w25q64.h": "c",
+        "spi.h": "c",
+        "interflash.h": "c"
     }
 }

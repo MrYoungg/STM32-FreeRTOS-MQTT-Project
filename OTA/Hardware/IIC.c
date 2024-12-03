@@ -4,7 +4,7 @@
 #define IIC_SCL_PIN     GPIO_Pin_6
 #define IIC_SDA_PIN     GPIO_Pin_7
 #define IIC_STD_DELAY   10
-#define IIC_QUICK_DELAY 2
+#define IIC_FAST_DELAY 2
 
 void IIC_Init(void)
 {
@@ -62,7 +62,8 @@ void IIC_Start(void)
 // 终止条件
 void IIC_Stop(void)
 {
-    IIC_W_SDA(IIC_LOW); // 将SDA先拉低
+    IIC_W_SCL(IIC_LOW); // 保证SCL为低
+    IIC_W_SDA(IIC_LOW); // 保证SDA为低
     IIC_W_SCL(IIC_HIGH);
     IIC_W_SDA(IIC_HIGH);
 }

@@ -1,52 +1,52 @@
 #include "stm32f10x.h"
+#include "string.h"
 #include "Usart.h"
 #include "Key.h"
 #include "LED.h"
 #include "AT24C02.h"
+#include "W25Q64.h"
+#include "InterFlash.h"
+
+#define PAGE_NUM 4
+
+void printBuf(uint32_t *buf, uint32_t bufLen);
+uint32_t buf[1024];
+uint32_t wbuf[1024];
 
 int main(void)
 {
     MyUSART_Init();
     Key_Init();
     LED_Init();
-    IIC_Init();
+    AT24C02_Init();
+    W25Q64_Init();
 
     DEBUG_LOG("RST\r\n");
-    uint8_t buf[256] = {0};
-    for (uint16_t i = 0; i < AT24C02_BYTE_NUM; i++) {
-        buf[i] = AT24C02_ReadByte((uint8_t)i);
-        DEBUG_LOG("buf[%d]:%d\r\n", i, buf[i]);
-    }
 
-    for (uint16_t i = 0; i < AT24C02_BYTE_NUM; i++) {
-        AT24C02_WriteByte((uint8_t)i, (uint8_t)(i));
-        AT24C02_WIAT_FOR_WRITE();
+    // 擦除后4页
+    DEBUG_LOG("erase\r\n");
+    for (int i = 0; i < PAGE_NUM; i++) {
+        InterFlash_ErasePage(INTERFLASH_GET_PAGE_ADDR(60 + i));
     }
-    for (uint16_t i = 0; i < AT24C02_BYTE_NUM; i++) {
-        buf[i] = AT24C02_ReadByte((uint8_t)i);
-        DEBUG_LOG("buf[%d]:%d\r\n", i, buf[i]);
+    InterFlash_ReadBuf_Word(INTERFLASH_GET_PAGE_ADDR(60), 1024, buf, 1024);
+    printBuf(buf, 1024);
+
+    // 写后4页
+    DEBUG_LOG("write\r\n");
+    for (uint32_t i = 0; i < 1024; i++) {
+        wbuf[i] = i;
     }
+    InterFlash_WriteBuf_Word(INTERFLASH_GET_PAGE_ADDR(60), wbuf, 1024);
+    InterFlash_ReadBuf_Word(INTERFLASH_GET_PAGE_ADDR(60), 1024, buf, sizeof(buf));
+    printBuf(buf, 1024);
 
     while (1) {
-#if 0
-        uint8_t buf[MAX_USART_FRAME_SIZE] = {0};
-        Read_DataFrame(&CMD_USART_Buffer, buf, sizeof(buf));
-        DEBUG_LOG("%s\r\n", buf);
+    }
+}
 
-        FCB_ListItem_t *item = CMD_USART_Buffer.FCBListHead;
-
-        int size = sizeof((*item));
-        int addr1 = &(item->frameBegin);
-        int addr2 = &(item->frameSize);
-        ;
-        int addr3 = &(item->next);
-        ;
-        DEBUG_LOG("sizeof FCB_ListItem_t:%d\r\n", size);
-        DEBUG_LOG("addr1:%8x\r\n", addr1);
-        DEBUG_LOG("addr2:%8x\r\n", addr2);
-        DEBUG_LOG("addr3:%8x\r\n", addr3);
-
-        Delay_s(3);
-#endif
+void printBuf(uint32_t *buf, uint32_t bufLen)
+{
+    for (uint32_t i = 0; i < bufLen; i++) {
+        DEBUG_LOG("buf[%d]:%.8x\r\n", i, buf[i]);
     }
 }

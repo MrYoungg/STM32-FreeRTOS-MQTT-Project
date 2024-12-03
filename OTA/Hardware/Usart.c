@@ -6,10 +6,17 @@
 #define CMD_USART_RX_PIN      GPIO_Pin_3
 #define CMD_USART_BAUD_RATE   115200
 #define CMD_USARTx_IRQn       USART2_IRQn
+#define CMD_USARTx_IRQ_PRIO   2
 #define CMD_USARTx_IRQHandler USART2_IRQHandler
+
+#define CMD_USART_DMAx          DMA1
+#define CMD_USART_DMAy_CHANNELx DMA1_Channel6
+#define CMD_USART_DMA_IRQn      DMA1_Channel6_IRQn
+#define CMD_USARTx_DMA_IRQ_PRIO 1
 
 static void CMD_USART_Init(void);
 RingBuffer_t CMD_USART_Buffer;
+// FCB_Arr_t FCBArr;
 
 void MyUSART_Init(void)
 {
@@ -33,6 +40,7 @@ static void CMD_USART_Init(void)
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
     GPIO_Init(CMD_USART_GPIOx, &GPIO_InitStructure);
 
+    USART_DeInit(CMD_USARTx);
     USART_InitTypeDef USART_InitStructure;
     USART_InitStructure.USART_BaudRate = CMD_USART_BAUD_RATE;
     USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
@@ -48,11 +56,45 @@ static void CMD_USART_Init(void)
     NVIC_InitTypeDef NVIC_InitStructure;
     NVIC_InitStructure.NVIC_IRQChannel = CMD_USARTx_IRQn;
     NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
-    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 2;
+    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = CMD_USARTx_IRQ_PRIO;
     NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
     NVIC_Init(&NVIC_InitStructure);
 
     USART_Cmd(CMD_USARTx, ENABLE);
+}
+
+void CMD_USART_DMA_Init(void)
+{
+    RCC_AHBPeriphClockCmd(RCC_AHBPeriph_DMA1, ENABLE);
+
+    DMA_DeInit(CMD_USART_DMAy_CHANNELx);
+    DMA_InitTypeDef DMA_InitStructer;
+    DMA_InitStructer.DMA_PeripheralBaseAddr = (uint32_t)&(CMD_USARTx->DR);
+    DMA_InitStructer.DMA_MemoryBaseAddr = (uint32_t)(CMD_USART_Buffer.bufferHead);
+    DMA_InitStructer.DMA_DIR = DMA_DIR_PeripheralSRC;
+    DMA_InitStructer.DMA_BufferSize = MAX_USART_FRAME_SIZE;
+    DMA_InitStructer.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
+    DMA_InitStructer.DMA_MemoryInc = DMA_MemoryInc_Enable;
+    DMA_InitStructer.DMA_PeripheralDataSize = DMA_PeripheralDataSize_Byte;
+    DMA_InitStructer.DMA_MemoryDataSize = DMA_MemoryDataSize_Byte;
+    DMA_InitStructer.DMA_Mode = DMA_Mode_Normal;
+    DMA_InitStructer.DMA_Priority = 0;
+    DMA_InitStructer.DMA_M2M = DMA_M2M_Disable;
+    DMA_Init(CMD_USART_DMAy_CHANNELx, &DMA_InitStructer);
+
+#if 1
+    // 启用全满中断
+    DMA_ITConfig(CMD_USART_DMAy_CHANNELx, DMA_IT_TC, ENABLE);
+    NVIC_PriorityGroupConfig(NVIC_PriorityGroup_4);
+    NVIC_InitTypeDef NVIC_InitStructure;
+    NVIC_InitStructure.NVIC_IRQChannel = CMD_USART_DMA_IRQn;
+    NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = CMD_USARTx_DMA_IRQ_PRIO;
+    NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
+    NVIC_Init(&NVIC_InitStructure);
+#endif
+
+    DMA_Cmd(CMD_USART_DMAy_CHANNELx, ENABLE);
 }
 
 /// @brief CMD串口发送一个字节数据
@@ -114,3 +156,5 @@ void CMD_USARTx_IRQHandler(void)
         frameSize = 0;
     }
 }
+
+void DMA1_Channel6_IRQHandler(void) {}

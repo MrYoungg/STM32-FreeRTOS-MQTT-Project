@@ -569,6 +569,21 @@
               <FileType>1</FileType>
               <FilePath>.\Hardware\AT24C02.c</FilePath>
             </File>
+            <File>
+              <FileName>SPI.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Hardware\SPI.c</FilePath>
+            </File>
+            <File>
+              <FileName>W25Q64.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Hardware\W25Q64.c</FilePath>
+            </File>
+            <File>
+              <FileName>InterFlash.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Hardware\InterFlash.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

@@ -60,7 +60,7 @@ int Read_RingBuffer(RingBuffer_t *ringBuffer,
 void Read_DataFrame(RingBuffer_t *ringBuffer, uint8_t *recvBuffer, uint32_t recvBufferLength)
 {
     FCB_ListItem_t *listHead = ringBuffer->FCBListHead;
-    if (listHead == NULL) {
+    if (listHead == NULL || ringBuffer->FCBListSize == 0) {
         return;
     }
 

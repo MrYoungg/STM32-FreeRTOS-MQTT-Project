@@ -1,5 +1,10 @@
 #include "AT24C02.h"
 
+void AT24C02_Init(void)
+{
+    IIC_Init();
+}
+
 uint8_t AT24C02_WriteByte(uint8_t byteAddr, uint8_t data)
 {
     uint8_t ret = 0;
@@ -90,14 +95,27 @@ uint8_t AT24C02_ReadByte(uint8_t byteAddr)
     return data;
 }
 
-uint8_t AT24C02_Read(uint8_t startAddr, uint16_t dataLen, uint8_t *recvBuf, uint16_t recvBufLen)
+void AT24C02_Read(uint8_t startAddr, uint16_t dataLen, uint8_t *recvBuf, uint16_t recvBufLen)
 {
-    if (dataLen > AT24C02_BYTE_NUM) {
-        return 0;
+    if (dataLen > AT24C02_BYTE_NUM || recvBuf == NULL) {
+        return;
     }
 
     uint16_t readLen = (dataLen <= recvBufLen) ? dataLen : recvBufLen;
 
     for (uint16_t i = 0; i < readLen; i++) {
+        recvBuf[i] = AT24C02_ReadByte(startAddr + i);
+    }
+}
+
+void AT24C02_Write(uint8_t startAddr, uint8_t *dataBuf, uint16_t dataBufLen)
+{
+    if ((dataBufLen > AT24C02_BYTE_NUM) || dataBuf == NULL) {
+        return;
+    }
+
+    for (uint16_t i = 0; i < dataBufLen; i++) {
+        AT24C02_WriteByte(startAddr + i, dataBuf[i]);
+        AT24C02_WIAT_FOR_WRITE;
     }
 }
