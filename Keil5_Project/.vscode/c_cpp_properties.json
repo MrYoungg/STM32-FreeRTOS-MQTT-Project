@@ -12,8 +12,8 @@
                 "d:\\Univercity\\FreeRTOS\\MQTT_Project\\STM32-FreeRTOS-MQTT-Project\\Keil5_Project\\ATCommand",
                 "d:\\Univercity\\FreeRTOS\\MQTT_Project\\STM32-FreeRTOS-MQTT-Project\\Keil5_Project\\RingBuffer",
                 "d:\\Univercity\\FreeRTOS\\MQTT_Project\\STM32-FreeRTOS-MQTT-Project\\Keil5_Project\\MQTT",
-                "D:\\Univercity\\Keil5\\ARM\\ARMCC\\include",
-                "D:\\Univercity\\Keil5\\ARM\\ARMCC\\include\\rw"
+                "D:\\Keil5\\ARM\\ARMCC\\include",
+                "D:\\Keil5\\ARM\\ARMCC\\include\\rw"
             ],
             "defines": [
                 "STM32F10X_MD",

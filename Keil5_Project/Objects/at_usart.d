@@ -2,7 +2,7 @@
 .\objects\at_usart.o: Hardware\AT_USART.h
 .\objects\at_usart.o: .\Start\stm32f10x.h
 .\objects\at_usart.o: .\Start\core_cm3.h
-.\objects\at_usart.o: D:\Univercity\Keil5\ARM\ARMCC\Bin\..\include\stdint.h
+.\objects\at_usart.o: D:\Keil5\ARM\ARMCC\Bin\..\include\stdint.h
 .\objects\at_usart.o: .\Start\system_stm32f10x.h
 .\objects\at_usart.o: .\User\stm32f10x_conf.h
 .\objects\at_usart.o: .\Library\stm32f10x_adc.h
@@ -30,7 +30,7 @@
 .\objects\at_usart.o: .\Library\stm32f10x_wwdg.h
 .\objects\at_usart.o: .\Library\misc.h
 .\objects\at_usart.o: .\FreeRTOS\include\FreeRTOS.h
-.\objects\at_usart.o: D:\Univercity\Keil5\ARM\ARMCC\Bin\..\include\stddef.h
+.\objects\at_usart.o: D:\Keil5\ARM\ARMCC\Bin\..\include\stddef.h
 .\objects\at_usart.o: .\FreeRTOS\include\FreeRTOSConfig.h
 .\objects\at_usart.o: .\FreeRTOS\include\projdefs.h
 .\objects\at_usart.o: .\FreeRTOS\include\portable.h
@@ -42,9 +42,9 @@
 .\objects\at_usart.o: .\FreeRTOS\include\task.h
 .\objects\at_usart.o: .\FreeRTOS\include\list.h
 .\objects\at_usart.o: Hardware\Debug_USART.h
-.\objects\at_usart.o: D:\Univercity\Keil5\ARM\ARMCC\Bin\..\include\stdio.h
-.\objects\at_usart.o: D:\Univercity\Keil5\ARM\ARMCC\Bin\..\include\stdlib.h
-.\objects\at_usart.o: D:\Univercity\Keil5\ARM\ARMCC\Bin\..\include\stdarg.h
+.\objects\at_usart.o: D:\Keil5\ARM\ARMCC\Bin\..\include\stdio.h
+.\objects\at_usart.o: D:\Keil5\ARM\ARMCC\Bin\..\include\stdlib.h
+.\objects\at_usart.o: D:\Keil5\ARM\ARMCC\Bin\..\include\stdarg.h
 .\objects\at_usart.o: Hardware\Delay.h
 .\objects\at_usart.o: .\RingBuffer\RingBuffer.h
-.\objects\at_usart.o: D:\Univercity\Keil5\ARM\ARMCC\Bin\..\include\stdbool.h
+.\objects\at_usart.o: D:\Keil5\ARM\ARMCC\Bin\..\include\stdbool.h

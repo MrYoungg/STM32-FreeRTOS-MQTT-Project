@@ -1,0 +1,46 @@
+﻿
+dsp clock:400000000
+ch:0x3 force dma stop error
+vdcmd_header_get fail
+segmet         start          end         use
+.rodata        0x6008e000             0x600c43a8          222120
+.text          0x600c43a8             0x600efebc          178964
+.data          0x600efebc             0x60121640          202628
+.bss           0x60121640             0x601f64e8          872104
+
+segmet         start          end         use       free
+dram0          0x40010000             0x40010000          0       65536l  
+dram1          0x40008000             0x40008000          0       32768  
+sram0          0x60000000             0x60000150          336       688  
+sram1          0x60000400             0x60000570          368       32
+sram2          0x60000590             0x60000598          8       72
+sram3          0x600005e0             0x600005e8          8       72
+start amic1234_amic56 path init...
+time4=0x0
+time3=0xa1f5ac5d
+time2=0xa1f5ab9f
+time1=0xa1f5aabb
+time0=0x2109b24d
+a:1
+a:2
+a:3
+a:4
+a:5
+a:6
+a:7
+a:8
+a:9
+a:10
+a:11
+a:12
+a:13
+a:14
+a:15
+a:16
+a:17
+a:18
+a:19
+a:20
+a:21
+a:22
+a:23

@@ -1,11 +1,5 @@
 #include "IIC.h"
 
-#define IIC_GPIOx       GPIOB
-#define IIC_SCL_PIN     GPIO_Pin_6
-#define IIC_SDA_PIN     GPIO_Pin_7
-#define IIC_STD_DELAY   10
-#define IIC_FAST_DELAY 2
-
 void IIC_Init(void)
 {
     RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);
@@ -24,7 +18,7 @@ void IIC_Init(void)
 static void IIC_W_SCL(uint8_t Bitvalue)
 {
     GPIO_WriteBit(IIC_GPIOx, IIC_SCL_PIN, (BitAction)Bitvalue);
-    Delay_us(IIC_STD_DELAY);
+    Delay_us(IIC_STDMODE_DELAY);
 }
 
 /// @brief 写SDA
@@ -32,7 +26,7 @@ static void IIC_W_SCL(uint8_t Bitvalue)
 static void IIC_W_SDA(uint8_t Bitvalue)
 {
     GPIO_WriteBit(IIC_GPIOx, IIC_SDA_PIN, (BitAction)Bitvalue);
-    Delay_us(IIC_STD_DELAY);
+    Delay_us(IIC_STDMODE_DELAY);
 }
 
 /// @brief 读SDA
@@ -41,9 +35,9 @@ static void IIC_W_SDA(uint8_t Bitvalue)
 static uint8_t IIC_RD_SDA(void)
 {
     uint8_t Bitvalue;
-    // Delay_us(IIC_STD_DELAY);
+    // Delay_us(IIC_STDMODE_DELAY);
     Bitvalue = GPIO_ReadInputDataBit(IIC_GPIOx, IIC_SDA_PIN);
-    Delay_us(IIC_STD_DELAY);
+    Delay_us(IIC_STDMODE_DELAY);
     return Bitvalue;
 }
 
@@ -121,12 +115,14 @@ uint8_t IIC_ReceiveAck(int16_t timeout)
 
     while ((timeout > 0) && (IIC_RD_SDA()) != IIC_LOW) {
         timeout--;
+        Delay_us(10);
     }
     IIC_W_SCL(IIC_HIGH);
-    
+
     // 超时，或在SCL高电平期间SDA上的应答信号不稳定，则返回非应答
     if ((timeout <= 0) || (IIC_RD_SDA() != IIC_LOW)) {
         IIC_W_SCL(IIC_LOW);
+        LOG("IIC ACK timeout\r\n");
         return IIC_NOACK;
     }
 

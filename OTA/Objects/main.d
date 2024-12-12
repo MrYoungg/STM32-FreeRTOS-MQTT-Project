@@ -1,7 +1,7 @@
 .\objects\main.o: User\main.c
 .\objects\main.o: .\Start\stm32f10x.h
 .\objects\main.o: .\Start\core_cm3.h
-.\objects\main.o: D:\Univercity\Keil5\ARM\ARMCC\Bin\..\include\stdint.h
+.\objects\main.o: D:\Keil5\ARM\ARMCC\Bin\..\include\stdint.h
 .\objects\main.o: .\Start\system_stm32f10x.h
 .\objects\main.o: .\User\stm32f10x_conf.h
 .\objects\main.o: .\Library\stm32f10x_dbgmcu.h
@@ -18,13 +18,13 @@
 .\objects\main.o: .\Library\stm32f10x_tim.h
 .\objects\main.o: .\Library\stm32f10x_usart.h
 .\objects\main.o: .\Library\misc.h
-.\objects\main.o: D:\Univercity\Keil5\ARM\ARMCC\Bin\..\include\string.h
+.\objects\main.o: D:\Keil5\ARM\ARMCC\Bin\..\include\string.h
 .\objects\main.o: .\Hardware\Usart.h
-.\objects\main.o: D:\Univercity\Keil5\ARM\ARMCC\Bin\..\include\stdio.h
-.\objects\main.o: D:\Univercity\Keil5\ARM\ARMCC\Bin\..\include\stdarg.h
-.\objects\main.o: .\RingBuffer\RingBuffer.h
-.\objects\main.o: D:\Univercity\Keil5\ARM\ARMCC\Bin\..\include\stdlib.h
-.\objects\main.o: D:\Univercity\Keil5\ARM\ARMCC\Bin\..\include\stdbool.h
+.\objects\main.o: D:\Keil5\ARM\ARMCC\Bin\..\include\stdio.h
+.\objects\main.o: D:\Keil5\ARM\ARMCC\Bin\..\include\stdarg.h
+.\objects\main.o: .\Utilities\RingBuffer.h
+.\objects\main.o: D:\Keil5\ARM\ARMCC\Bin\..\include\stdlib.h
+.\objects\main.o: D:\Keil5\ARM\ARMCC\Bin\..\include\stdbool.h
 .\objects\main.o: .\Hardware\Key.h
 .\objects\main.o: .\Hardware\Delay.h
 .\objects\main.o: .\Hardware\LED.h
@@ -33,3 +33,7 @@
 .\objects\main.o: .\Hardware\W25Q64.h
 .\objects\main.o: .\Hardware\SPI.h
 .\objects\main.o: .\Hardware\InterFlash.h
+.\objects\main.o: .\Hardware\Boot.h
+.\objects\main.o: .\Utilities\CMD.h
+.\objects\main.o: .\Utilities\Xmodem.h
+.\objects\main.o: User\main.h

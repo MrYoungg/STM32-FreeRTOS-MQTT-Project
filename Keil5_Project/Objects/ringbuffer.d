@@ -2,7 +2,7 @@
 .\objects\ringbuffer.o: RingBuffer\RingBuffer.h
 .\objects\ringbuffer.o: .\Start\stm32f10x.h
 .\objects\ringbuffer.o: .\Start\core_cm3.h
-.\objects\ringbuffer.o: D:\Univercity\Keil5\ARM\ARMCC\Bin\..\include\stdint.h
+.\objects\ringbuffer.o: D:\Keil5\ARM\ARMCC\Bin\..\include\stdint.h
 .\objects\ringbuffer.o: .\Start\system_stm32f10x.h
 .\objects\ringbuffer.o: .\User\stm32f10x_conf.h
 .\objects\ringbuffer.o: .\Library\stm32f10x_adc.h
@@ -29,10 +29,10 @@
 .\objects\ringbuffer.o: .\Library\stm32f10x_usart.h
 .\objects\ringbuffer.o: .\Library\stm32f10x_wwdg.h
 .\objects\ringbuffer.o: .\Library\misc.h
-.\objects\ringbuffer.o: D:\Univercity\Keil5\ARM\ARMCC\Bin\..\include\stdlib.h
-.\objects\ringbuffer.o: D:\Univercity\Keil5\ARM\ARMCC\Bin\..\include\stdbool.h
+.\objects\ringbuffer.o: D:\Keil5\ARM\ARMCC\Bin\..\include\stdlib.h
+.\objects\ringbuffer.o: D:\Keil5\ARM\ARMCC\Bin\..\include\stdbool.h
 .\objects\ringbuffer.o: .\FreeRTOS\include\FreeRTOS.h
-.\objects\ringbuffer.o: D:\Univercity\Keil5\ARM\ARMCC\Bin\..\include\stddef.h
+.\objects\ringbuffer.o: D:\Keil5\ARM\ARMCC\Bin\..\include\stddef.h
 .\objects\ringbuffer.o: .\FreeRTOS\include\FreeRTOSConfig.h
 .\objects\ringbuffer.o: .\FreeRTOS\include\projdefs.h
 .\objects\ringbuffer.o: .\FreeRTOS\include\portable.h
@@ -40,5 +40,5 @@
 .\objects\ringbuffer.o: .\FreeRTOS\portmacro.h
 .\objects\ringbuffer.o: .\FreeRTOS\include\mpu_wrappers.h
 .\objects\ringbuffer.o: .\Hardware\Debug_USART.h
-.\objects\ringbuffer.o: D:\Univercity\Keil5\ARM\ARMCC\Bin\..\include\stdio.h
-.\objects\ringbuffer.o: D:\Univercity\Keil5\ARM\ARMCC\Bin\..\include\stdarg.h
+.\objects\ringbuffer.o: D:\Keil5\ARM\ARMCC\Bin\..\include\stdio.h
+.\objects\ringbuffer.o: D:\Keil5\ARM\ARMCC\Bin\..\include\stdarg.h

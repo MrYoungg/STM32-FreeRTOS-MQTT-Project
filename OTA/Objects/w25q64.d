@@ -2,7 +2,7 @@
 .\objects\w25q64.o: Hardware\W25Q64.h
 .\objects\w25q64.o: .\Start\stm32f10x.h
 .\objects\w25q64.o: .\Start\core_cm3.h
-.\objects\w25q64.o: D:\Univercity\Keil5\ARM\ARMCC\Bin\..\include\stdint.h
+.\objects\w25q64.o: D:\Keil5\ARM\ARMCC\Bin\..\include\stdint.h
 .\objects\w25q64.o: .\Start\system_stm32f10x.h
 .\objects\w25q64.o: .\User\stm32f10x_conf.h
 .\objects\w25q64.o: .\Library\stm32f10x_dbgmcu.h
@@ -20,11 +20,11 @@
 .\objects\w25q64.o: .\Library\stm32f10x_usart.h
 .\objects\w25q64.o: .\Library\misc.h
 .\objects\w25q64.o: Hardware\Usart.h
-.\objects\w25q64.o: D:\Univercity\Keil5\ARM\ARMCC\Bin\..\include\stdio.h
-.\objects\w25q64.o: D:\Univercity\Keil5\ARM\ARMCC\Bin\..\include\stdarg.h
-.\objects\w25q64.o: .\RingBuffer\RingBuffer.h
-.\objects\w25q64.o: D:\Univercity\Keil5\ARM\ARMCC\Bin\..\include\stdlib.h
-.\objects\w25q64.o: D:\Univercity\Keil5\ARM\ARMCC\Bin\..\include\stdbool.h
+.\objects\w25q64.o: D:\Keil5\ARM\ARMCC\Bin\..\include\stdio.h
+.\objects\w25q64.o: D:\Keil5\ARM\ARMCC\Bin\..\include\stdarg.h
+.\objects\w25q64.o: .\Utilities\RingBuffer.h
+.\objects\w25q64.o: D:\Keil5\ARM\ARMCC\Bin\..\include\stdlib.h
+.\objects\w25q64.o: D:\Keil5\ARM\ARMCC\Bin\..\include\stdbool.h
 .\objects\w25q64.o: Hardware\SPI.h
 .\objects\w25q64.o: Hardware\Delay.h
 .\objects\w25q64.o: Hardware\W25Q64_Ins.h

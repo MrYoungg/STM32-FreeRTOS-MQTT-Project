@@ -3,7 +3,7 @@
 .\objects\atcommand.o: .\Hardware\AT_USART.h
 .\objects\atcommand.o: .\Start\stm32f10x.h
 .\objects\atcommand.o: .\Start\core_cm3.h
-.\objects\atcommand.o: D:\Univercity\Keil5\ARM\ARMCC\Bin\..\include\stdint.h
+.\objects\atcommand.o: D:\Keil5\ARM\ARMCC\Bin\..\include\stdint.h
 .\objects\atcommand.o: .\Start\system_stm32f10x.h
 .\objects\atcommand.o: .\User\stm32f10x_conf.h
 .\objects\atcommand.o: .\Library\stm32f10x_adc.h
@@ -31,7 +31,7 @@
 .\objects\atcommand.o: .\Library\stm32f10x_wwdg.h
 .\objects\atcommand.o: .\Library\misc.h
 .\objects\atcommand.o: .\FreeRTOS\include\FreeRTOS.h
-.\objects\atcommand.o: D:\Univercity\Keil5\ARM\ARMCC\Bin\..\include\stddef.h
+.\objects\atcommand.o: D:\Keil5\ARM\ARMCC\Bin\..\include\stddef.h
 .\objects\atcommand.o: .\FreeRTOS\include\FreeRTOSConfig.h
 .\objects\atcommand.o: .\FreeRTOS\include\projdefs.h
 .\objects\atcommand.o: .\FreeRTOS\include\portable.h
@@ -43,10 +43,10 @@
 .\objects\atcommand.o: .\FreeRTOS\include\task.h
 .\objects\atcommand.o: .\FreeRTOS\include\list.h
 .\objects\atcommand.o: .\Hardware\Debug_USART.h
-.\objects\atcommand.o: D:\Univercity\Keil5\ARM\ARMCC\Bin\..\include\stdio.h
-.\objects\atcommand.o: D:\Univercity\Keil5\ARM\ARMCC\Bin\..\include\stdlib.h
-.\objects\atcommand.o: D:\Univercity\Keil5\ARM\ARMCC\Bin\..\include\stdarg.h
+.\objects\atcommand.o: D:\Keil5\ARM\ARMCC\Bin\..\include\stdio.h
+.\objects\atcommand.o: D:\Keil5\ARM\ARMCC\Bin\..\include\stdlib.h
+.\objects\atcommand.o: D:\Keil5\ARM\ARMCC\Bin\..\include\stdarg.h
 .\objects\atcommand.o: .\Hardware\Delay.h
 .\objects\atcommand.o: .\RingBuffer\RingBuffer.h
-.\objects\atcommand.o: D:\Univercity\Keil5\ARM\ARMCC\Bin\..\include\stdbool.h
-.\objects\atcommand.o: D:\Univercity\Keil5\ARM\ARMCC\Bin\..\include\string.h
+.\objects\atcommand.o: D:\Keil5\ARM\ARMCC\Bin\..\include\stdbool.h
+.\objects\atcommand.o: D:\Keil5\ARM\ARMCC\Bin\..\include\string.h

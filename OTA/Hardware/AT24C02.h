@@ -10,7 +10,7 @@
 #define AT24C02_PAGE_NUM                 32
 #define AT24C02_PAGE_SIZE                8 // AT24C02每页8字节，共32页
 #define AT24C02_GET_PAGE_ADDR(pageIndex) (uint8_t)((pageIndex) * AT24C02_PAGE_SIZE)
-#define AT24C02_WIAT_FOR_WRITE           Delay_ms(5)
+#define AT24C02_WAIT_FOR_WRITE           Delay_ms(5)
 
 void AT24C02_Init(void);
 uint8_t AT24C02_WriteByte(uint8_t byteAddr, uint8_t data);

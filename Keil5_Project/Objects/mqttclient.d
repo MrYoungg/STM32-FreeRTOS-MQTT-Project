@@ -4,7 +4,7 @@
 .\objects\mqttclient.o: .\Hardware\AT_USART.h
 .\objects\mqttclient.o: .\Start\stm32f10x.h
 .\objects\mqttclient.o: .\Start\core_cm3.h
-.\objects\mqttclient.o: D:\Univercity\Keil5\ARM\ARMCC\Bin\..\include\stdint.h
+.\objects\mqttclient.o: D:\Keil5\ARM\ARMCC\Bin\..\include\stdint.h
 .\objects\mqttclient.o: .\Start\system_stm32f10x.h
 .\objects\mqttclient.o: .\User\stm32f10x_conf.h
 .\objects\mqttclient.o: .\Library\stm32f10x_adc.h
@@ -32,7 +32,7 @@
 .\objects\mqttclient.o: .\Library\stm32f10x_wwdg.h
 .\objects\mqttclient.o: .\Library\misc.h
 .\objects\mqttclient.o: .\FreeRTOS\include\FreeRTOS.h
-.\objects\mqttclient.o: D:\Univercity\Keil5\ARM\ARMCC\Bin\..\include\stddef.h
+.\objects\mqttclient.o: D:\Keil5\ARM\ARMCC\Bin\..\include\stddef.h
 .\objects\mqttclient.o: .\FreeRTOS\include\FreeRTOSConfig.h
 .\objects\mqttclient.o: .\FreeRTOS\include\projdefs.h
 .\objects\mqttclient.o: .\FreeRTOS\include\portable.h
@@ -44,12 +44,12 @@
 .\objects\mqttclient.o: .\FreeRTOS\include\task.h
 .\objects\mqttclient.o: .\FreeRTOS\include\list.h
 .\objects\mqttclient.o: .\Hardware\Debug_USART.h
-.\objects\mqttclient.o: D:\Univercity\Keil5\ARM\ARMCC\Bin\..\include\stdio.h
-.\objects\mqttclient.o: D:\Univercity\Keil5\ARM\ARMCC\Bin\..\include\stdlib.h
-.\objects\mqttclient.o: D:\Univercity\Keil5\ARM\ARMCC\Bin\..\include\stdarg.h
+.\objects\mqttclient.o: D:\Keil5\ARM\ARMCC\Bin\..\include\stdio.h
+.\objects\mqttclient.o: D:\Keil5\ARM\ARMCC\Bin\..\include\stdlib.h
+.\objects\mqttclient.o: D:\Keil5\ARM\ARMCC\Bin\..\include\stdarg.h
 .\objects\mqttclient.o: .\Hardware\Delay.h
 .\objects\mqttclient.o: .\RingBuffer\RingBuffer.h
-.\objects\mqttclient.o: D:\Univercity\Keil5\ARM\ARMCC\Bin\..\include\stdbool.h
-.\objects\mqttclient.o: D:\Univercity\Keil5\ARM\ARMCC\Bin\..\include\string.h
+.\objects\mqttclient.o: D:\Keil5\ARM\ARMCC\Bin\..\include\stdbool.h
+.\objects\mqttclient.o: D:\Keil5\ARM\ARMCC\Bin\..\include\string.h
 .\objects\mqttclient.o: .\Hardware\Sensor.h
 .\objects\mqttclient.o: MQTT\JSON.h

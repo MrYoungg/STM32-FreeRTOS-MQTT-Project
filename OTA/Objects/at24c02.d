@@ -2,7 +2,7 @@
 .\objects\at24c02.o: Hardware\AT24C02.h
 .\objects\at24c02.o: .\Start\stm32f10x.h
 .\objects\at24c02.o: .\Start\core_cm3.h
-.\objects\at24c02.o: D:\Univercity\Keil5\ARM\ARMCC\Bin\..\include\stdint.h
+.\objects\at24c02.o: D:\Keil5\ARM\ARMCC\Bin\..\include\stdint.h
 .\objects\at24c02.o: .\Start\system_stm32f10x.h
 .\objects\at24c02.o: .\User\stm32f10x_conf.h
 .\objects\at24c02.o: .\Library\stm32f10x_dbgmcu.h
@@ -19,6 +19,11 @@
 .\objects\at24c02.o: .\Library\stm32f10x_tim.h
 .\objects\at24c02.o: .\Library\stm32f10x_usart.h
 .\objects\at24c02.o: .\Library\misc.h
-.\objects\at24c02.o: D:\Univercity\Keil5\ARM\ARMCC\Bin\..\include\stdlib.h
+.\objects\at24c02.o: D:\Keil5\ARM\ARMCC\Bin\..\include\stdlib.h
 .\objects\at24c02.o: Hardware\IIC.h
 .\objects\at24c02.o: Hardware\Delay.h
+.\objects\at24c02.o: Hardware\Usart.h
+.\objects\at24c02.o: D:\Keil5\ARM\ARMCC\Bin\..\include\stdio.h
+.\objects\at24c02.o: D:\Keil5\ARM\ARMCC\Bin\..\include\stdarg.h
+.\objects\at24c02.o: .\Utilities\RingBuffer.h
+.\objects\at24c02.o: D:\Keil5\ARM\ARMCC\Bin\..\include\stdbool.h

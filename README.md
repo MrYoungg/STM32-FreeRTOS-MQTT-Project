@@ -18,7 +18,7 @@
 
 1. 仅发送一次，不需要响应；
 
-##### （2）QoS 1 - 不会丢失，可能重复
+##### （2）QoS 1 - 不会丢失，**可能重复**
 
 1. 发送后会等待接收方的响应；
 2. 如果一定时间内未响应则重传；
@@ -420,6 +420,17 @@ mqtt_subscribe(client, "topic1", QOS0, topic1_handler);
     - 主要文件有：`LwIP/src/api/*.c`、`LwIP/src/core/*.c`、`LwIP/src/core/ipv4/*.c`、
 - **Hardware Driver：**主要是STM32平台以太网接口的驱动层；
     - 主要通过`ethernet.c`实现以太网数据的收发；
+
+### 1.3 Xmodem协议 - 文件传输
+
+#### 1.3.1 协议概览
+
+[Xmodem协议 | 靡不有初，鲜克有终 (shatang.github.io)](https://shatang.github.io/2020/08/12/Xmodem协议/)
+
+#### 1.3.2 CRC - 循环冗余校验
+
+[CRC校验算法原理分析 | 靡不有初，鲜克有终 (shatang.github.io)](https://shatang.github.io/2020/08/10/CRC校验算法原理分析/#more)
+[CRC校验手算与直观演示 (www.bilibili.com)](https://www.bilibili.com/video/BV1V4411Z7VA?vd_source=efdaa126e8affd01b06188fe27db7747)
 
 ## chap 2 项目实现
 
@@ -977,37 +988,62 @@ void AT_USART_SendString(char *String)
 
 ##### （1）概述
 
-1. STM32 启动原理
-2. OTA 实现原理
-    1. 分区
+1. **STM32 启动原理**
+    1. 复位后硬件自动加载
+2. **OTA 实现原理**
+    1. 分区：BootLoader程序 + APP程序
     2. 为什么需要 BootLoader？
+        - BootLoader 负责将收到的更新程序搬运到Flash中，并跳转执行；
     3. 为什么BootLoader在前，APP在后？
-
-##### （2）Flash 分区
+        - 若APP在前（占据芯片复位地址0x08000000），一旦写入APP出错（异常断电），A区无法正常运行，用户设备无法运转；
 
 ##### （3）关键参数存储 - AT24C02
 
-1. 存储当前版本号
+1. **存储OTA_Flag**
+    - OTA_Flag标识是否有OTA事件发生，收到OTA事件请求时，OTA_Flag置位；
+    - 如果更新过程中发生异常断电，则下次恢复运行时仍能从AT24C02中读取到OTA_Flag，继续从W25Q64读取APP程序，完成更新；
+    - APP程序完全搬运到W25Q64之后再将OTA_Flag复位；
 
-##### （4）APP程序
+2. **存储外部Flash程序的大小**
 
-1. 程序功能
-2. bin 文件获取
-3. bin 文件上传到服务器
+3. **存储当前APP程序的版本号；**
+
+##### （4）APP程序 - 存储在 W25Q64
+
+1. **程序功能**
+    1. 正常执行应用程序功能；
+    2. 响应OTA更新，将下发的新APP程序加载到 W25Q64 中；
+
+2. **bin 文件获取**
+3. **bin 文件上传到服务器**
 
 ##### （5）BootLoader 程序
 
-1. **获取服务器中的 bin 文件（基于HTTP）**
-    1. 如何判断传输是否完成？（网络波动、超时重传等机制可能导致间断发送）
-2. **将写入外部 Flash - W25Q64**
-    1. 写入的速度能跟得上收到数据的速度吗？（SPI的时钟频率应该设置为多少？）
-3. **将W25Q64中的应用程序代码搬运到内部Flash**
-4. **更改中断向量表的位置**
-5. **跳转到应用程序的 `Reset_Handler` 开始执行**
+1. **功能1**：没有OTA事件时，跳转到A区，执行APP程序；
+2. **功能2**：发生OTA事件时：更新A区APP程序；
+    1. **获取服务器中的 bin 文件（基于HTTP）**
+        1. 如何判断传输是否完成？（网络波动、超时重传等机制可能导致间断发送）
+    2. **将程序写入外部 Flash - W25Q64**
+        1. 写入的速度能跟得上收到数据的速度吗？（SPI的时钟频率应该设置为多少？）
+    3. **将W25Q64中的应用程序代码搬运到内部Flash**
+    4. **更改中断向量表的位置**
+    5. **跳转到应用程序的 `Reset_Handler` 开始执行**
+3. **功能3**：串口IAP功能，通过串口更新A区的APP程序；
+4. **功能4**：设置物联网平台要求的OTA初始版本号；
+5. **功能5**：利用外部Flash存放多个APP程序文件，按需求选取；
 
 #### 2.8.2 OTA 实现
 
-##### （1）BootLoader 程序
+##### （1）Flash 分区
+
+1. B区（BootLoader程序）
+    - page 0~page 19，大小20KB；
+    - 起始地址：0x08000000；
+2. A区（APP程序）
+    - page 20~page 63，大小44KB；
+    - 起始地址：0x08005000；
+
+##### （2）BootLoader：硬件调试
 
 1. **串口调试**
     1. 环形缓冲区
@@ -1036,7 +1072,7 @@ void AT_USART_SendString(char *String)
             - SDA总线上可以没有上拉电阻；
             - 但读取数据或接收应答时，必须切换为上拉输入模式；此时**输出断开**，输入驱动器中的上拉电阻提供给SDA用作上拉；
                 ![image-20241128172304989](https://gitee.com/yyangyyyy/typora-image/raw/master/Typora_Image/202411281723094.png)
-    3. **AT24C02 使用**
+    3. **AT24C02 使用要点**
         1. **器件寻址（7位器件地址+1位读写标志）**
             ![image-20241128235637494](https://gitee.com/yyangyyyy/typora-image/raw/master/Typora_Image/202411282356793.png)
             - bit[7:4] 为 `1010(0xA)`；
@@ -1051,15 +1087,16 @@ void AT_USART_SendString(char *String)
             - 发送ACK：通过8个SCL周期接受1字节数据之后，接收器需要在第9个SCL周期发送AKC（应答0或非应答1），注意发送应答0之后，接收器需要释放SDA，否则下一个周期发送器无法发送1；
             - 接收ACK：发送器发送完1字节数据后，在第9个SCL周期等待一个ACK信号（应答0或非应答1）；
 3. **SPI & W25Q64（Flash） 调试**
-    1. **SPI 时序实现**
-    2. **W25Q64 操作实现**
+    1. **SPI 时序实现**：采用STM32的硬件SPI；
+    2. **W25Q64 基本信息**
+    3. **W25Q64 操作实现**
         1. 等待忙
         2. 写使能
         3. 扇区/块擦除
         4. 写入（按页）
         5. 读取（按字节）
-
-4. **小总结：EEPROM 和 Flash 的区别**
+    
+4. **总结：EEPROM 和 Flash 的区别**
     1. **EEPROM**
         - 可以按字节读写，无需擦除；
         - 容量较小，通常用于存储少量数据，如配置参数和版本信息等；
@@ -1069,12 +1106,59 @@ void AT_USART_SendString(char *String)
         - 容量很大，通常用于存储代程序代码等大体量数据；
         - Flash因为读写数据量大，需要满足其高速的批量读写需求，因此通常用SPI；
 
-5. **内置 Flash 调试**
-6. **BootLoader 程序逻辑实现**
+5. **MCU内置 Flash 调试 - 基于库 stm32f10x_flash.c**
+    1. 按页擦除
+    2. 按半字/字写入
 
-##### （2）APP 程序
 
-## chap 3 项目总结的
+##### （3）BootLoader：程序跳转+命令行功能
+
+1. **是否启动串口命令行**
+2. **无OTA事件 - 从B区跳转到A区**
+    1. 将B区用到的外设全部重新初始化为默认状态；
+    2. 更新当前SP指针：取出0x08005000地址处的值（堆栈指针的初始值，存放在向量表的第一项），赋给SP寄存器；
+    3. 更新当前PC指针：取出0x08005004地址处的值（APP程序 Reset_Handler 的位置），赋给PC寄存器；
+3. **有OTA事件 - 搬运APP程序**
+
+##### （4）BootLoader：文件传输 - Xmodem协议
+
+##### （5）APP 程序
+
+1. **几个关键问题**
+    1. 谁将OTA_Flag置位？什么时候置位？
+        - APP程序在收到OTA请求后，将下发的程序全部搬运到W25Q64中，搬运完成后将OTA_Flag置位；
+    2. 如何搬运下发的APP程序？
+        - 分页接收，根据W25Q64每页256字节的特点，每次接收256字节数据，写入一页；
+        - 写入的页数基于下发文件的大小，这是由服务器提供的数据，在数据帧的帧头；
+    3. 写入的页数需要记录吗？记录在哪？
+        - 需要，因为还需要BootLoader将下发程序从W25Q64搬运到内部Flash，需要知道搬运的大小；
+        - 记录在AT24C02中；
+2. **APP 程序地址修改**
+
+    1. 将Keil中的程序起始地址修改为A区地址（本项目为0x08005000）；
+        ![image-20241211152527806](https://gitee.com/yyangyyyy/typora-image/raw/master/Typora_Image/202412111525866.png)
+
+        - 可以看到，当此处设置不同时（0x08005000和0x08000000），生成的bin文件是不同的，主要区别就在于其中很多指向程序代码段的地址分别为0x08005xxx和0x08000xxx；
+            ![image-20241211152840134](https://gitee.com/yyangyyyy/typora-image/raw/master/Typora_Image/202412111528208.png)
+        - 这是为了保证APP程序内部的控制流能正确跳转到程序代码所在的地址；
+          
+
+    2. 修改APP程序本身的向量表偏移量为 0x5000 （基于0x08000000的偏移），即 `.\Start\system_stm32f10x.c`  文件中的 `VECT_TAB_OFFSET` ；这是为了确保APP程序内部的**各类中断处理函数**能够被正确地找到；
+
+        ```c
+        // .\Start\system_stm32f10x.c
+        
+        /*!< Uncomment the following line if you need to relocate your vector Table in
+             Internal SRAM. */
+        /* #define VECT_TAB_SRAM */
+        /*!< Vector Table base offset field.
+        This value must be a multiple of 0x200. */
+        #define VECT_TAB_OFFSET 0x5000
+        // #define VECT_TAB_OFFSET  0x0
+        ```
+
+
+## chap 3 项目总结
 
 ### 3.1 debug记录
 
@@ -1214,3 +1298,161 @@ void AT_USART_SendString(char *String)
 
 2. **原因**：AT固件版本不支持，自 `commit: 8ebdee924` 之后, `ESP-AT` 才支持 `MQTT` 系列 `AT` 指令；
 3. **解决办法**：更新AT固件即可；
+
+#### 3.1.5 BootLoader 从设置SP的函数返回时进入HardFualt
+
+1. **现象**
+
+    1. 通过 `Redirect_SP()` 函数调用 `__set_MSP()` 时，从 `Redirect_SP()` 返回时会触发 `HardFualt`；
+
+        ```c
+        static void Redirect_SP(void)
+        {
+            __set_MSP(APP_INITIAL_SP);
+        }
+        
+        static void Redirect_PC(void)
+        {
+            void (*APP_ResetHandler)(void) = APP_RESET_HANDLER_ADDR;
+            APP_ResetHandler();
+        }
+        
+        void GoTo_APP(void)
+        {
+            DEBUG_LOG("__disable_irq\r\n");
+            DeInit_Periph();
+            MyUSART_Init();
+            DEBUG_LOG("DeInit_Periph\r\n");
+            Redirect_SP();
+            Redirect_PC();
+        }
+        
+        ```
+
+    2. 直接调用 `__set_MSP()` 则能够正常执行；
+
+2. **原因分析**
+
+    1. **函数调用过程浅析**
+        1. 程序进入汇编函数时，不会自动压栈出栈，只会按照汇编指令逐条执行；
+        2. 而程序在进入 C函数 `Redirect_SP()` 时，会将函数的返回地址存入LR；
+        3. 程序进入C函数后的第一件事情（可以看成**左大括号**的汇编翻译），就是将LR压栈（可能还会压栈其他用到的通用寄存器）；
+            ![image-20241205153948004](https://gitee.com/yyangyyyy/typora-image/raw/master/Typora_Image/202412051539267.png)
+        4. **从函数退出时**，程序会从栈中将LR弹出给PC（**右大括号**的汇编翻译），相当于回到函数的返回位置继续执行；
+            ![image-20241205154702370](https://gitee.com/yyangyyyy/typora-image/raw/master/Typora_Image/202412051547423.png)
+    2. **Bug 原因**
+        1. 在调用 `__set_MSP()` 之前，SP指针指向的栈顶地址为`0x20000C10`，栈内有Redirect_SP() 的返回地址，即跳转到 `Redirect_PC()` 的指令地址；
+            ![image-20241205160450216](https://gitee.com/yyangyyyy/typora-image/raw/master/Typora_Image/202412051604327.png)
+        2. 当调用 `__set_MSP()` 之后，SP指向的栈顶位置改变，此时栈内是无意义值，很有可能是无效地址值，将无效地址弹出给PC后，立即进入HardFault；
+            ![image-20241205163501323](https://gitee.com/yyangyyyy/typora-image/raw/master/Typora_Image/202412051635446.png)
+
+3. **解决办法**
+
+    1. 将重定向SP的函数通过 `inline` 展开，不进行函数调用；
+
+        ```c
+        static inline void Redirect_SP(void)
+        {
+            __set_MSP(APP_INITIAL_SP);
+        }
+        ```
+
+    2. 不封装上层函数Redirect_SP()，直接通过汇编函数实现；
+
+        ```c
+        void GoTo_APP(void)
+        {
+            DEBUG_LOG("__disable_irq\r\n");
+            DeInit_Periph();
+            MyUSART_Init();
+            DEBUG_LOG("DeInit_Periph\r\n");
+            // Redirect_SP();
+            __set_MSP(APP_INITIAL_SP);
+            Redirect_PC();
+        }
+        ```
+
+
+#### 3.1.6 Xmodem 序号完整性确定
+
+1. **背景：Xmodem 协议**
+
+    - 在Xmodem协议包中，Byte2 和 Byte3 分别是包序号 `packetNum` 和包序号的反码 `~packetNum` ；
+        ![image-20241211154859916](C:/Users/Mr.younnnng/AppData/Roaming/Typora/typora-user-images/image-20241211154859916.png)
+    - 因此确认包序号的完整性即确认这两个字节是否互为反码即可；
+
+2. **Bug 现象**
+
+    - 采用以下方式确认包序号完整性
+
+        ```c
+        Xmodem_CheckNum(uint8_t PacketNum, uint8_t Ne_PacketNum){
+            if(PacketNum!=(~Ne_PacketNum)){
+            	// 序号不完整，返回错误码
+            	return Xmodem_NumUncomplete_Err;
+        	}
+            ...
+        }
+        ```
+
+    - 在调试模式下接收第一个包时，发现PacketNum为0x01，Ne_PacketNum为0xFE，原数据包中的包序号正确；
+    - 但单步调试到上述if判断时，却进入了if分支内部；
+
+3. **Bug 原因**
+
+    - 在对 `uint8_t` 类型数据 `Ne_PacketNum` 进行取反码操作时，C编译器会对其进行**整型提升**；
+    - 即：先将 `Ne_PacketNum` 转换为`int`类型变量 `0x000000FE`，再取反，此时取反结果为 `0xFFFFFF01`；
+    - 而 `PacketNum`（uint8_t） 与 `(~Ne_PacketNum)` （int）比较大小时，会先将`PacketNum` 提升至int再做比较，即 `0x00000001` 与 `0xFFFFFF01`比较，显然不同，因此进入if分支；
+
+4. **解决办法**
+
+    1. 取反后强转为uint8_t类型；
+
+        ```c
+        if(PacketNum!=(uint8_t)(~Ne_PacketNum)){
+        	return Xmodem_NumUncomplete_Err;
+        }
+        ```
+
+    2. 直接将两者按位与，结果为0则正确，否则进入if分支；
+
+        ```c
+        if (PacketNum & Ne_PacketNum) {
+        	return Xmodem_NumUncomplete_Err;
+        }
+        ```
+
+#### 3.1.7 格式化字符串发送16进制数
+
+1. 通过 `CMD_USART_Printf(“%x”,0x15)` 发送16进制数0x15时，实际发送的是字符串“15”的ASCII码 `0x31 0x35`，而非16进制数本身；
+
+2. **因为 `%x` 的含义是**：将对应参数位置的16进制数转换成格式化字符串，插入字符串中；
+
+    ```c
+    // 串口Printf函数
+    void CMD_USART_Printf(char *format, ...)
+    {
+        char String[256];
+        va_list arg;
+    
+        va_start(arg, format);
+    	// vsnprintf将format和arg结合成格式化字符串
+        vsnprintf(String, sizeof(String), format和, arg);
+        va_end(arg);
+        CMD_USART_SendString(String);
+    }
+    ```
+
+3. 如果想要发送0x15本身（单字节数据），有两种方法；
+
+    1. 通过转义字符直接发送16进制数：`CMD_USART_Printf(“\x15”)`；
+    2. 调用串口的数据发送函数，直接发送字节数据：`CMD_USART_SendByte(0x15)`；
+
+
+#### 3.1.8 串口第一次发送时无法发送第一个字节
+
+1. **Bug现象**
+2. **Bug原因**
+3. **解决方法**
+
+ 

@@ -81,22 +81,27 @@ FLASH_Status InterFlash_WriteWord(uint32_t Address, uint32_t Data)
 FLASH_Status InterFlash_WriteBuf_Word(uint32_t StartAddress, uint32_t *DataBuf, uint32_t DataLen)
 {
     FLASH_Status state;
-    uint32_t addr = StartAddress;
+    uint32_t addr = 0;
 
     FLASH_Unlock();
     for (uint32_t i = 0; i < DataLen; i++) {
         addr = StartAddress + i * sizeof(uint32_t);
         if (addr > INTERFLASH_MAX_ADDR) {
-            DEBUG_LOG("internal flash over written\r\n");
+            LOG("internal flash over written\r\n");
             while (1);
         }
 
         state = FLASH_ProgramWord(addr, DataBuf[i]);
         if (state != FLASH_COMPLETE) {
-            DEBUG_LOG("internal flash write error\r\n");
+            LOG("internal flash write error\r\n");
             return state;
         }
     }
     FLASH_Lock();
     return state;
+}
+
+FLASH_Status InterFlash_WritePage(uint32_t PageAddress, uint32_t *DataBuf)
+{
+    return InterFlash_WriteBuf_Word(PageAddress, DataBuf, (INTERFLASH_PAGE_SIZE / 4));
 }

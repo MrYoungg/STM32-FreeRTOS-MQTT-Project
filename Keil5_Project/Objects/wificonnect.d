@@ -4,7 +4,7 @@
 .\objects\wificonnect.o: .\Hardware\AT_USART.h
 .\objects\wificonnect.o: .\Start\stm32f10x.h
 .\objects\wificonnect.o: .\Start\core_cm3.h
-.\objects\wificonnect.o: D:\Univercity\Keil5\ARM\ARMCC\Bin\..\include\stdint.h
+.\objects\wificonnect.o: D:\Keil5\ARM\ARMCC\Bin\..\include\stdint.h
 .\objects\wificonnect.o: .\Start\system_stm32f10x.h
 .\objects\wificonnect.o: .\User\stm32f10x_conf.h
 .\objects\wificonnect.o: .\Library\stm32f10x_adc.h
@@ -32,7 +32,7 @@
 .\objects\wificonnect.o: .\Library\stm32f10x_wwdg.h
 .\objects\wificonnect.o: .\Library\misc.h
 .\objects\wificonnect.o: .\FreeRTOS\include\FreeRTOS.h
-.\objects\wificonnect.o: D:\Univercity\Keil5\ARM\ARMCC\Bin\..\include\stddef.h
+.\objects\wificonnect.o: D:\Keil5\ARM\ARMCC\Bin\..\include\stddef.h
 .\objects\wificonnect.o: .\FreeRTOS\include\FreeRTOSConfig.h
 .\objects\wificonnect.o: .\FreeRTOS\include\projdefs.h
 .\objects\wificonnect.o: .\FreeRTOS\include\portable.h
@@ -44,10 +44,10 @@
 .\objects\wificonnect.o: .\FreeRTOS\include\task.h
 .\objects\wificonnect.o: .\FreeRTOS\include\list.h
 .\objects\wificonnect.o: .\Hardware\Debug_USART.h
-.\objects\wificonnect.o: D:\Univercity\Keil5\ARM\ARMCC\Bin\..\include\stdio.h
-.\objects\wificonnect.o: D:\Univercity\Keil5\ARM\ARMCC\Bin\..\include\stdlib.h
-.\objects\wificonnect.o: D:\Univercity\Keil5\ARM\ARMCC\Bin\..\include\stdarg.h
+.\objects\wificonnect.o: D:\Keil5\ARM\ARMCC\Bin\..\include\stdio.h
+.\objects\wificonnect.o: D:\Keil5\ARM\ARMCC\Bin\..\include\stdlib.h
+.\objects\wificonnect.o: D:\Keil5\ARM\ARMCC\Bin\..\include\stdarg.h
 .\objects\wificonnect.o: .\Hardware\Delay.h
 .\objects\wificonnect.o: .\RingBuffer\RingBuffer.h
-.\objects\wificonnect.o: D:\Univercity\Keil5\ARM\ARMCC\Bin\..\include\stdbool.h
-.\objects\wificonnect.o: D:\Univercity\Keil5\ARM\ARMCC\Bin\..\include\string.h
+.\objects\wificonnect.o: D:\Keil5\ARM\ARMCC\Bin\..\include\stdbool.h
+.\objects\wificonnect.o: D:\Keil5\ARM\ARMCC\Bin\..\include\string.h

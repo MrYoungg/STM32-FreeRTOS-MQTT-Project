@@ -1,11 +1,37 @@
-*** Using Compiler 'V5.06 update 5 (build 528)', folder: 'D:\Univercity\Keil5\ARM\ARMCC\Bin'
+*** Using Compiler 'V5.06 update 5 (build 528)', folder: 'D:\Keil5\ARM\ARMCC\Bin'
 Build target 'Target 1'
-compiling InterFlash.c...
-compiling Usart.c...
-compiling W25Q64.c...
-compiling main.c...
+compiling CMD.c...
+Utilities\CMD.c(36): warning:  #870-D: invalid multibyte character sequence
+      
+OG("[%d]擦除A�? \r\n", InFlash_EraseApp);
+Utilities\CMD.c(38): warning:  #870-D: invalid multibyte character sequence
+      
+OG("[%d]设置OTA版本�? \r\n", Set_OTAVersion);
+Utilities\CMD.c(39): warning:  #870-D: invalid multibyte character sequence
+      
+OG("[%d]获取OTA版本�? \r\n", Get_OTAVersion);
+Utilities\CMD.c(63): warning:  #870-D: invalid multibyte character sequence
+          
+OG("请选择正确的功�? \r\n");
+Utilities\CMD.c(69): warning:  #870-D: invalid multibyte character sequence
+              
+OG("擦除A�? \r\n");
+Utilities\CMD.c(71): warning:  #870-D: invalid multibyte character sequence
+                  
+OG("A区擦除出�? \r\n");
+Utilities\CMD.c(74): warning:  #870-D: invalid multibyte character sequence
+              
+OG("A区擦除完�? \r\n");
+Utilities\CMD.c(83): warning:  #870-D: invalid multibyte character sequence
+              
+OG("设置OTA版本�? \r\n");
+Utilities\CMD.c(87): warning:  #870-D: invalid multibyte character sequence
+              
+OG("获取OTA版本�? \r\n");
+Utilities\CMD.c: 9 warnings, 0 errors
 linking...
-Program Size: Code=8232 RO-data=268 RW-data=36 ZI-data=11284  
+Program Size: Code=11104 RO-data=352 RW-data=40 ZI-data=4128  
 FromELF: creating hex file...
-".\Objects\BootLoader_Project.axf" - 0 Error(s), 0 Warning(s).
+After Build - User command #1: fromelf --text -a -c --output=BootLoader_Project.dis Objects/BootLoader_Project.axf
+".\Objects\BootLoader_Project.axf" - 0 Error(s), 9 Warning(s).
 Build Time Elapsed:  00:00:02

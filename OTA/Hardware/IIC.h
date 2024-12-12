@@ -2,11 +2,18 @@
 #define I2C_H
 #include "stm32f10x.h"
 #include "Delay.h"
+#include "Usart.h"
 
-#define IIC_HIGH           1
-#define IIC_LOW            0
-#define IIC_ACK            0
-#define IIC_NOACK          1
+#define IIC_GPIOx          GPIOB
+#define IIC_SCL_PIN        GPIO_Pin_6
+#define IIC_SDA_PIN        GPIO_Pin_7
+#define IIC_STDMODE_DELAY  10
+#define IIC_FASTMODE_DELAY 2
+
+#define IIC_HIGH  1
+#define IIC_LOW   0
+#define IIC_ACK   0
+#define IIC_NOACK 1
 
 void IIC_Init(void);
 void IIC_Start(void);

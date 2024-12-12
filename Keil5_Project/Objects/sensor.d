@@ -2,7 +2,7 @@
 .\objects\sensor.o: Hardware\Sensor.h
 .\objects\sensor.o: .\Start\stm32f10x.h
 .\objects\sensor.o: .\Start\core_cm3.h
-.\objects\sensor.o: D:\Univercity\Keil5\ARM\ARMCC\Bin\..\include\stdint.h
+.\objects\sensor.o: D:\Keil5\ARM\ARMCC\Bin\..\include\stdint.h
 .\objects\sensor.o: .\Start\system_stm32f10x.h
 .\objects\sensor.o: .\User\stm32f10x_conf.h
 .\objects\sensor.o: .\Library\stm32f10x_adc.h

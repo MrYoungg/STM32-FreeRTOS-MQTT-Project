@@ -2,7 +2,7 @@
 .\objects\debug_usart.o: Hardware\Debug_USART.h
 .\objects\debug_usart.o: .\Start\stm32f10x.h
 .\objects\debug_usart.o: .\Start\core_cm3.h
-.\objects\debug_usart.o: D:\Univercity\Keil5\ARM\ARMCC\Bin\..\include\stdint.h
+.\objects\debug_usart.o: D:\Keil5\ARM\ARMCC\Bin\..\include\stdint.h
 .\objects\debug_usart.o: .\Start\system_stm32f10x.h
 .\objects\debug_usart.o: .\User\stm32f10x_conf.h
 .\objects\debug_usart.o: .\Library\stm32f10x_adc.h
@@ -29,6 +29,6 @@
 .\objects\debug_usart.o: .\Library\stm32f10x_usart.h
 .\objects\debug_usart.o: .\Library\stm32f10x_wwdg.h
 .\objects\debug_usart.o: .\Library\misc.h
-.\objects\debug_usart.o: D:\Univercity\Keil5\ARM\ARMCC\Bin\..\include\stdio.h
-.\objects\debug_usart.o: D:\Univercity\Keil5\ARM\ARMCC\Bin\..\include\stdlib.h
-.\objects\debug_usart.o: D:\Univercity\Keil5\ARM\ARMCC\Bin\..\include\stdarg.h
+.\objects\debug_usart.o: D:\Keil5\ARM\ARMCC\Bin\..\include\stdio.h
+.\objects\debug_usart.o: D:\Keil5\ARM\ARMCC\Bin\..\include\stdlib.h
+.\objects\debug_usart.o: D:\Keil5\ARM\ARMCC\Bin\..\include\stdarg.h

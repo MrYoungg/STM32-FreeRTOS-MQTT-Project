@@ -116,6 +116,6 @@ void AT24C02_Write(uint8_t startAddr, uint8_t *dataBuf, uint16_t dataBufLen)
 
     for (uint16_t i = 0; i < dataBufLen; i++) {
         AT24C02_WriteByte(startAddr + i, dataBuf[i]);
-        AT24C02_WIAT_FOR_WRITE;
+        AT24C02_WAIT_FOR_WRITE;
     }
 }

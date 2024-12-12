@@ -1,10 +1,10 @@
 .\objects\json.o: MQTT\JSON.c
 .\objects\json.o: MQTT\JSON.h
-.\objects\json.o: D:\Univercity\Keil5\ARM\ARMCC\Bin\..\include\stdlib.h
-.\objects\json.o: D:\Univercity\Keil5\ARM\ARMCC\Bin\..\include\string.h
+.\objects\json.o: D:\Keil5\ARM\ARMCC\Bin\..\include\stdlib.h
+.\objects\json.o: D:\Keil5\ARM\ARMCC\Bin\..\include\string.h
 .\objects\json.o: .\FreeRTOS\include\FreeRTOS.h
-.\objects\json.o: D:\Univercity\Keil5\ARM\ARMCC\Bin\..\include\stddef.h
-.\objects\json.o: D:\Univercity\Keil5\ARM\ARMCC\Bin\..\include\stdint.h
+.\objects\json.o: D:\Keil5\ARM\ARMCC\Bin\..\include\stddef.h
+.\objects\json.o: D:\Keil5\ARM\ARMCC\Bin\..\include\stdint.h
 .\objects\json.o: .\FreeRTOS\include\FreeRTOSConfig.h
 .\objects\json.o: .\FreeRTOS\include\projdefs.h
 .\objects\json.o: .\FreeRTOS\include\portable.h
@@ -40,6 +40,6 @@
 .\objects\json.o: .\Library\stm32f10x_usart.h
 .\objects\json.o: .\Library\stm32f10x_wwdg.h
 .\objects\json.o: .\Library\misc.h
-.\objects\json.o: D:\Univercity\Keil5\ARM\ARMCC\Bin\..\include\stdio.h
-.\objects\json.o: D:\Univercity\Keil5\ARM\ARMCC\Bin\..\include\stdarg.h
+.\objects\json.o: D:\Keil5\ARM\ARMCC\Bin\..\include\stdio.h
+.\objects\json.o: D:\Keil5\ARM\ARMCC\Bin\..\include\stdarg.h
 .\objects\json.o: .\Hardware\Sensor.h

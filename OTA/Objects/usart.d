@@ -1,10 +1,10 @@
 .\objects\usart.o: Hardware\Usart.c
 .\objects\usart.o: Hardware\Usart.h
-.\objects\usart.o: D:\Univercity\Keil5\ARM\ARMCC\Bin\..\include\stdio.h
-.\objects\usart.o: D:\Univercity\Keil5\ARM\ARMCC\Bin\..\include\stdarg.h
+.\objects\usart.o: D:\Keil5\ARM\ARMCC\Bin\..\include\stdio.h
+.\objects\usart.o: D:\Keil5\ARM\ARMCC\Bin\..\include\stdarg.h
 .\objects\usart.o: .\Start\stm32f10x.h
 .\objects\usart.o: .\Start\core_cm3.h
-.\objects\usart.o: D:\Univercity\Keil5\ARM\ARMCC\Bin\..\include\stdint.h
+.\objects\usart.o: D:\Keil5\ARM\ARMCC\Bin\..\include\stdint.h
 .\objects\usart.o: .\Start\system_stm32f10x.h
 .\objects\usart.o: .\User\stm32f10x_conf.h
 .\objects\usart.o: .\Library\stm32f10x_dbgmcu.h
@@ -21,6 +21,6 @@
 .\objects\usart.o: .\Library\stm32f10x_tim.h
 .\objects\usart.o: .\Library\stm32f10x_usart.h
 .\objects\usart.o: .\Library\misc.h
-.\objects\usart.o: .\RingBuffer\RingBuffer.h
-.\objects\usart.o: D:\Univercity\Keil5\ARM\ARMCC\Bin\..\include\stdlib.h
-.\objects\usart.o: D:\Univercity\Keil5\ARM\ARMCC\Bin\..\include\stdbool.h
+.\objects\usart.o: .\Utilities\RingBuffer.h
+.\objects\usart.o: D:\Keil5\ARM\ARMCC\Bin\..\include\stdlib.h
+.\objects\usart.o: D:\Keil5\ARM\ARMCC\Bin\..\include\stdbool.h

@@ -3,13 +3,13 @@
 <pre>
 <h1>µVision Build Log</h1>
 <h2>Tool Versions:</h2>
-IDE-Version: ¦ÌVision V5.38.0.0
-Copyright (C) 2022 ARM Ltd and ARM Germany GmbH. All rights reserved.
-License Information: 1 Mr.younnnng, 1, LIC=ZB4EI-THAT3-9UP4U-SYV0U-92MW0-67LNU
+IDE-Version: ¦ÌVision V5.24.2.0
+Copyright (C) 2017 ARM Ltd and ARM Germany GmbH. All rights reserved.
+License Information: Rax Mr.younnnng, Rax young, LIC=QF82M-XJ7V8-LQV0Q-NZ8EN-24WU0-P9SNF
  
 Tool Versions:
 Toolchain:       MDK-ARM Plus  Version: 5.24.1
-Toolchain Path:  D:\Univercity\Keil5\ARM\ARMCC\Bin
+Toolchain Path:  D:\Keil5\ARM\ARMCC\Bin
 C Compiler:      Armcc.exe V5.06 update 5 (build 528)
 Assembler:       Armasm.exe V5.06 update 5 (build 528)
 Linker/Locator:  ArmLink.exe V5.06 update 5 (build 528)
@@ -22,16 +22,22 @@ Dialog DLL:      TCM.DLL V1.32.0.0
  
 <h2>Project:</h2>
 D:\Univercity\FreeRTOS\MQTT_Project\STM32-FreeRTOS-MQTT-Project\OTA\BootLoader_Project.uvprojx
-Project File Date:  12/03/2024
+Project File Date:  12/11/2024
 
 <h2>Output:</h2>
-*** Using Compiler 'V5.06 update 5 (build 528)', folder: 'D:\Univercity\Keil5\ARM\ARMCC\Bin'
+*** Using Compiler 'V5.06 update 5 (build 528)', folder: 'D:\Keil5\ARM\ARMCC\Bin'
 Build target 'Target 1'
+compiling Usart.c...
 compiling main.c...
+User\main.c(31): warning:  #111-D: statement is unreachable
+      BootLoader_CMD();
+User\main.c: 1 warning, 0 errors
+compiling Xmodem.c...
 linking...
-Program Size: Code=8232 RO-data=268 RW-data=36 ZI-data=11284  
+Program Size: Code=7052 RO-data=268 RW-data=36 ZI-data=3092  
 FromELF: creating hex file...
-".\Objects\BootLoader_Project.axf" - 0 Error(s), 0 Warning(s).
+After Build - User command #1: fromelf --text -a -c --output=BootLoader_Project.dis Objects/BootLoader_Project.axf
+".\Objects\BootLoader_Project.axf" - 0 Error(s), 1 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -41,10 +47,11 @@ Package Vendor: Keil
                 STMicroelectronics STM32F1 Series Device Support, Drivers and Examples
 
 <h2>Collection of Component include folders:</h2>
-  D:/Univercity/Keil5/ARM/PACK/Keil/STM32F1xx_DFP/2.2.0/Device/Include
+  .\RTE\_Target_1
+  D:\Keil5\ARM\PACK\Keil\STM32F1xx_DFP\2.2.0\Device\Include
 
 <h2>Collection of Component Files used:</h2>
-Build Time Elapsed:  00:00:00
+Build Time Elapsed:  00:00:03
 </pre>
 </body>
 </html>

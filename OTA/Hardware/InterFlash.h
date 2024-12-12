@@ -4,11 +4,11 @@
 #include "stdlib.h"
 #include "Usart.h"
 
-#define INTERFLASH_PAGE_NUM  64
-#define INTERFLASH_PAGE_SIZE 1024
+#define INTERFLASH_PAGE_NUM  (uint32_t)64
+#define INTERFLASH_PAGE_SIZE (uint32_t)1024
 #define INTERFLASH_GET_PAGE_ADDR(page)                                                             \
     (uint32_t)((uint32_t)0x08000000 + (uint32_t)(page) * INTERFLASH_PAGE_SIZE)
-#define INTERFLASH_MAX_ADDR 0x08010000
+#define INTERFLASH_MAX_ADDR 0x0800FFFF
 
 uint32_t InterFlash_ReadWord(uint32_t Address);
 uint16_t InterFlash_ReadHalfWord(uint32_t Address);
@@ -21,5 +21,6 @@ FLASH_Status InterFlash_ErasePage(uint32_t Address);
 FLASH_Status InterFlash_WriteHalfWord(uint32_t Address, uint16_t Data);
 FLASH_Status InterFlash_WriteWord(uint32_t Address, uint32_t Data);
 FLASH_Status InterFlash_WriteBuf_Word(uint32_t StartAddress, uint32_t *DataBuf, uint32_t DataLen);
+FLASH_Status InterFlash_WritePage(uint32_t PageAddress, uint32_t *DataBuf);
 
 #endif

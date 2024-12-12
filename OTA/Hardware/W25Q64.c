@@ -32,7 +32,7 @@ static void W25Q64_WaitNotBusy(uint32_t timeout)
         Delay_ms(1);
         timeout--;
         if (timeout == 0) {
-            DEBUG_LOG("wait not busy timeout\r\n");
+            LOG("wait not busy timeout\r\n");
             break; // 超时退出
         }
     }
@@ -99,7 +99,7 @@ void W25Q64_BlockErase_64K(uint32_t Address)
 void W25Q64_WritePage(uint32_t Address, uint8_t *DataBuf, uint32_t DataBufLen)
 {
     if (DataBufLen > 256 || DataBuf == NULL) {
-        DEBUG_LOG("write page wrong: buffer is too big\r\n");
+        LOG("write page wrong: buffer is too big\r\n");
         return;
     }
 
@@ -134,7 +134,7 @@ void W25Q64_WritePage(uint32_t Address, uint8_t *DataBuf, uint32_t DataBufLen)
 void W25Q64_ReadData(uint32_t Address, uint8_t *RecvBuf, uint32_t RecvBufLen, uint32_t DataLen)
 {
     if (RecvBuf == NULL) {
-        DEBUG_LOG("recvBuf is NULL\r\n");
+        LOG("recvBuf is NULL\r\n");
         return;
     }
     uint32_t recvLen = (RecvBufLen >= DataLen) ? DataLen : RecvBufLen;
@@ -162,7 +162,7 @@ void W25Q64_ReadPages(uint32_t StartPageAddress,
                       uint16_t pageNum)
 {
     if (RecvBuf == NULL) {
-        DEBUG_LOG("recvBuf is NULL\r\n");
+        LOG("recvBuf is NULL\r\n");
         return;
     }
     uint32_t pageAddr = StartPageAddress;

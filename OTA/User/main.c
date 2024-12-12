@@ -6,47 +6,87 @@
 #include "AT24C02.h"
 #include "W25Q64.h"
 #include "InterFlash.h"
+#include "Boot.h"
+#include "CMD.h"
+#include "Xmodem.h"
+#include "main.h"
 
-#define PAGE_NUM 4
-
-void printBuf(uint32_t *buf, uint32_t bufLen);
-uint32_t buf[1024];
-uint32_t wbuf[1024];
+void printBuf(uint8_t *buf, uint32_t bufLen);
 
 int main(void)
 {
     MyUSART_Init();
-    Key_Init();
-    LED_Init();
     AT24C02_Init();
     W25Q64_Init();
+    Delay_ms(20);
 
-    DEBUG_LOG("RST\r\n");
+    LOG("BootLoader Start!\r\n");
 
-    // 擦除后4页
-    DEBUG_LOG("erase\r\n");
-    for (int i = 0; i < PAGE_NUM; i++) {
-        InterFlash_ErasePage(INTERFLASH_GET_PAGE_ADDR(60 + i));
-    }
-    InterFlash_ReadBuf_Word(INTERFLASH_GET_PAGE_ADDR(60), 1024, buf, 1024);
-    printBuf(buf, 1024);
+    // 1、进入串口命令行（询问本地OTA）
+    BootLoader_CMD();
 
-    // 写后4页
-    DEBUG_LOG("write\r\n");
-    for (uint32_t i = 0; i < 1024; i++) {
-        wbuf[i] = i;
-    }
-    InterFlash_WriteBuf_Word(INTERFLASH_GET_PAGE_ADDR(60), wbuf, 1024);
-    InterFlash_ReadBuf_Word(INTERFLASH_GET_PAGE_ADDR(60), 1024, buf, sizeof(buf));
-    printBuf(buf, 1024);
+    // 2、检测线上OTA
+    // Detect_OnlineOTA();
 
     while (1) {
+        switch (OTA_Status) {
+            // 1、没有OTA事件
+            case No_OTA: {
+                // （1）跳转到APP
+                LOG("未检测到OTA事件 \r\n");
+
+                uint8_t ret = BootLoader_GoToAPP();
+
+                // （2）跳转失败
+                if (ret == false) {
+                    LOG("跳转APP失败，APP程序可能已损坏，请重新下载APP程序 \r\n");
+                    BootLoader_Reset();
+                }
+                break;
+            }
+
+            // 2、检测到线上OTA事件
+            case Online_OTA: {
+                LOG("Online OTA\r\n");
+                // （1）从W25Q64搬运APP程序到内部flash
+                // BootLoader_UpdateApp(Version_OTA);
+
+                // （2）搬运完毕，复位OTA_Flag，跳转到APP
+                uint8_t ret = BootLoader_GoToAPP();
+
+                // （3）跳转失败
+                if (ret == false) {
+                    LOG("跳转APP失败，APP程序可能已损坏，请重新下载APP程序 \r\n");
+                    BootLoader_Reset();
+                }
+                break;
+            }
+
+            // 3、检测到本地OTA事件
+            case Local_OTA: {
+                LOG("Local OTA\r\n");
+                // （1）从W25Q64中选择相应版本的程序搬运到内部flash
+                // BootLoader_UpdateApp(OTA_Update.APP_ProgVersion);
+
+                // （2）搬运完毕，复位OTA_Flag，跳转到APP
+                uint8_t ret = BootLoader_GoToAPP();
+                // （3）跳转失败
+                if (ret == false) {
+                    LOG("跳转APP失败，APP程序可能已损坏，请重新下载APP程序 \r\n");
+                    BootLoader_Reset();
+                }
+                break;
+            }
+
+            default:
+                break;
+        }
     }
 }
 
-void printBuf(uint32_t *buf, uint32_t bufLen)
+void printBuf(uint8_t *buf, uint32_t bufLen)
 {
     for (uint32_t i = 0; i < bufLen; i++) {
-        DEBUG_LOG("buf[%d]:%.8x\r\n", i, buf[i]);
+        LOG("buf[%x]:%.8x\r\n", i, buf[i]);
     }
 }

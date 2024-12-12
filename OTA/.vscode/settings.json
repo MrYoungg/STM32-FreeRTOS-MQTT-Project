@@ -22,6 +22,22 @@
         "w25q64_ins.h": "c",
         "w25q64.h": "c",
         "spi.h": "c",
-        "interflash.h": "c"
+        "interflash.h": "c",
+        "boot.h": "c",
+        "string.h": "c",
+        "main.h": "c",
+        "stdbool.h": "c",
+        "system_error": "cpp",
+        "array": "cpp",
+        "functional": "cpp",
+        "tuple": "cpp",
+        "type_traits": "cpp",
+        "utility": "cpp",
+        "usartcmd.h": "c",
+        "cmd.h": "c",
+        "xmodem.h": "c",
+        "string": "c",
+        "string_view": "c",
+        "new": "c"
     }
 }

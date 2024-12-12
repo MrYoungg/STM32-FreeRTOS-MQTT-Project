@@ -3,6 +3,13 @@
 #include "stm32f10x.h"
 #include "stdlib.h"
 
+#define SPIx         SPI2
+#define SPI_GPIOx    GPIOB
+#define SPI_SS_PIN   GPIO_Pin_12
+#define SPI_SCK_PIN  GPIO_Pin_13
+#define SPI_MISO_PIN GPIO_Pin_14
+#define SPI_MOSI_PIN GPIO_Pin_15
+
 #define SPI_DUMMY_BYTE 0xFF
 
 void HWSPI_Init(void);
