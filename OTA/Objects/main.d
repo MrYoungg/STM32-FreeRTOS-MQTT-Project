@@ -32,8 +32,11 @@
 .\objects\main.o: .\Hardware\IIC.h
 .\objects\main.o: .\Hardware\W25Q64.h
 .\objects\main.o: .\Hardware\SPI.h
+.\objects\main.o: .\Hardware\Boot.h
+.\objects\main.o: .\Hardware\W25Q64.h
+.\objects\main.o: .\Hardware\InterFlash.h
+.\objects\main.o: .\Utilities\Xmodem.h
 .\objects\main.o: .\Hardware\InterFlash.h
 .\objects\main.o: .\Hardware\Boot.h
 .\objects\main.o: .\Utilities\CMD.h
-.\objects\main.o: .\Utilities\Xmodem.h
-.\objects\main.o: User\main.h
+.\objects\main.o: .\Utilities\OnlineOTA.h

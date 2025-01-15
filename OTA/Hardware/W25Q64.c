@@ -173,3 +173,239 @@ void W25Q64_ReadPages(uint32_t StartPageAddress,
     W25Q64_ReadData(pageAddr, RecvBuf, RecvBufLen, readLen);
     pageAddr += W25Q64_PAGE_SIZE;
 }
+
+static void ExFlash_Menu(void)
+{
+    ExFlash_Info_t *info = OTA_Info.ExFlash_InfoArr;
+
+    char *Area = "Area";
+    char *Version = "Version";
+    char *ProgSize = "Size";
+    char *Remark = "Remark";
+
+    LOG("当前外存存储情况如下： \r\n");
+    LOG("|%6s|%28s|%10s|%16s|\r\n", Area, Version, ProgSize, Remark);
+    for (uint8_t i = 0; i < EXFLASH_APP_NUM; i++) {
+
+        char curVersion[VERSION_LEN] = {0};
+        uint8_t StrLen = strlen(info[i].version);
+
+        // 如果不恰好拷贝（StrLen - 1）长度的字符串，串口显示就无法对齐，暂未找出原因
+        if (StrLen > 0) {
+            // memcpy(curVersion, (info[i].version), StrLen - 1);
+            memcpy(curVersion, (info[i].version), StrLen);
+        }
+
+        if (i == 0) {
+            LOG("|%6d|%28s|%10d|%16s|\r\n", i, curVersion, info[i].size, "Only for OTA");
+            continue;
+        }
+        LOG("|%6d|%28s|%10d|%16s|\r\n", i, curVersion, info[i].size, "none");
+    }
+}
+
+static uint8_t ExFlash_SelectBlock(void)
+{
+    uint8_t ExFlash_Num = 0;
+
+select:
+    WaitForInput((char *)&ExFlash_Num, sizeof(ExFlash_Num));
+    ExFlash_Num -= '0';
+
+    if (ExFlash_Num <= 0 || ExFlash_Num >= EXFLASH_APP_NUM) {
+        if (ExFlash_Num == 0) {
+            LOG("0号存储块仅供OTA使用，请重新输入（1~%d） \r\n", EXFLASH_APP_NUM - 1);
+            goto select;
+        }
+        LOG("请输入正确的外存编号（1~%d） \r\n", EXFLASH_APP_NUM - 1);
+        goto select;
+    }
+
+    return ExFlash_Num;
+}
+
+static uint8_t ExFlash_SetVersion(uint8_t BlockNum)
+{
+    uint8_t versionStr[VERSION_LEN] = {0};
+    uint8_t matched = 0;
+    int temp;
+    LOG("请输入版本信息: \r\n");
+
+    WaitForInput((char *)versionStr, sizeof(versionStr));
+    LOG("%s\r\n", versionStr);
+
+    matched = sscanf((const char *)versionStr, VERSION_PATTERN, &temp);
+    if (matched == 0) {
+        LOG("版本信息格式有误 \r\n");
+        return false;
+    }
+
+    memcpy(OTA_Info.ExFlash_InfoArr[BlockNum].version, versionStr, sizeof(versionStr));
+    Saving_OTAInfo();
+    LOG("版本设置成功 \r\n");
+    return true;
+}
+
+/// @brief 从串口IAP下载程序
+/// @param 无
+void ExFlash_DownloadFromUSART(void)
+{
+    uint8_t ExFlash_Num = 0;
+    uint8_t PageNum_1k = 0;
+    uint32_t BlockAddr = 0;
+    uint32_t PageBaseAddr = 0;
+    uint32_t PageAddr = 0;
+    uint8_t ret = 0;
+    ExFlash_Info_t *info = NULL;
+
+    // 1、展示当前外存的存储情况
+    ExFlash_Menu();
+
+    // 2、选择要写入的外存块
+    LOG("请选择要写入的外存块：1~%d \r\n", EXFLASH_APP_NUM - 1);
+    ExFlash_Num = ExFlash_SelectBlock();
+    info = &(OTA_Info.ExFlash_InfoArr[ExFlash_Num]);
+
+    if (info[ExFlash_Num].size != 0) {
+        uint8_t ans = 0;
+        LOG("当前区域已有程序，确定要覆写吗？（y/n） \r\n");
+    wait:
+        WaitForInput((char *)&ans, sizeof(ans));
+
+        if (ans == 'n' || ans == 'N') {
+            LOG("取消写入 \r\n");
+            return;
+        }
+        else if (ans != 'y' && ans != 'Y') {
+            goto wait;
+        }
+    }
+
+    LOG("准备写入%d号外存块 \r\n", ExFlash_Num);
+
+    BlockAddr = ExFlash_Num * W25Q64_BLOCK_SIZE;
+    PageBaseAddr = BlockAddr;
+
+    memset(&Xmodem_FCB, 0, sizeof(Xmodem_FCB_t));
+    W25Q64_BlockErase_64K(BlockAddr);
+
+    // 设置版本信息
+    if (ExFlash_SetVersion(ExFlash_Num) == false) {
+        return;
+    }
+    LOG("请上传bin文件 \r\n");
+
+    while (1) {
+        // 3、读取1k数据到PageBuffer
+        ret = Xmodem_RecvData_1K();
+        if (ret == Xmodem_NumWrongOrder_Err) {
+            LOG("序号出错，主动结束传输 \r\n");
+            return;
+        }
+        // 如果写满1k后恰好收到EOT，则跳出；否则还需将缓冲区中不足1k的数据写入外存
+        if (ret == Xmodem_EOT_Err && Xmodem_FCB.PacketNum % 8 == 0) {
+            OTA_Info.ExFlash_InfoArr[ExFlash_Num].size = Xmodem_FCB.PacketNum * XMODEM_DATA_SIZE;
+            Saving_OTAInfo();
+            break;
+        }
+
+        // 4、写入1k数据到外存块
+        PageNum_1k = INTERFLASH_PAGE_SIZE / W25Q64_PAGE_SIZE;
+        for (uint8_t i = 0; i < PageNum_1k; i++) {
+            PageAddr = PageBaseAddr + i * W25Q64_PAGE_SIZE;
+            W25Q64_WritePage(
+                PageAddr, &(Xmodem_FCB.Buffer_1k[i * W25Q64_PAGE_SIZE]), W25Q64_PAGE_SIZE);
+        }
+
+        PageBaseAddr += PageNum_1k * W25Q64_PAGE_SIZE;
+
+        // 5、写入最后不足1k的数据到外存块（如果有）
+        if (ret == Xmodem_EOT_Err) {
+            OTA_Info.ExFlash_InfoArr[ExFlash_Num].size = Xmodem_FCB.PacketNum * XMODEM_DATA_SIZE;
+            Saving_OTAInfo();
+            return;
+        }
+    }
+}
+
+/// @brief 将外部Flash中的程序写入内部Flash
+/// @param 无
+void ExFlash_MoveInAPP(void)
+{
+    uint8_t ExFlash_Num = 0;
+    uint32_t Move_KBs = 0;
+    ExFlash_Info_t *info = NULL;
+    uint8_t buf[1024] = {0};
+    uint32_t BlockAddr = 0;
+    uint32_t ExPageAddr = 0;
+    uint32_t InPageAddr = 0;
+
+    // 1、展示外存的存储情况
+    ExFlash_Menu();
+
+    // 2、选择要读出的外存块
+    LOG("请选择要读取的外存块：1~%d \r\n", EXFLASH_APP_NUM - 1);
+reselect:
+    ExFlash_Num = ExFlash_SelectBlock();
+    info = &(OTA_Info.ExFlash_InfoArr[ExFlash_Num]);
+
+    if (info->size == 0) {
+        LOG("当前存储块没有程序，请重新输入 \r\n");
+        goto reselect;
+    }
+    else if (info->size > APP_MAX_SIZE) {
+        LOG("当前存储块程序过大，请重新选择 \r\n");
+        goto reselect;
+    }
+
+    LOG("准备将%d号外存块写入内部Flash \r\n", ExFlash_Num);
+
+    BlockAddr = ExFlash_Num * W25Q64_BLOCK_SIZE;
+    ExPageAddr = BlockAddr;
+    InPageAddr = APP_BASE_ADDR;
+
+    // 3、写入内部Flash中（读1k写1k）
+    info = &(OTA_Info.ExFlash_InfoArr[ExFlash_Num]);
+    Move_KBs = ((info->size) / 1024) + 1;
+    for (uint8_t i = 0; i < Move_KBs; i++) {
+
+        memset(buf, 0, sizeof(buf));
+        W25Q64_ReadPages(ExPageAddr, buf, sizeof(buf), INTERFLASH_PAGE_SIZE / W25Q64_PAGE_SIZE);
+        InterFlash_ErasePage(InPageAddr);
+        InterFlash_WritePage(InPageAddr, (uint32_t *)buf);
+
+        ExPageAddr += INTERFLASH_PAGE_SIZE;
+        InPageAddr += INTERFLASH_PAGE_SIZE;
+    }
+}
+
+/// @brief 删除外部flash中的程序
+/// @param 无
+void ExFlash_DeleteProg(void)
+{
+    uint8_t ExFlash_Num = 0;
+    uint32_t BlockAddr = 0;
+    ExFlash_Info_t *info = NULL;
+
+    // 1、展示外存的存储情况
+    LOG("请选择要删除的外存块：1~%d \r\n", EXFLASH_APP_NUM - 1);
+    ExFlash_Menu();
+
+    // 2、选择要删除的外存块
+    ExFlash_Num = ExFlash_SelectBlock();
+    info = &(OTA_Info.ExFlash_InfoArr[ExFlash_Num]);
+    if (info->size == 0) {
+        LOG("所选外存块为空 \r\n");
+        return;
+    }
+
+    BlockAddr = ExFlash_Num * W25Q64_BLOCK_SIZE;
+    W25Q64_BlockErase_64K(BlockAddr);
+
+    info = &(OTA_Info.ExFlash_InfoArr[ExFlash_Num]);
+    info->size = 0;
+    memset(info->version, 0, sizeof(info->version));
+    Saving_OTAInfo();
+
+    LOG("%d号外存块擦除完毕 \r\n", ExFlash_Num);
+}

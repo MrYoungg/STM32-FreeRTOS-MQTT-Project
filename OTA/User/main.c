@@ -9,9 +9,10 @@
 #include "Boot.h"
 #include "CMD.h"
 #include "Xmodem.h"
-#include "main.h"
+#include "OnlineOTA.h"
 
 void printBuf(uint8_t *buf, uint32_t bufLen);
+uint8_t buf[1024] = {0};
 
 int main(void)
 {
@@ -22,20 +23,27 @@ int main(void)
 
     LOG("BootLoader Start!\r\n");
 
-    // 1、进入串口命令行（询问本地OTA）
+    // 先读AT24C02中的参数
+    Read_SavingOTAInfo();
+    // LOG("%s\r\n", OTA_Info.ExFlash_InfoArr[OTA_BLOCK_NUM].version);
+    // LOG("%d\r\n", OTA_Info.ExFlash_InfoArr[OTA_BLOCK_NUM].size);
+    // while(1);
+
+    // 1、串口命令行（本地IAP）
     BootLoader_CMD();
 
     // 2、检测线上OTA
-    // Detect_OnlineOTA();
+    Detect_OnlineOTA();
 
     while (1) {
         switch (OTA_Status) {
             // 1、没有OTA事件
             case No_OTA: {
+                uint8_t ret = 0;
                 // （1）跳转到APP
                 LOG("未检测到OTA事件 \r\n");
 
-                uint8_t ret = BootLoader_GoToAPP();
+                ret = BootLoader_GoToAPP();
 
                 // （2）跳转失败
                 if (ret == false) {
@@ -47,13 +55,21 @@ int main(void)
 
             // 2、检测到线上OTA事件
             case Online_OTA: {
+                uint8_t ret = 0;
                 LOG("Online OTA\r\n");
-                // （1）从W25Q64搬运APP程序到内部flash
-                // BootLoader_UpdateApp(Version_OTA);
+                // （1）从W25Q64第0块搬运APP程序到内部flash
+                ret = OnlineOTA_UpdateAPP();
+                if (ret != true) {
+                    OTA_Info.OTA_Flag = OTA_FLAG_RESET;
+                    Saving_OTAInfo();
+                    LOG("搬运程序出错,准备重启\r\n");
+                    BootLoader_Reset();
+                }
+                LOG("APP程序加载完成\r\n");
 
                 // （2）搬运完毕，复位OTA_Flag，跳转到APP
-                uint8_t ret = BootLoader_GoToAPP();
-
+                OnlineOTA_ConfigInfo();
+                ret = BootLoader_GoToAPP();
                 // （3）跳转失败
                 if (ret == false) {
                     LOG("跳转APP失败，APP程序可能已损坏，请重新下载APP程序 \r\n");
@@ -61,23 +77,6 @@ int main(void)
                 }
                 break;
             }
-
-            // 3、检测到本地OTA事件
-            case Local_OTA: {
-                LOG("Local OTA\r\n");
-                // （1）从W25Q64中选择相应版本的程序搬运到内部flash
-                // BootLoader_UpdateApp(OTA_Update.APP_ProgVersion);
-
-                // （2）搬运完毕，复位OTA_Flag，跳转到APP
-                uint8_t ret = BootLoader_GoToAPP();
-                // （3）跳转失败
-                if (ret == false) {
-                    LOG("跳转APP失败，APP程序可能已损坏，请重新下载APP程序 \r\n");
-                    BootLoader_Reset();
-                }
-                break;
-            }
-
             default:
                 break;
         }

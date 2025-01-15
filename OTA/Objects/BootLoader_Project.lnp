@@ -38,6 +38,7 @@
 ".\objects\cmd.o"
 ".\objects\ringbuffer.o"
 ".\objects\xmodem.o"
+".\objects\onlineota.o"
 ".\objects\main.o"
 ".\objects\stm32f10x_it.o"
 --library_type=microlib --strict --scatter ".\Objects\BootLoader_Project.sct"

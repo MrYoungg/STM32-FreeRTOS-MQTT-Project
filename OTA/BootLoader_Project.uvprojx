@@ -605,6 +605,11 @@
               <FileType>1</FileType>
               <FilePath>.\Utilities\Xmodem.c</FilePath>
             </File>
+            <File>
+              <FileName>OnlineOTA.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Utilities\OnlineOTA.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

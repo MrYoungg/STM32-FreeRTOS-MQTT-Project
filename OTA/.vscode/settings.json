@@ -38,6 +38,11 @@
         "xmodem.h": "c",
         "string": "c",
         "string_view": "c",
-        "new": "c"
+        "new": "c",
+        "initializer_list": "c",
+        "deque": "c",
+        "queue": "c",
+        "vector": "c",
+        "onlineota.h": "c"
     }
 }

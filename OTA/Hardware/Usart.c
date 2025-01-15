@@ -145,5 +145,3 @@ void CMD_USARTx_IRQHandler(void)
         frameSize = 0;
     }
 }
-
-void DMA1_Channel6_IRQHandler(void) {}

@@ -26,5 +26,14 @@
 .\objects\w25q64.o: D:\Keil5\ARM\ARMCC\Bin\..\include\stdlib.h
 .\objects\w25q64.o: D:\Keil5\ARM\ARMCC\Bin\..\include\stdbool.h
 .\objects\w25q64.o: Hardware\SPI.h
+.\objects\w25q64.o: Hardware\Boot.h
+.\objects\w25q64.o: D:\Keil5\ARM\ARMCC\Bin\..\include\string.h
+.\objects\w25q64.o: Hardware\AT24C02.h
+.\objects\w25q64.o: Hardware\IIC.h
 .\objects\w25q64.o: Hardware\Delay.h
+.\objects\w25q64.o: Hardware\W25Q64.h
+.\objects\w25q64.o: Hardware\InterFlash.h
+.\objects\w25q64.o: .\Utilities\Xmodem.h
+.\objects\w25q64.o: .\Hardware\InterFlash.h
+.\objects\w25q64.o: .\Hardware\Boot.h
 .\objects\w25q64.o: Hardware\W25Q64_Ins.h

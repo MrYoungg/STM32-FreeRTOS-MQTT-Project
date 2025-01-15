@@ -27,9 +27,11 @@
 .\objects\xmodem.o: .\Utilities\RingBuffer.h
 .\objects\xmodem.o: D:\Keil5\ARM\ARMCC\Bin\..\include\stdlib.h
 .\objects\xmodem.o: .\Hardware\InterFlash.h
+.\objects\xmodem.o: .\Utilities\Xmodem.h
 .\objects\xmodem.o: .\Hardware\Boot.h
 .\objects\xmodem.o: .\Hardware\AT24C02.h
 .\objects\xmodem.o: .\Hardware\IIC.h
 .\objects\xmodem.o: .\Hardware\Delay.h
 .\objects\xmodem.o: .\Hardware\W25Q64.h
 .\objects\xmodem.o: .\Hardware\SPI.h
+.\objects\xmodem.o: .\Hardware\Boot.h

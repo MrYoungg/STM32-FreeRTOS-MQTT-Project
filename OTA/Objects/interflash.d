@@ -25,3 +25,14 @@
 .\objects\interflash.o: D:\Keil5\ARM\ARMCC\Bin\..\include\stdarg.h
 .\objects\interflash.o: .\Utilities\RingBuffer.h
 .\objects\interflash.o: D:\Keil5\ARM\ARMCC\Bin\..\include\stdbool.h
+.\objects\interflash.o: .\Utilities\Xmodem.h
+.\objects\interflash.o: D:\Keil5\ARM\ARMCC\Bin\..\include\string.h
+.\objects\interflash.o: .\Hardware\InterFlash.h
+.\objects\interflash.o: .\Hardware\Boot.h
+.\objects\interflash.o: .\Hardware\AT24C02.h
+.\objects\interflash.o: .\Hardware\IIC.h
+.\objects\interflash.o: .\Hardware\Delay.h
+.\objects\interflash.o: .\Hardware\W25Q64.h
+.\objects\interflash.o: .\Hardware\SPI.h
+.\objects\interflash.o: .\Hardware\Boot.h
+.\objects\interflash.o: .\Utilities\Xmodem.h

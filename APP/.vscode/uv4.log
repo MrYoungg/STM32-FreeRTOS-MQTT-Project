@@ -1,0 +1,9 @@
+*** Using Compiler 'V5.06 update 5 (build 528)', folder: 'D:\Keil5\ARM\ARMCC\Bin'
+Build target 'Target 1'
+compiling AT_USART.c...
+linking...
+Program Size: Code=11524 RO-data=268 RW-data=172 ZI-data=18172  
+After Build - User command #1: fromelf --text -a -c --output=debug.dis Objects\Project.axf
+After Build - User command #2: fromelf --bin -o "d:\Univercity\FreeRTOS\MQTT_Project\STM32-FreeRTOS-MQTT-Project\APP\Objects\Project.bin" "d:\Univercity\FreeRTOS\MQTT_Project\STM32-FreeRTOS-MQTT-Project\APP\Objects\Project.axf"
+".\Objects\Project.axf" - 0 Error(s), 0 Warning(s).
+Build Time Elapsed:  00:00:01

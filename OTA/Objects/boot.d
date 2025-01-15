@@ -31,4 +31,7 @@
 .\objects\boot.o: Hardware\Delay.h
 .\objects\boot.o: Hardware\W25Q64.h
 .\objects\boot.o: Hardware\SPI.h
+.\objects\boot.o: Hardware\Boot.h
 .\objects\boot.o: Hardware\InterFlash.h
+.\objects\boot.o: .\Utilities\Xmodem.h
+.\objects\boot.o: .\Hardware\InterFlash.h

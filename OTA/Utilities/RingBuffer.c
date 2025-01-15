@@ -161,3 +161,10 @@ bool is_RingBuffer_Full(RingBuffer_t *ringBuffer)
 {
     return (ringBuffer->dataSize >= ringBuffer->bufferSize);
 }
+
+void WaitForInput(char *buf, size_t bufLen)
+{
+    extern RingBuffer_t CMD_USART_RingBuffer;
+    while (is_FCBList_Empty(&CMD_USART_RingBuffer));
+    RingBuffer_ReadFrame(&CMD_USART_RingBuffer, buf, bufLen);
+}

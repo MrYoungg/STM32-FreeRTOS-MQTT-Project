@@ -39,12 +39,11 @@ enum {
 };
 
 typedef struct {
-    uint8_t PageBuffer[INTERFLASH_PAGE_SIZE];
+    uint8_t Buffer_1k[1024];
     uint32_t PacketNum;
-    uint16_t CRC_Val;
 } Xmodem_FCB_t;
 
-// extern Xmodem_FCB_t Xmodem_FCB;
-void USART_IAP(void);
+extern Xmodem_FCB_t Xmodem_FCB;
 
+uint8_t Xmodem_RecvData_1K(void);
 #endif

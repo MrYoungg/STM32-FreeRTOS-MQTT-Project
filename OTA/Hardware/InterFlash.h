@@ -3,6 +3,7 @@
 #include "stm32f10x.h"
 #include "stdlib.h"
 #include "Usart.h"
+#include "Xmodem.h"
 
 #define INTERFLASH_PAGE_NUM  (uint32_t)64
 #define INTERFLASH_PAGE_SIZE (uint32_t)1024
@@ -22,5 +23,6 @@ FLASH_Status InterFlash_WriteHalfWord(uint32_t Address, uint16_t Data);
 FLASH_Status InterFlash_WriteWord(uint32_t Address, uint32_t Data);
 FLASH_Status InterFlash_WriteBuf_Word(uint32_t StartAddress, uint32_t *DataBuf, uint32_t DataLen);
 FLASH_Status InterFlash_WritePage(uint32_t PageAddress, uint32_t *DataBuf);
+void InterFlash_RecvBin(void);
 
 #endif

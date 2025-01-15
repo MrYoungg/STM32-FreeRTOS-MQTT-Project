@@ -32,5 +32,7 @@
 .\objects\cmd.o: .\Hardware\IIC.h
 .\objects\cmd.o: .\Hardware\W25Q64.h
 .\objects\cmd.o: .\Hardware\SPI.h
+.\objects\cmd.o: .\Hardware\Boot.h
 .\objects\cmd.o: .\Hardware\InterFlash.h
-.\objects\cmd.o: Utilities\Xmodem.h
+.\objects\cmd.o: .\Utilities\Xmodem.h
+.\objects\cmd.o: .\Hardware\InterFlash.h

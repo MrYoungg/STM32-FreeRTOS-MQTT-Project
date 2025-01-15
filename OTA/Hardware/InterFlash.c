@@ -103,5 +103,50 @@ FLASH_Status InterFlash_WriteBuf_Word(uint32_t StartAddress, uint32_t *DataBuf, 
 
 FLASH_Status InterFlash_WritePage(uint32_t PageAddress, uint32_t *DataBuf)
 {
+    // 此处写入的是字数据，因此写入长度是（字节数/4）
     return InterFlash_WriteBuf_Word(PageAddress, DataBuf, (INTERFLASH_PAGE_SIZE / 4));
+}
+
+static void InterFlash_UpdatePage(void)
+{
+    uint32_t PageAddr = 0;
+    // 1、处理完整的1页数据
+    if ((Xmodem_FCB.PacketNum % XMODEM_PACKETNUM_PRE_PAGE) == 0) {
+        PageAddr = APP_BASE_ADDR +
+                   INTERFLASH_PAGE_SIZE * ((Xmodem_FCB.PacketNum / XMODEM_PACKETNUM_PRE_PAGE) - 1);
+    }
+
+    // 2、处理不完整的一页数据
+    else {
+        PageAddr = APP_BASE_ADDR +
+                   INTERFLASH_PAGE_SIZE * ((Xmodem_FCB.PacketNum / XMODEM_PACKETNUM_PRE_PAGE));
+    }
+
+    InterFlash_ErasePage(PageAddr);
+    InterFlash_WritePage(PageAddr, (uint32_t *)(Xmodem_FCB.Buffer_1k));
+}
+
+void InterFlash_RecvBin(void)
+{
+    uint8_t ret = 0;
+
+    while (1) {
+        // 1、按1024字节（Flash的1页）接收数据
+        ret = Xmodem_RecvData_1K();
+        if (ret == Xmodem_NumWrongOrder_Err) {
+            LOG("序号出错，主动结束传输 \r\n");
+            return;
+        }
+
+        if (ret == Xmodem_EOT_Err && (Xmodem_FCB.PacketNum % XMODEM_PACKETNUM_PRE_PAGE) == 0) {
+            LOG("页缓冲区中已无需要写入的数据 \r\n");
+            return;
+        }
+
+        // 2、接收满（或收到EOT）后将页缓冲区写入flash
+        InterFlash_UpdatePage();
+
+        // 3、如果是最后一包，则结束写入
+        if (ret == Xmodem_EOT_Err) return;
+    }
 }

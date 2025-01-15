@@ -36,10 +36,10 @@ typedef struct {
     volatile uint16_t dataSize;           // 当前已有数据项大小
     volatile uint16_t readIndex;          // 指向下一次要读出的位置
     volatile uint16_t writeIndex;         // 指向下一次要写入的位置
-#if 1
+
     FCB_ListItem_t *FCBListHead; // 数据帧管理链表头节点
     uint8_t FCBListSize;         // FCB链表项的项数
-#endif
+
 } RingBuffer_t;
 
 int RingBuffer_Init(RingBuffer_t *ringBuffer);
@@ -54,5 +54,6 @@ void Update_FCBList(RingBuffer_t *ringBuffer, uint16_t frameSize);
 bool is_RingBuffer_Empty(RingBuffer_t *ringBuffer);
 bool is_FCBList_Empty(RingBuffer_t *ringBuffer);
 bool is_RingBuffer_Full(RingBuffer_t *ringBuffer);
+void WaitForInput(char *buf, size_t bufLen);
 
 #endif

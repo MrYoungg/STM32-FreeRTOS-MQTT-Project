@@ -3,7 +3,7 @@
 #include "stm32f10x.h"
 #include "Usart.h"
 #include "SPI.h"
-
+#include "Boot.h"
 #include "Delay.h"
 
 #define W25Q64_TIMEOUT                100
@@ -30,5 +30,7 @@ void W25Q64_ReadPages(uint32_t startPageAddress,
                       uint8_t *RecvBuf,
                       uint32_t RecvBufLen,
                       uint16_t pageNum);
-
+void ExFlash_DownloadFromUSART(void);
+void ExFlash_MoveInAPP(void);
+void ExFlash_DeleteProg(void);
 #endif

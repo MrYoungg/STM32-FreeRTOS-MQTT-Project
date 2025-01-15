@@ -1122,6 +1122,8 @@ void AT_USART_SendString(char *String)
 
 ##### （4）BootLoader：文件传输 - Xmodem协议
 
+[Xmodem协议 | 靡不有初，鲜克有终 (shatang.github.io)](https://shatang.github.io/2020/08/12/Xmodem协议/)
+
 ##### （5）APP 程序
 
 1. **几个关键问题**
@@ -1157,6 +1159,13 @@ void AT_USART_SendString(char *String)
         // #define VECT_TAB_OFFSET  0x0
         ```
 
+#### 2.8.3 OTA 拓展
+
+##### 2.8.3.1 重传机制
+
+##### 2.8.3.2 数据加密
+
+##### 2.8.3.3 版本回退的限制问题
 
 ## chap 3 项目总结
 
@@ -1452,7 +1461,55 @@ void AT_USART_SendString(char *String)
 #### 3.1.8 串口第一次发送时无法发送第一个字节
 
 1. **Bug现象**
+
+    1. 如题
+
 2. **Bug原因**
+    1. 仅等待USART_TC（串口发送完成，移位寄存器移位结束）中断；
+
+        ```c
+        /// @brief AT命令串口发送一个字节数据
+        /// @param Byte 待发送数据
+        static void AT_USART_SendByte(uint8_t Data)
+        {
+            USART_SendData(AT_USARTx, Data);
+            // 死等发送
+            while (!USART_GetFlagStatus(AT_USARTx, USART_FLAG_TC));  // 等待发送完成
+        }
+        ```
+    2. 将第一个字节写入TDR之后，**由于TC标志位初始值为1，会直接跳过while，将下一个字节写入数据寄存器TDR**；
+    2. 此时TDR中的第一个字节数据甚至还没来得及写入移位寄存器中（至少需要一个时间周期），因此被第二个字节直接**覆盖**；
+    2. 而此时经过了**”读SR：while循环中，写DR：第二个字节写入TDR“**这个操作序列，TC被清零，将会进入while循环，等待第二个字节写入移位寄存器，并且发送完成之后，再写入第三个字节，此后正常发送；
+    5. 总结：第一字节总是**还没来得及写入移位寄存器就被覆盖**，因此丢失；
+        ![image-20250113163758827](https://gitee.com/yyangyyyy/typora-image/raw/master/Typora_Image/202501131637019.png)
+
 3. **解决方法**
+    1. 方法1：在判断USART_TC_Flag之前先将其清0（读数据寄存器+读状态寄存器）
+    2. 方法2：单个字节传输直接判断USART_TXE_Flag，在最后一个字节数据再判断USART_TC_Flag；
+
+#### 3.1.9 在接收线程中尝试发送，导致死锁
+
+1. **Bug原因**
+    1. 接收线程被唤醒后，`Receive_Mutex`已经释放，此时如果再次发送，则再次等待在`Send_Mutex`上；
+    2. 而`Send_Mutex`需要等待串口接收到信息后，在IDLE中断中释放`Receive_Mutex`，进而释放`Send_Mutex`；
+    3. 但注意，**此时的发送，是发生在接收线程中的**，也就是说`Receive_Mutex`解锁后还未再次上锁，因此就算IDLE中断释放`Receive_Mutex`，也会发现`Receive_Mutex`的事件链表中并没有任务在等待；
+    4. 也就是说不会唤醒任何任务，此时`Send_Mutex`无法被唤醒，陷入死锁；
+        ![image-20241225154023555](https://gitee.com/yyangyyyy/typora-image/raw/master/Typora_Image/202412251540859.png)
+2. **解决方法**
+    1. 不要在Receive_Mutex成功获取之后，且还未再次释放之前，尝试等待Send_Mutex（也就是不要做发送操作）；
+    2. 在接收线程中仅设置标志位，然后唤醒其他线程去做发送操作；
+
+#### 3.1.10 互斥量优先级继承出错（互斥量使用场景错误）
+
+1. **Bug现象**
+    1. 在**OTA线程**中的发送操作成功获得 `Send_Mutex` 之后，不但会唤醒**OTA线程**，还会唤醒**MQTTConnect线程**（此前**MQTTConnect线程**已经通过  `vTaskSuspend(NULL)` 挂起）；
+        - **MQTTConnect线程**优先级为1（FreeRTOS），**OTA线程**优先级为4；
+        - 在获得 `Send_Mutex` 互斥量之后，如果将**OTA线程**阻塞，发现**MQTTConnect线程**从`Suspend`状态中恢复运行；
+            <img src="https://gitee.com/yyangyyyy/typora-image/raw/master/Typora_Image/202412251613747.png" alt="image-20241225161310681" style="zoom: 67%;" />
+    2. 如果将**MQTTConnect线程**的优先级提高到5（即高于OTA线程线程），则只会唤醒**OTA线程**，不会唤醒**MQTTConnect线程**；
+2. **Bug原因**
+    1. 优先级继承问题，**MQTTConnect线程**在最后一次发送操作成功时（即成功从`xSemaphoreTake(AT_Send_Mutex, timeout)`返回），已经获取了互斥量`AT_Send_Mutex`；
+    2. 此时**OTA线程**再次进行发送操作，尝试获取`AT_Send_Mutex`，但因失败挂起（挂起是正常的，因为在等待接收线程接收到串口回复后释放 `AT_Send_Mutex`）；
+    3. 但由于互斥量有优先级继承的特点，而当前持有互斥量`AT_Send_Mutex`的**MQTTConnect线程**优先级低于**OTA线程**，因此将**MQTTConnect线程**从suspend链表中唤醒，并将其优先级提高至**OTA线程**同等级别；
 
  
