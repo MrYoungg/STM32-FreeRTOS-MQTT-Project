@@ -61,6 +61,18 @@ uint8_t AT24C02_WritePage(uint8_t pageAddr, uint8_t *data)
     return ret;
 }
 
+void AT24C02_Write(uint8_t startAddr, uint8_t *dataBuf, uint16_t dataBufLen)
+{
+    if ((dataBufLen > AT24C02_BYTE_NUM) || dataBuf == NULL) {
+        return;
+    }
+
+    for (uint16_t i = 0; i < dataBufLen; i++) {
+        AT24C02_WriteByte(startAddr + i, dataBuf[i]);
+        AT24C02_WAIT_FOR_WRITE;
+    }
+}
+
 uint8_t AT24C02_ReadByte(uint8_t byteAddr)
 {
     uint8_t data = 0;
@@ -89,7 +101,7 @@ uint8_t AT24C02_ReadByte(uint8_t byteAddr)
     // 6、读取数据
     data = IIC_ReceiveByte();
 
-    // 7、发送无应答
+    // 7、发送非应答
     IIC_SendAck(IIC_NOACK);
 
     // 8、停止条件
@@ -110,14 +122,4 @@ void AT24C02_Read(uint8_t startAddr, uint16_t dataLen, uint8_t *recvBuf, uint16_
     }
 }
 
-void AT24C02_Write(uint8_t startAddr, uint8_t *dataBuf, uint16_t dataBufLen)
-{
-    if ((dataBufLen > AT24C02_BYTE_NUM) || dataBuf == NULL) {
-        return;
-    }
 
-    for (uint16_t i = 0; i < dataBufLen; i++) {
-        AT24C02_WriteByte(startAddr + i, dataBuf[i]);
-        AT24C02_WAIT_FOR_WRITE;
-    }
-}

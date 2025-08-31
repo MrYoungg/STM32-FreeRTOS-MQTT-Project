@@ -75,7 +75,7 @@ uint8_t BootLoader_GoToAPP(void);
 void BootLoader_Reset(void);
 FLASH_Status Erase_APP(void);
 void USART_IAP(void);
-void Set_APPVersion(void);
+uint8_t Set_APPVersion(void);
 void Get_APPVersion(void);
 void ExFlash_APPDownload(void);
 #endif

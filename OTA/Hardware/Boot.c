@@ -61,8 +61,7 @@ static inline uint8_t Redirect_SP(void)
 
 static inline uint8_t Redirect_PC(void)
 {
-    if ((uint32_t)APP_RESET_HANDLER_ADDR >= APP_BASE_ADDR &&
-        (uint32_t)APP_RESET_HANDLER_ADDR <= 0x08010000) {
+    if ((uint32_t)APP_RESET_HANDLER_ADDR >= APP_BASE_ADDR && (uint32_t)APP_RESET_HANDLER_ADDR <= 0x08010000) {
         void (*APP_ResetHandler)(void) = APP_RESET_HANDLER_ADDR;
         APP_ResetHandler();
     }
@@ -116,13 +115,16 @@ FLASH_Status Erase_APP(void)
 
 void USART_IAP(void)
 {
+    // 设置版本
+    if (!Set_APPVersion()) return;
+
     LOG("请上传bin文件 \r\n");
     memset(&Xmodem_FCB, 0, sizeof(Xmodem_FCB_t));
     InterFlash_RecvBin();
 }
 
-// 版本号标准格式：宏 VERSION_PATTERN "VER-1.0.0-2024-12-20-11.57"
-void Set_APPVersion(void)
+// 版本号标准格式：宏 VERSION_PATTERN "VER-1.0.0-2025-01-16-16.17"
+uint8_t Set_APPVersion(void)
 {
     uint8_t versionStr[VERSION_LEN] = {0};
     uint8_t matched = 0;
@@ -135,12 +137,13 @@ void Set_APPVersion(void)
     matched = sscanf((const char *)versionStr, (const char *)VERSION_PATTERN, &temp);
     if (matched == 0) {
         LOG("版本信息格式有误 \r\n");
-        return;
+        return false;
     }
 
     memcpy(OTA_Info.CurAPP_Version, versionStr, sizeof(versionStr));
     Saving_OTAInfo();
     LOG("版本设置成功 \r\n");
+    return true;
 }
 
 void Get_APPVersion(void)

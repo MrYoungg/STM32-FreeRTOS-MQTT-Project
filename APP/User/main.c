@@ -57,13 +57,12 @@ int main(void)
     taskENTER_CRITICAL(); // 进入临界区,关中断
 
     // xTaskCreate(Task_Test, NULL, 128, NULL, 1, &Task_Test_Handle);
-    xTaskCreate(Task_MQTTConnect, NULL, 512, NULL, 1, &Task_MQTTConnect_Handle);
-    xTaskCreate(Task_MQTTDataPost, NULL, 512, NULL, 2, &Task_MQTTDataPost_Handle);
-    xTaskCreate(Task_OnlineDeviceCtrl, NULL, 512, NULL, 3, &Task_OnlineDeviceCtrl_Handle);
-    xTaskCreate(Task_LocalDeviceCtrl, NULL, 32, NULL, 3, &Task_LocalDeviceCtrl_Handle);
-    xTaskCreate(Task_OTA, NULL, 1024, NULL, 4, &Task_OTA_Handle);
-    // xTaskCreate(Task_Ping, NULL, 128, NULL, 5, &Task_Ping_Handle);
-    xTaskCreate(Task_Receive, NULL, 512, NULL, 6, &Task_Receive_Handle);
+    xTaskCreate(Task_MQTTDataPost, NULL, 512, NULL, 1, &Task_MQTTDataPost_Handle);
+    xTaskCreate(Task_OnlineDeviceCtrl, NULL, 512, NULL, 2, &Task_OnlineDeviceCtrl_Handle);
+    xTaskCreate(Task_OTA, NULL, 1024, NULL, 3, &Task_OTA_Handle);
+    xTaskCreate(Task_MQTTConnect, NULL, 512, NULL, 4, &Task_MQTTConnect_Handle);
+    xTaskCreate(Task_Receive, NULL, 512, NULL, 5, &Task_Receive_Handle);
+    xTaskCreate(Task_LocalDeviceCtrl, NULL, 32, NULL, 6, &Task_LocalDeviceCtrl_Handle);
 
     taskEXIT_CRITICAL(); // 退出临界区,开中断
 

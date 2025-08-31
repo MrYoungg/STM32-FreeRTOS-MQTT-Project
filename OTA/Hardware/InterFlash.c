@@ -29,10 +29,7 @@ uint8_t InterFlash_ReadByte(uint32_t Address)
 /// @param DataLen 数据长度
 /// @param RecvBuf 接收buffer
 /// @param BufLen buffer长度
-void InterFlash_ReadBuf_Word(uint32_t StartAddress,
-                             uint32_t DataLen,
-                             uint32_t *RecvBuf,
-                             uint32_t BufLen)
+void InterFlash_ReadBuf_Word(uint32_t StartAddress, uint32_t DataLen, uint32_t *RecvBuf, uint32_t BufLen)
 {
     if (RecvBuf == NULL) return;
 
@@ -112,14 +109,14 @@ static void InterFlash_UpdatePage(void)
     uint32_t PageAddr = 0;
     // 1、处理完整的1页数据
     if ((Xmodem_FCB.PacketNum % XMODEM_PACKETNUM_PRE_PAGE) == 0) {
-        PageAddr = APP_BASE_ADDR +
-                   INTERFLASH_PAGE_SIZE * ((Xmodem_FCB.PacketNum / XMODEM_PACKETNUM_PRE_PAGE) - 1);
+        PageAddr =
+            APP_BASE_ADDR + INTERFLASH_PAGE_SIZE * ((Xmodem_FCB.PacketNum / XMODEM_PACKETNUM_PRE_PAGE) - 1);
     }
 
     // 2、处理不完整的一页数据
     else {
-        PageAddr = APP_BASE_ADDR +
-                   INTERFLASH_PAGE_SIZE * ((Xmodem_FCB.PacketNum / XMODEM_PACKETNUM_PRE_PAGE));
+        PageAddr =
+            APP_BASE_ADDR + INTERFLASH_PAGE_SIZE * ((Xmodem_FCB.PacketNum / XMODEM_PACKETNUM_PRE_PAGE));
     }
 
     InterFlash_ErasePage(PageAddr);
@@ -135,6 +132,11 @@ void InterFlash_RecvBin(void)
         ret = Xmodem_RecvData_1K();
         if (ret == Xmodem_NumWrongOrder_Err) {
             LOG("序号出错，主动结束传输 \r\n");
+            return;
+        }
+
+        if (ret == Xmodem_TooMuchRepeat) {
+            LOG("超出重复次数，结束传输 \r\n");
             return;
         }
 

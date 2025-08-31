@@ -31,15 +31,15 @@ void HWSPI_Init(void)
     SPI_I2S_DeInit(SPIx);
     SPI_InitTypeDef SPI_InitStructure;
     SPI_InitStructure.SPI_BaudRatePrescaler =
-        SPI_BaudRatePrescaler_2;                      // 选择波特率分频(SPI的SCK时钟频率=72M/分频)
+        SPI_BaudRatePrescaler_2;                      // 选择波特率分频(SPI的SCK时钟频率=APBx时钟频率/分频)
     SPI_InitStructure.SPI_CPHA = SPI_CPHA_1Edge;      // 选择第几边缘采样
     SPI_InitStructure.SPI_CPOL = SPI_CPOL_Low;        // 选择时钟默认空闲电平
     SPI_InitStructure.SPI_CRCPolynomial = 7;          // 用于CRC参数校验，可以选默认值7
     SPI_InitStructure.SPI_DataSize = SPI_DataSize_8b; // 选择数据长度（常用8bits）
     SPI_InitStructure.SPI_Direction = SPI_Direction_2Lines_FullDuplex; // 选择全双工或半双工
-    SPI_InitStructure.SPI_FirstBit = SPI_FirstBit_MSB; // 选择高位先行（常用）、低位先行
-    SPI_InitStructure.SPI_Mode = SPI_Mode_Master;      // 选择主模式还是从模式
-    SPI_InitStructure.SPI_NSS = SPI_NSS_Soft;          // 软件方式给NSS信号，NSS用于实现多主机模型
+    SPI_InitStructure.SPI_FirstBit = SPI_FirstBit_MSB;                 // 选择高位先行（常用）、低位先行
+    SPI_InitStructure.SPI_Mode = SPI_Mode_Master;                      // 选择主模式还是从模式
+    SPI_InitStructure.SPI_NSS = SPI_NSS_Soft; // 软件方式给NSS信号，NSS用于实现多主机模型
     SPI_Init(SPIx, &SPI_InitStructure);
 
     SPI_Cmd(SPIx, ENABLE);

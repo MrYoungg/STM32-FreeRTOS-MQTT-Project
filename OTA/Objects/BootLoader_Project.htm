@@ -3,7 +3,7 @@
 <title>Static Call Graph - [.\Objects\BootLoader_Project.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\Objects\BootLoader_Project.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060528: Last Updated: Tue Dec 31 16:55:00 2024
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060528: Last Updated: Thu Jan 16 16:16:42 2025
 <BR><P>
 <H3>Maximum Stack Usage =       1456 bytes + Unknown(Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -358,9 +358,9 @@ Global Symbols
 <LI><a href="#[4d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_double_round
 <LI><a href="#[4c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_double_epilogue
 </UL>
-<BR>[Called By]<UL><LI><a href="#[4f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_drsub
+<BR>[Called By]<UL><LI><a href="#[d1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_fp_digits
+<LI><a href="#[4f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_drsub
 <LI><a href="#[4e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_dsub
-<LI><a href="#[d1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_fp_digits
 </UL>
 
 <P><STRONG><a name="[4e]"></a>__aeabi_dsub</STRONG> (Thumb, 6 bytes, Stack size 0 bytes, dadd.o(.text), UNUSED)
@@ -569,6 +569,7 @@ Global Symbols
 <LI><a href="#[6f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;BootLoader_GoToAPP
 <LI><a href="#[aa]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;InterFlash_WriteBuf_Word
 <LI><a href="#[a8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;InterFlash_RecvBin
+<LI><a href="#[92]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Xmodem_RecvData_1K
 <LI><a href="#[93]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;W25Q64_WritePage
 <LI><a href="#[96]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;W25Q64_ReadPages
 <LI><a href="#[c8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;W25Q64_ReadData
@@ -675,20 +676,21 @@ Global Symbols
 <P><STRONG><a name="[6d]"></a>ExFlash_DeleteProg</STRONG> (Thumb, 124 bytes, Stack size 16 bytes, w25q64.o(i.ExFlash_DeleteProg))
 <BR><BR>[Stack]<UL><LI>Max Depth = 400<LI>Call Chain = ExFlash_DeleteProg &rArr; ExFlash_Menu &rArr; CMD_USART_Printf &rArr; CMD_USART_SendString &rArr; CMD_USART_SendByte
 </UL>
-<BR>[Calls]<UL><LI><a href="#[70]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Saving_OTAInfo
+<BR>[Calls]<UL><LI><a href="#[8f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memclr4
+<LI><a href="#[70]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Saving_OTAInfo
 <LI><a href="#[8e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;W25Q64_BlockErase_64K
 <LI><a href="#[8d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ExFlash_SelectBlock
 <LI><a href="#[8c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ExFlash_Menu
 <LI><a href="#[65]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CMD_USART_Printf
-<LI><a href="#[8f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memclr4
 </UL>
 <BR>[Called By]<UL><LI><a href="#[62]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;BootLoader_CMD
 </UL>
 
-<P><STRONG><a name="[6b]"></a>ExFlash_DownloadFromUSART</STRONG> (Thumb, 370 bytes, Stack size 40 bytes, w25q64.o(i.ExFlash_DownloadFromUSART))
-<BR><BR>[Stack]<UL><LI>Max Depth = 448<LI>Call Chain = ExFlash_DownloadFromUSART &rArr; ExFlash_SetVersion &rArr; Saving_OTAInfo &rArr; AT24C02_Write &rArr; AT24C02_WriteByte &rArr; IIC_ReceiveAck &rArr; CMD_USART_Printf &rArr; CMD_USART_SendString &rArr; CMD_USART_SendByte
+<P><STRONG><a name="[6b]"></a>ExFlash_DownloadFromUSART</STRONG> (Thumb, 386 bytes, Stack size 40 bytes, w25q64.o(i.ExFlash_DownloadFromUSART))
+<BR><BR>[Stack]<UL><LI>Max Depth = 504<LI>Call Chain = ExFlash_DownloadFromUSART &rArr; Xmodem_RecvData_1K &rArr; CMD_USART_Printf &rArr; CMD_USART_SendString &rArr; CMD_USART_SendByte
 </UL>
-<BR>[Calls]<UL><LI><a href="#[92]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Xmodem_RecvData_1K
+<BR>[Calls]<UL><LI><a href="#[8f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memclr4
+<LI><a href="#[92]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Xmodem_RecvData_1K
 <LI><a href="#[90]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;WaitForInput
 <LI><a href="#[70]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Saving_OTAInfo
 <LI><a href="#[93]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;W25Q64_WritePage
@@ -697,7 +699,6 @@ Global Symbols
 <LI><a href="#[8d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ExFlash_SelectBlock
 <LI><a href="#[8c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ExFlash_Menu
 <LI><a href="#[65]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CMD_USART_Printf
-<LI><a href="#[8f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memclr4
 </UL>
 <BR>[Called By]<UL><LI><a href="#[62]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;BootLoader_CMD
 </UL>
@@ -705,13 +706,13 @@ Global Symbols
 <P><STRONG><a name="[6c]"></a>ExFlash_MoveInAPP</STRONG> (Thumb, 228 bytes, Stack size 1056 bytes, w25q64.o(i.ExFlash_MoveInAPP))
 <BR><BR>[Stack]<UL><LI>Max Depth = 1440<LI>Call Chain = ExFlash_MoveInAPP &rArr; ExFlash_Menu &rArr; CMD_USART_Printf &rArr; CMD_USART_SendString &rArr; CMD_USART_SendByte
 </UL>
-<BR>[Calls]<UL><LI><a href="#[97]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;InterFlash_WritePage
+<BR>[Calls]<UL><LI><a href="#[8f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memclr4
+<LI><a href="#[97]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;InterFlash_WritePage
 <LI><a href="#[8b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;InterFlash_ErasePage
 <LI><a href="#[96]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;W25Q64_ReadPages
 <LI><a href="#[8d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ExFlash_SelectBlock
 <LI><a href="#[8c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ExFlash_Menu
 <LI><a href="#[65]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CMD_USART_Printf
-<LI><a href="#[8f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memclr4
 </UL>
 <BR>[Called By]<UL><LI><a href="#[62]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;BootLoader_CMD
 </UL>
@@ -896,8 +897,8 @@ Global Symbols
 <LI><a href="#[6c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ExFlash_MoveInAPP
 </UL>
 
-<P><STRONG><a name="[a8]"></a>InterFlash_RecvBin</STRONG> (Thumb, 76 bytes, Stack size 8 bytes, interflash.o(i.InterFlash_RecvBin))
-<BR><BR>[Stack]<UL><LI>Max Depth = 368<LI>Call Chain = InterFlash_RecvBin &rArr; InterFlash_UpdatePage &rArr; InterFlash_WritePage &rArr; InterFlash_WriteBuf_Word &rArr; CMD_USART_Printf &rArr; CMD_USART_SendString &rArr; CMD_USART_SendByte
+<P><STRONG><a name="[a8]"></a>InterFlash_RecvBin</STRONG> (Thumb, 96 bytes, Stack size 8 bytes, interflash.o(i.InterFlash_RecvBin))
+<BR><BR>[Stack]<UL><LI>Max Depth = 472<LI>Call Chain = InterFlash_RecvBin &rArr; Xmodem_RecvData_1K &rArr; CMD_USART_Printf &rArr; CMD_USART_SendString &rArr; CMD_USART_SendByte
 </UL>
 <BR>[Calls]<UL><LI><a href="#[a9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;InterFlash_UpdatePage
 <LI><a href="#[92]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Xmodem_RecvData_1K
@@ -955,8 +956,8 @@ Global Symbols
 <P><STRONG><a name="[ad]"></a>OnlineOTA_ConfigInfo</STRONG> (Thumb, 34 bytes, Stack size 8 bytes, onlineota.o(i.OnlineOTA_ConfigInfo))
 <BR><BR>[Stack]<UL><LI>Max Depth = 368<LI>Call Chain = OnlineOTA_ConfigInfo &rArr; Saving_OTAInfo &rArr; AT24C02_Write &rArr; AT24C02_WriteByte &rArr; IIC_ReceiveAck &rArr; CMD_USART_Printf &rArr; CMD_USART_SendString &rArr; CMD_USART_SendByte
 </UL>
-<BR>[Calls]<UL><LI><a href="#[70]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Saving_OTAInfo
-<LI><a href="#[ae]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memcpy
+<BR>[Calls]<UL><LI><a href="#[ae]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memcpy
+<LI><a href="#[70]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Saving_OTAInfo
 </UL>
 <BR>[Called By]<UL><LI><a href="#[35]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
@@ -964,11 +965,11 @@ Global Symbols
 <P><STRONG><a name="[af]"></a>OnlineOTA_UpdateAPP</STRONG> (Thumb, 206 bytes, Stack size 1056 bytes, onlineota.o(i.OnlineOTA_UpdateAPP))
 <BR><BR>[Stack]<UL><LI>Max Depth = 1424<LI>Call Chain = OnlineOTA_UpdateAPP &rArr; W25Q64_ReadPages &rArr; W25Q64_ReadData &rArr; W25Q64_WaitNotBusy &rArr; CMD_USART_Printf &rArr; CMD_USART_SendString &rArr; CMD_USART_SendByte
 </UL>
-<BR>[Calls]<UL><LI><a href="#[97]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;InterFlash_WritePage
+<BR>[Calls]<UL><LI><a href="#[8f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memclr4
+<LI><a href="#[97]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;InterFlash_WritePage
 <LI><a href="#[8b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;InterFlash_ErasePage
 <LI><a href="#[96]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;W25Q64_ReadPages
 <LI><a href="#[65]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CMD_USART_Printf
-<LI><a href="#[8f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memclr4
 </UL>
 <BR>[Called By]<UL><LI><a href="#[35]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
@@ -1014,8 +1015,8 @@ Global Symbols
 <P><STRONG><a name="[b2]"></a>Read_SavingOTAInfo</STRONG> (Thumb, 24 bytes, Stack size 8 bytes, boot.o(i.Read_SavingOTAInfo))
 <BR><BR>[Stack]<UL><LI>Max Depth = 368<LI>Call Chain = Read_SavingOTAInfo &rArr; AT24C02_Read &rArr; AT24C02_ReadByte &rArr; IIC_ReceiveAck &rArr; CMD_USART_Printf &rArr; CMD_USART_SendString &rArr; CMD_USART_SendByte
 </UL>
-<BR>[Calls]<UL><LI><a href="#[57]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;AT24C02_Read
-<LI><a href="#[8f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memclr4
+<BR>[Calls]<UL><LI><a href="#[8f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memclr4
+<LI><a href="#[57]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;AT24C02_Read
 </UL>
 <BR>[Called By]<UL><LI><a href="#[35]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
@@ -1141,17 +1142,18 @@ Global Symbols
 <LI><a href="#[91]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ExFlash_SetVersion
 </UL>
 
-<P><STRONG><a name="[69]"></a>Set_APPVersion</STRONG> (Thumb, 116 bytes, Stack size 48 bytes, boot.o(i.Set_APPVersion))
+<P><STRONG><a name="[69]"></a>Set_APPVersion</STRONG> (Thumb, 118 bytes, Stack size 48 bytes, boot.o(i.Set_APPVersion))
 <BR><BR>[Stack]<UL><LI>Max Depth = 408<LI>Call Chain = Set_APPVersion &rArr; Saving_OTAInfo &rArr; AT24C02_Write &rArr; AT24C02_WriteByte &rArr; IIC_ReceiveAck &rArr; CMD_USART_Printf &rArr; CMD_USART_SendString &rArr; CMD_USART_SendByte
 </UL>
-<BR>[Calls]<UL><LI><a href="#[90]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;WaitForInput
+<BR>[Calls]<UL><LI><a href="#[8f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memclr4
+<LI><a href="#[ae]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memcpy
+<LI><a href="#[90]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;WaitForInput
 <LI><a href="#[70]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Saving_OTAInfo
 <LI><a href="#[65]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CMD_USART_Printf
 <LI><a href="#[42]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__0sscanf
-<LI><a href="#[8f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memclr4
-<LI><a href="#[ae]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memcpy
 </UL>
 <BR>[Called By]<UL><LI><a href="#[62]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;BootLoader_CMD
+<LI><a href="#[68]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART_IAP
 </UL>
 
 <P><STRONG><a name="[9]"></a>SysTick_Handler</STRONG> (Thumb, 2 bytes, Stack size 0 bytes, stm32f10x_it.o(i.SysTick_Handler))
@@ -1197,12 +1199,13 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[30]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART2_IRQHandler
 </UL>
 
-<P><STRONG><a name="[68]"></a>USART_IAP</STRONG> (Thumb, 32 bytes, Stack size 8 bytes, boot.o(i.USART_IAP))
-<BR><BR>[Stack]<UL><LI>Max Depth = 376<LI>Call Chain = USART_IAP &rArr; InterFlash_RecvBin &rArr; InterFlash_UpdatePage &rArr; InterFlash_WritePage &rArr; InterFlash_WriteBuf_Word &rArr; CMD_USART_Printf &rArr; CMD_USART_SendString &rArr; CMD_USART_SendByte
+<P><STRONG><a name="[68]"></a>USART_IAP</STRONG> (Thumb, 42 bytes, Stack size 8 bytes, boot.o(i.USART_IAP))
+<BR><BR>[Stack]<UL><LI>Max Depth = 480<LI>Call Chain = USART_IAP &rArr; InterFlash_RecvBin &rArr; Xmodem_RecvData_1K &rArr; CMD_USART_Printf &rArr; CMD_USART_SendString &rArr; CMD_USART_SendByte
 </UL>
-<BR>[Calls]<UL><LI><a href="#[a8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;InterFlash_RecvBin
+<BR>[Calls]<UL><LI><a href="#[8f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memclr4
+<LI><a href="#[69]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Set_APPVersion
+<LI><a href="#[a8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;InterFlash_RecvBin
 <LI><a href="#[65]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CMD_USART_Printf
-<LI><a href="#[8f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memclr4
 </UL>
 <BR>[Called By]<UL><LI><a href="#[62]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;BootLoader_CMD
 </UL>
@@ -1318,15 +1321,16 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[30]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART2_IRQHandler
 </UL>
 
-<P><STRONG><a name="[92]"></a>Xmodem_RecvData_1K</STRONG> (Thumb, 176 bytes, Stack size 152 bytes, xmodem.o(i.Xmodem_RecvData_1K))
-<BR><BR>[Stack]<UL><LI>Max Depth = 356<LI>Call Chain = Xmodem_RecvData_1K &rArr; Xmodem_RecvPacket &rArr; RingBuffer_ReadFrame &rArr; Read_RingBuffer
+<P><STRONG><a name="[92]"></a>Xmodem_RecvData_1K</STRONG> (Thumb, 218 bytes, Stack size 160 bytes, xmodem.o(i.Xmodem_RecvData_1K))
+<BR><BR>[Stack]<UL><LI>Max Depth = 464<LI>Call Chain = Xmodem_RecvData_1K &rArr; CMD_USART_Printf &rArr; CMD_USART_SendString &rArr; CMD_USART_SendByte
 </UL>
-<BR>[Calls]<UL><LI><a href="#[cd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Xmodem_RecvPacket
+<BR>[Calls]<UL><LI><a href="#[8f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memclr4
+<LI><a href="#[ae]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memcpy
+<LI><a href="#[cd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Xmodem_RecvPacket
 <LI><a href="#[c9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;is_FCBList_Empty
 <LI><a href="#[7f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CMD_USART_SendByte
+<LI><a href="#[65]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CMD_USART_Printf
 <LI><a href="#[61]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Delay_ms
-<LI><a href="#[8f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memclr4
-<LI><a href="#[ae]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memcpy
 </UL>
 <BR>[Called By]<UL><LI><a href="#[a8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;InterFlash_RecvBin
 <LI><a href="#[6b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ExFlash_DownloadFromUSART
@@ -1491,10 +1495,10 @@ Local Symbols
 <P><STRONG><a name="[8c]"></a>ExFlash_Menu</STRONG> (Thumb, 194 bytes, Stack size 80 bytes, w25q64.o(i.ExFlash_Menu))
 <BR><BR>[Stack]<UL><LI>Max Depth = 384<LI>Call Chain = ExFlash_Menu &rArr; CMD_USART_Printf &rArr; CMD_USART_SendString &rArr; CMD_USART_SendByte
 </UL>
-<BR>[Calls]<UL><LI><a href="#[65]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CMD_USART_Printf
-<LI><a href="#[94]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strlen
+<BR>[Calls]<UL><LI><a href="#[94]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strlen
 <LI><a href="#[8f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memclr4
 <LI><a href="#[95]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memcpy4
+<LI><a href="#[65]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CMD_USART_Printf
 </UL>
 <BR>[Called By]<UL><LI><a href="#[6c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ExFlash_MoveInAPP
 <LI><a href="#[6b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ExFlash_DownloadFromUSART
@@ -1512,15 +1516,15 @@ Local Symbols
 <LI><a href="#[6d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ExFlash_DeleteProg
 </UL>
 
-<P><STRONG><a name="[91]"></a>ExFlash_SetVersion</STRONG> (Thumb, 128 bytes, Stack size 48 bytes, w25q64.o(i.ExFlash_SetVersion))
+<P><STRONG><a name="[91]"></a>ExFlash_SetVersion</STRONG> (Thumb, 114 bytes, Stack size 48 bytes, w25q64.o(i.ExFlash_SetVersion))
 <BR><BR>[Stack]<UL><LI>Max Depth = 408<LI>Call Chain = ExFlash_SetVersion &rArr; Saving_OTAInfo &rArr; AT24C02_Write &rArr; AT24C02_WriteByte &rArr; IIC_ReceiveAck &rArr; CMD_USART_Printf &rArr; CMD_USART_SendString &rArr; CMD_USART_SendByte
 </UL>
-<BR>[Calls]<UL><LI><a href="#[90]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;WaitForInput
+<BR>[Calls]<UL><LI><a href="#[8f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memclr4
+<LI><a href="#[95]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memcpy4
+<LI><a href="#[90]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;WaitForInput
 <LI><a href="#[70]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Saving_OTAInfo
 <LI><a href="#[65]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CMD_USART_Printf
 <LI><a href="#[42]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__0sscanf
-<LI><a href="#[8f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memclr4
-<LI><a href="#[95]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memcpy4
 </UL>
 <BR>[Called By]<UL><LI><a href="#[6b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ExFlash_DownloadFromUSART
 </UL>
@@ -1599,13 +1603,13 @@ Local Symbols
 <P><STRONG><a name="[cd]"></a>Xmodem_RecvPacket</STRONG> (Thumb, 232 bytes, Stack size 160 bytes, xmodem.o(i.Xmodem_RecvPacket))
 <BR><BR>[Stack]<UL><LI>Max Depth = 204<LI>Call Chain = Xmodem_RecvPacket &rArr; RingBuffer_ReadFrame &rArr; Read_RingBuffer
 </UL>
-<BR>[Calls]<UL><LI><a href="#[ce]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Xmodem_CheckNum
+<BR>[Calls]<UL><LI><a href="#[8f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memclr4
+<LI><a href="#[ae]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memcpy
+<LI><a href="#[ce]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Xmodem_CheckNum
 <LI><a href="#[cb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Xmodem_CheckCRC
 <LI><a href="#[c9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;is_FCBList_Empty
 <LI><a href="#[72]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RingBuffer_ReadFrame
 <LI><a href="#[7f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CMD_USART_SendByte
-<LI><a href="#[8f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memclr4
-<LI><a href="#[ae]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memcpy
 </UL>
 <BR>[Called By]<UL><LI><a href="#[92]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Xmodem_RecvData_1K
 </UL>
@@ -1622,11 +1626,11 @@ Local Symbols
 </UL>
 
 <P><STRONG><a name="[d0]"></a>_printf_core</STRONG> (Thumb, 1744 bytes, Stack size 136 bytes, printfa.o(i._printf_core), UNUSED)
-<BR><BR>[Calls]<UL><LI><a href="#[46]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_uldivmod
-<LI><a href="#[d5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_uidivmod
-<LI><a href="#[d3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_printf_pre_padding
+<BR><BR>[Calls]<UL><LI><a href="#[d3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_printf_pre_padding
 <LI><a href="#[d4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_printf_post_padding
 <LI><a href="#[d1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_fp_digits
+<LI><a href="#[46]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_uldivmod
+<LI><a href="#[d5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_uidivmod
 </UL>
 <BR>[Called By]<UL><LI><a href="#[cf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__0vsnprintf
 </UL>

@@ -156,10 +156,7 @@ void W25Q64_ReadData(uint32_t Address, uint8_t *RecvBuf, uint32_t RecvBufLen, ui
     SPI_Stop();
 }
 
-void W25Q64_ReadPages(uint32_t StartPageAddress,
-                      uint8_t *RecvBuf,
-                      uint32_t RecvBufLen,
-                      uint16_t pageNum)
+void W25Q64_ReadPages(uint32_t StartPageAddress, uint8_t *RecvBuf, uint32_t RecvBufLen, uint16_t pageNum)
 {
     if (RecvBuf == NULL) {
         LOG("recvBuf is NULL\r\n");
@@ -167,8 +164,7 @@ void W25Q64_ReadPages(uint32_t StartPageAddress,
     }
     uint32_t pageAddr = StartPageAddress;
 
-    uint32_t readLen =
-        (RecvBufLen >= pageNum * W25Q64_PAGE_SIZE) ? (pageNum * W25Q64_PAGE_SIZE) : RecvBufLen;
+    uint32_t readLen = (RecvBufLen >= pageNum * W25Q64_PAGE_SIZE) ? (pageNum * W25Q64_PAGE_SIZE) : RecvBufLen;
 
     W25Q64_ReadData(pageAddr, RecvBuf, RecvBufLen, readLen);
     pageAddr += W25Q64_PAGE_SIZE;
@@ -229,7 +225,6 @@ static uint8_t ExFlash_SetVersion(uint8_t BlockNum)
     uint8_t versionStr[VERSION_LEN] = {0};
     uint8_t matched = 0;
     int temp;
-    LOG("请输入版本信息: \r\n");
 
     WaitForInput((char *)versionStr, sizeof(versionStr));
     LOG("%s\r\n", versionStr);
@@ -281,18 +276,19 @@ void ExFlash_DownloadFromUSART(void)
         }
     }
 
-    LOG("准备写入%d号外存块 \r\n", ExFlash_Num);
-
-    BlockAddr = ExFlash_Num * W25Q64_BLOCK_SIZE;
-    PageBaseAddr = BlockAddr;
-
-    memset(&Xmodem_FCB, 0, sizeof(Xmodem_FCB_t));
-    W25Q64_BlockErase_64K(BlockAddr);
-
     // 设置版本信息
+    LOG("请输入版本信息: \r\n");
     if (ExFlash_SetVersion(ExFlash_Num) == false) {
         return;
     }
+
+    // 擦除对应外存块
+    LOG("准备写入%d号外存块 \r\n", ExFlash_Num);
+    BlockAddr = ExFlash_Num * W25Q64_BLOCK_SIZE;
+    PageBaseAddr = BlockAddr;
+    memset(&Xmodem_FCB, 0, sizeof(Xmodem_FCB_t));
+    W25Q64_BlockErase_64K(BlockAddr);
+
     LOG("请上传bin文件 \r\n");
 
     while (1) {
@@ -313,8 +309,7 @@ void ExFlash_DownloadFromUSART(void)
         PageNum_1k = INTERFLASH_PAGE_SIZE / W25Q64_PAGE_SIZE;
         for (uint8_t i = 0; i < PageNum_1k; i++) {
             PageAddr = PageBaseAddr + i * W25Q64_PAGE_SIZE;
-            W25Q64_WritePage(
-                PageAddr, &(Xmodem_FCB.Buffer_1k[i * W25Q64_PAGE_SIZE]), W25Q64_PAGE_SIZE);
+            W25Q64_WritePage(PageAddr, &(Xmodem_FCB.Buffer_1k[i * W25Q64_PAGE_SIZE]), W25Q64_PAGE_SIZE);
         }
 
         PageBaseAddr += PageNum_1k * W25Q64_PAGE_SIZE;

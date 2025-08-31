@@ -17,14 +17,15 @@
 #define OTA_FLAG_SET   0xAB
 #define OTA_FLAG_RESET 0x00
 
+#define MAX_OTA_REPETITIONS      10
 #define IBM_CRC16_POLY           (uint16_t)0x8005
 #define ALIYUN_JSON_BYTES_LENGTH 2
 
-#define SWAP_BYTE(ByteAddr1, ByteAddr2)                                                            \
-    do {                                                                                           \
-        uint8_t tmp = *(ByteAddr1);                                                                \
-        *(ByteAddr1) = *(ByteAddr2);                                                               \
-        *(ByteAddr2) = (tmp);                                                                      \
+#define SWAP_BYTE(ByteAddr1, ByteAddr2)                                                                      \
+    do {                                                                                                     \
+        uint8_t tmp = *(ByteAddr1);                                                                          \
+        *(ByteAddr1) = *(ByteAddr2);                                                                         \
+        *(ByteAddr2) = (tmp);                                                                                \
     } while (0)
 
 typedef enum {

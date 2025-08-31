@@ -85,10 +85,8 @@ uint8_t OTA_PostVersion(void)
     uint16_t JSONStrLen = 0;
     uint8_t ret = 0;
 
-    JSONStrLen = snprintf(JSONStr,
-                          sizeof(JSONStr),
-                          "{\"id\":\"1\",\"params\":{\"version\":\"%s\"}}",
-                          OTA_Info.CurAPP_Version);
+    JSONStrLen = snprintf(
+        JSONStr, sizeof(JSONStr), "{\"id\":\"1\",\"params\":{\"version\":\"%s\"}}", OTA_Info.CurAPP_Version);
 
     ret = MQTT_Pubish(POST_VERSION_TOPIC, JSONStr, JSONStrLen);
     if (ret != MQTT_SUCCESS) {
@@ -103,8 +101,7 @@ uint8_t OTA_PostVersion(void)
 uint8_t OTA_RequestDownloadInfo(void)
 {
     uint8_t ret = 0;
-    char JSONStr[] =
-        "{\"id\":\"1\",\"version\":\"1.0\",\"params\":{},\"method\":\"thing.ota.firmware.get\"}";
+    char JSONStr[] = "{\"id\":\"1\",\"version\":\"1.0\",\"params\":{},\"method\":\"thing.ota.firmware.get\"}";
 
     // 传输字节数要减去最后的'\0'
     ret = MQTT_Pubish(REQUEST_OTA_INFO_TOPIC, JSONStr, sizeof(JSONStr) - 1);
@@ -128,10 +125,9 @@ void OTA_GetDownloadInfo()
     }
 
     // 2、获取文件版本号
-    if (MQTT_GetJSONValue_Str(MQTT_SubNewsBuffer,
-                              "version",
-                              OTA_Download_CB.Version,
-                              sizeof(OTA_Download_CB.Version)) == true) {
+    if (MQTT_GetJSONValue_Str(
+            MQTT_SubNewsBuffer, "version", OTA_Download_CB.Version, sizeof(OTA_Download_CB.Version)) ==
+        true) {
         DEBUG_LOG("云端文件版本号：%s\r\n", OTA_Download_CB.Version);
     }
 
@@ -142,8 +138,7 @@ void OTA_GetDownloadInfo()
     }
 
     // 4、获取FileID
-    if (MQTT_GetJSONValue_Str(MQTT_SubNewsBuffer, "streamFileId", transBuf, sizeof(transBuf)) ==
-        true) {
+    if (MQTT_GetJSONValue_Str(MQTT_SubNewsBuffer, "streamFileId", transBuf, sizeof(transBuf)) == true) {
         OTA_Download_CB.FileID = strtoul(transBuf, NULL, 10);
         DEBUG_LOG("云端文件FileID：%d\r\n", OTA_Download_CB.FileID);
     }
@@ -255,9 +250,11 @@ uint16_t OTA_GetBuf_CRC16IBM(uint8_t *Buf, uint16_t BufLen)
 uint8_t OTA_GetBinDataFrame(void)
 {
     char bSizeStr[6] = {0};
+    char bOffsetStr[10] = {0};
     char *JSONStart = NULL;
     char *binStart = NULL;
     uint32_t bSize = 0;
+    uint32_t bOffset = 0;
     uint16_t JSONStrLen = 0;
     uint16_t CRC_Index = NULL;
     uint16_t CRC16_CalVal = 0x0000;
@@ -267,7 +264,7 @@ uint8_t OTA_GetBinDataFrame(void)
     DEBUG_LOG("升级包JSON数据长度为：%d\r\n", JSONStrLen);
     binStart = MQTT_SubNewsBuffer + ALIYUN_JSON_BYTES_LENGTH + JSONStrLen;
 
-    // 2、找到JSON数据的起始位置，读取bSize参数（bin数据长度）
+    // 2、读取bSize参数（bin数据包的长度）
     JSONStart = MQTT_SubNewsBuffer + ALIYUN_JSON_BYTES_LENGTH;
     if (MQTT_GetJSONValue_Str(JSONStart, "bSize", bSizeStr, sizeof(bSizeStr)) == false) {
         return false;
@@ -275,26 +272,37 @@ uint8_t OTA_GetBinDataFrame(void)
     bSize = strtoul(bSizeStr, NULL, 10);
     DEBUG_LOG("bSize:%d\r\n", bSize);
 
-    // 3、提取bin数据
+    // 3、读取bOffset（bin数据包偏移）
+    if (MQTT_GetJSONValue_Str(JSONStart, "bOffset", bOffsetStr, sizeof(bOffsetStr)) == false) {
+        return false;
+    }
+    bOffset = strtoul(bOffsetStr, NULL, 10);
+    DEBUG_LOG("bOffset:%d\r\n", bOffset);
+    if (bOffset != OTA_Download_CB.RecvFileSize) {
+        DEBUG_LOG("bin文件包偏移不符合要求 \r\n");
+        return false;
+    }
+
+    // 4、提取bin数据
     memset(OTA_Download_CB.BinFrameBuf, 0, sizeof(OTA_Download_CB.BinFrameBuf));
     memcpy(OTA_Download_CB.BinFrameBuf, binStart, bSize);
 
-    // 4、提取校验码
+    // 5、提取校验码
     CRC_Index = ALIYUN_JSON_BYTES_LENGTH + JSONStrLen + bSize;
-    OTA_Download_CB.CRC16_Value = (uint16_t)(MQTT_SubNewsBuffer[CRC_Index]) +
-                                  (uint16_t)(MQTT_SubNewsBuffer[CRC_Index + 1] << 8);
+    OTA_Download_CB.CRC16_Value =
+        (uint16_t)(MQTT_SubNewsBuffer[CRC_Index]) + (uint16_t)(MQTT_SubNewsBuffer[CRC_Index + 1] << 8);
 
-    // 5、校验
+    // 6、校验
     CRC16_CalVal = OTA_GetBuf_CRC16IBM(OTA_Download_CB.BinFrameBuf, bSize);
-    if (CRC16_CalVal == OTA_Download_CB.CRC16_Value) {
-        DEBUG_LOG("校验成功 \r\n");
-        OTA_Download_CB.RecvFileSize += bSize;
-        return true;
+    if (CRC16_CalVal != OTA_Download_CB.CRC16_Value) {
+        DEBUG_LOG("校验失败 \r\n");
+        DEBUG_LOG("计算得到的校验值为：%.4x\r\n", CRC16_CalVal);
+        return false;
     }
 
-    DEBUG_LOG("校验失败 \r\n");
-    DEBUG_LOG("计算得到的校验值为：%.4x\r\n", CRC16_CalVal);
-    return false;
+    DEBUG_LOG("偏移正确！校验码正确！ \r\n");
+    OTA_Download_CB.RecvFileSize += bSize;
+    return true;
 }
 
 void OTA_SaveBinDataFrame(void)
@@ -328,14 +336,21 @@ void OTA_DealingInfo(void)
 
 void OTA_DealingBinData(void)
 {
+    uint8_t Repeatitions = 0;
     // 1、接收这一帧数据
     // （1）提取并校验分片数据（256字节数据+2字节校验码）
-    DEBUG_LOG("提取并校验分bin数据 \r\n");
-    if (OTA_GetBinDataFrame() == true) {
-        // （2）保存到外存（W25Q64）中
-        DEBUG_LOG("保存一帧bin数据到W25Q64 \r\n");
-        OTA_SaveBinDataFrame();
+    DEBUG_LOG("提取并校验bin数据 \r\n");
+    if (OTA_GetBinDataFrame() == false) {
+        // （2）接收失败重传（文件偏移正确或校验不正确）
+        Repeatitions++;
+        if (Repeatitions > MAX_OTA_REPETITIONS) {
+            DEBUG_LOG("重传失败，退出OTA \r\n");
+            return;
+        }
     }
+    // （3）接收成功，保存到外存（W25Q64）中
+    DEBUG_LOG("保存一帧bin数据到W25Q64 \r\n");
+    OTA_SaveBinDataFrame();
 
     // 2、还未接收完成，继续申请数据（本帧或下一帧）
     if (OTA_Download_CB.RecvFileSize < OTA_Download_CB.FileSize) {
@@ -343,12 +358,12 @@ void OTA_DealingBinData(void)
         OTA_RequestDataFrame();
     }
     else {
-        // 4、程序保存完成，设置OTA_Flag、程序版本等信息，并存储到AT24C02
+        // 3、程序保存完成，设置OTA_Flag、程序版本等信息，并存储到AT24C02
         DEBUG_LOG("程序保存完成 \r\n");
         OTA_ConfigInfo();
         DEBUG_LOG("设置OTA_Info完成 \r\n");
 
-        // 5、复位，跳转到BootLoader
+        // 4、复位，跳转到BootLoader
         OTA_Reset();
     }
 }

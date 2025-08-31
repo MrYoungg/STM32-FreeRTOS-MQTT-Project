@@ -122,7 +122,7 @@ uint8_t IIC_ReceiveAck(int16_t timeout)
     // 超时，或在SCL高电平期间SDA上的应答信号不稳定，则返回非应答
     if ((timeout <= 0) || (IIC_RD_SDA() != IIC_LOW)) {
         IIC_W_SCL(IIC_LOW);
-        LOG("IIC ACK timeout\r\n");
+        // LOG("IIC ACK timeout\r\n");
         return IIC_NOACK;
     }
 

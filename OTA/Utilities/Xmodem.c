@@ -23,7 +23,6 @@ static uint16_t Xmodem_GetCRC16_Buf(uint8_t *Buf, uint16_t BufLen)
     for (uint32_t i = 0; i < BufLen; i++) {
         CRC_Val ^= (Buf[i] << 8);
 
-
         for (uint8_t i = 0; i < 8; i++) {
 
             if ((CRC_Val & 0x8000) == 0) {
@@ -127,6 +126,7 @@ static uint8_t Xmodem_RecvPacket(uint8_t *DataBuf)
 uint8_t Xmodem_RecvData_1K(void)
 {
     uint8_t DataBuf[XMODEM_DATA_SIZE] = {0};
+    uint8_t Repetitions = 0;
     uint8_t ret = 0;
 
     while (is_FCBList_Empty(&CMD_USART_RingBuffer)) {
@@ -134,7 +134,7 @@ uint8_t Xmodem_RecvData_1K(void)
         Delay_ms(500);
     }
 
-    memset(Xmodem_FCB.Buffer_1k, 0, INTERFLASH_PAGE_SIZE);
+    memset(Xmodem_FCB.Buffer_1k, 0, Xmodem_BufferSize);
 
     uint8_t PacketPrePage = XMODEM_PACKETNUM_PRE_PAGE;
     for (uint8_t i = 0; i < PacketPrePage; i++) {
@@ -144,8 +144,15 @@ uint8_t Xmodem_RecvData_1K(void)
         bool isNeedRetransmit = (ret == Xmodem_SOH_Err) || (ret == Xmodem_NumUncomplete_Err) ||
                                 (ret == Xmodem_RepeatedPacket_Err) || (ret == Xmodem_CRC_Err);
         if (isNeedRetransmit) {
-            // LOG("读取重传的（下一个）数据包 \r\n");
+            // LOG("请求重传数据包 \r\n");
             i--;
+            Repetitions++;
+            // 重传次数超出上限
+            if (Repetitions > MAX_REPETITIONS) {
+                LOG("重传次数超出上限 \r\n");
+                Xmodem_Stop;
+                return Xmodem_TooMuchRepeat;
+            }
             continue;
         }
         else if (ret == Xmodem_EOT_Err) {

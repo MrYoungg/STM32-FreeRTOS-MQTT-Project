@@ -1088,14 +1088,13 @@ void AT_USART_SendString(char *String)
             - 接收ACK：发送器发送完1字节数据后，在第9个SCL周期等待一个ACK信号（应答0或非应答1）；
 3. **SPI & W25Q64（Flash） 调试**
     1. **SPI 时序实现**：采用STM32的硬件SPI；
-    2. **W25Q64 基本信息**
+    2. **W25Q64 基本信息**：64M-bit，8M-Byte，128块 \* 64K-Byte，每页256Byte，每块256页
     3. **W25Q64 操作实现**
         1. 等待忙
         2. 写使能
         3. 扇区/块擦除
-        4. 写入（按页）
+        4. 写入（按页），只能从页的起始地址开始写
         5. 读取（按字节）
-    
 4. **总结：EEPROM 和 Flash 的区别**
     1. **EEPROM**
         - 可以按字节读写，无需擦除；
@@ -1105,7 +1104,6 @@ void AT_USART_SendString(char *String)
         - 可以按字节读，但只能按页写，写之前需要按块或按扇区擦除；
         - 容量很大，通常用于存储代程序代码等大体量数据；
         - Flash因为读写数据量大，需要满足其高速的批量读写需求，因此通常用SPI；
-
 5. **MCU内置 Flash 调试 - 基于库 stm32f10x_flash.c**
     1. 按页擦除
     2. 按半字/字写入
@@ -1163,9 +1161,37 @@ void AT_USART_SendString(char *String)
 
 ##### 2.8.3.1 重传机制
 
-##### 2.8.3.2 数据加密
+##### 2.8.3.2 数据安全问题
 
-##### 2.8.3.3 版本回退的限制问题
+[数字签名和CA数字证书的核心原理和作用_哔哩哔哩_bilibili](https://www.bilibili.com/video/BV1mj421d7VE?vd_source=efdaa126e8affd01b06188fe27db7747)
+
+1. 网络通信中的数据安全需要解决以下三个层面的问题：
+    1. **机密性：**如何保证窃取者读不懂信息；
+    2. **完整性：**如何确认信息（公钥）没有被篡改；
+    3. **身份验证**：如何知道信息（数字证书）发送者是不是本人；
+2. **机密性：密钥加密**
+    1. 对称加密
+    2. 非对称加密
+    3. 存在的问题：
+        1. 如果网站使用的公钥被中间人截取，不发给用户，并虚构一把公钥与用户通信（本质上就是篡改了“公钥”这个信息）；
+            - ![img](https://mvkxo0gf29e.feishu.cn/space/api/box/stream/download/asynccode/?code=YTZjMGU1Y2M1OWFiOTlmYmFiNjUzYzc5ZTQzM2NjMWVfZXNvdmMybDE5YnVHTWs3ZXFINW4zR0VrNTRGT2prdjJfVG9rZW46TkFtV2IwSU1kb2dxaTZ4MFVHa2NHd0pPbnBjXzE3MzY5MzM0NDk6MTczNjkzNzA0OV9WNA)
+        2. 此时在后续会话中，会分别生成两把会话密钥，后续通信的安全无保障（中间人既能看懂信息，也能修改信息）；
+            - ![img](https://mvkxo0gf29e.feishu.cn/space/api/box/stream/download/asynccode/?code=YTA0YmE2YTdmNjM4Yzk1NjE5NmYwMzRiMGVjY2RkYzdfdFNUMmh6MTI1ZERYUHZWM3RlQ0Vhb1hJblVzNWg0NHFfVG9rZW46QW5Td2JaVFkxb3JZMzl4eEZDd2NweW96bkpnXzE3MzY5MzM0NDk6MTczNjkzNzA0OV9WNA)
+3. **完整性：数字证书**
+    1. 数字证书的本质：基于被信任的机构（CA），将网站分发的公钥和网站本身的信息关联起来；确定公钥是网站的，而不是中间人的；
+    2. 存在的问题：如何知道证书真的是由CA颁发的呢？—— **数字签名**
+4. **身份验证：数字签名**
+    1. 数字签名的本质：CA通过自己的私钥对数字证书（网站公钥+网站信息）进行加密，变成该证书的数字签名；
+    2. 实现：
+        1. 网站公钥+网站信息 → 哈希运算 = 哈希值；
+        2. 哈希值 → CA私钥加密 = 数字签名；
+        3. 数字签名 → CA公钥解密 = 哈希值 → 哈希运算 = 网站公钥 + 网站信息；
+            1. ![img](https://gitee.com/yyangyyyy/typora-image/raw/master/Typora_Image/202501151730298.png)
+    3. 存在的问题：CA的**公钥**在分发时如何确保不被篡改（完整性）？
+    4. 解决办法：**根****CA**对**下层CA**的公钥颁发带有数字签名的数字证书，而根CA对自己的证书进行自我签名，并且提前写入到设备和OS内部；
+        1. ![img](https://mvkxo0gf29e.feishu.cn/space/api/box/stream/download/asynccode/?code=ODU4MDhiMDQ0ZWYxZTVlN2I1Y2JkMWQ4Yzc5OTBlMjJfUWlkRFNUaFFsQ29jZTZUVDhPdFBZWEZ3ekdRbXhIcFJfVG9rZW46T2NoMmJBSjdSb0RTSXN4OUFMVmN3Q2VHbk1nXzE3MzY5MzM0NDk6MTczNjkzNzA0OV9WNA)
+
+
 
 ## chap 3 项目总结
 
@@ -1340,12 +1366,22 @@ void AT_USART_SendString(char *String)
 
     2. 直接调用 `__set_MSP()` 则能够正常执行；
 
+        ```c
+        __ASM void __set_MSP(uint32_t mainStackPointer)
+        {
+          msr msp, r0
+          bx lr
+        }
+        ```
+
+        
+
 2. **原因分析**
 
     1. **函数调用过程浅析**
         1. 程序进入汇编函数时，不会自动压栈出栈，只会按照汇编指令逐条执行；
-        2. 而程序在进入 C函数 `Redirect_SP()` 时，会将函数的返回地址存入LR；
-        3. 程序进入C函数后的第一件事情（可以看成**左大括号**的汇编翻译），就是将LR压栈（可能还会压栈其他用到的通用寄存器）；
+        2. 程序在进入 C函数 `Redirect_SP()` 之前，硬件会自动将函数的返回地址存入LR；
+        3. 程序进入C函数后的第一件事情（可以看成**左大括号**的汇编翻译），就是将LR压栈（可能还会压栈其他用到的通用寄存器），这是编译链做的工作；
             ![image-20241205153948004](https://gitee.com/yyangyyyy/typora-image/raw/master/Typora_Image/202412051539267.png)
         4. **从函数退出时**，程序会从栈中将LR弹出给PC（**右大括号**的汇编翻译），相当于回到函数的返回位置继续执行；
             ![image-20241205154702370](https://gitee.com/yyangyyyy/typora-image/raw/master/Typora_Image/202412051547423.png)
